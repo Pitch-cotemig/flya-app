@@ -11,10 +11,6 @@ Utilize o prefixo Flya e o nome no ticket do seu PR
 
 <!-- Descreva **claramente** o que esta PR faz, por que foi feita e qualquer detalhe relevante. -->
 
-<!-- **Exemplo:** -->
-
-<!-- > Esta PR adiciona a tela de histórico de viagens com layout responsivo, consumindo dados mockados do `history_service.dart`. -->
-
 ---
 
 ### ✅ **Checklist do Desenvolvedor**
