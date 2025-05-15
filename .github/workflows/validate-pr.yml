@@ -44,7 +44,7 @@ jobs:
               "- [x] Me atribuí como responsável por esta PR",
               "- [x] Resolvi conflitos de merge (se houver)",
               "- [x] A PR está seguindo o padrão de nomenclatura do título",
-              "- [x] Atualizei/adicionei testes",
+              "- [x] Atualizei/adicionei testes (opcional, mas melhor pra garantir estabilidade no futuro e garantir um bom coverage)",
               "- [x] Revisei se há prints ou códigos de debug para remover"
             ];
 

@@ -23,7 +23,7 @@ Utilize o prefixo Flya e o nome no ticket do seu PR
 
 ---
 
-### 📸 **Capturas de tela (opcional)**
+### 📸 **Capturas de tela**
 
 <!-- Se aplicável, adicione imagens ou gifs mostrando a nova funcionalidade. -->
 
