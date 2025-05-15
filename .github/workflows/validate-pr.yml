@@ -32,6 +32,7 @@ jobs:
               core.setFailed("❌ A descrição da PR está vazia ou contém apenas comentários.");
             } else {
               console.log("✅ Descrição válida");
+              console.log("✅ Descrição válida");
             }
 
       - name: ☑️ Verificar checklist marcado
