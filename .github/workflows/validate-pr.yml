@@ -26,19 +26,18 @@ jobs:
         with:
           script: |
             const body = context.payload.pull_request.body || "";
-                    
-            // Extrai o conteúdo da seção de descrição
-            const match = body.match(/### ✍️ \*\*Descrição\*\*\n+([\s\S]*?)\n+---/);
-                    
+
+            const match = body.match(/###\s*✍️\s*\*\*Descrição\*\*[\r\n]+([\s\S]*?)(?:\n|\r\n)?-{3,}/);
+
             if (!match || !match[1]) {
               core.setFailed("❌ Não foi possível encontrar a seção de descrição entre os delimitadores.");
             } else {
               const description = match[1]
                 .replace(/<!--.*?-->/gs, "") // remove comentários
                 .trim();
-                    
+
               console.log("📋 Descrição capturada:", description);
-                    
+
               if (!description || description.length < 10) {
                 core.setFailed("❌ A descrição está vazia ou muito curta.");
               } else {
