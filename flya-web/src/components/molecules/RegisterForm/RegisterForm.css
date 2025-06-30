@@ -1,0 +1,105 @@
+.register-form-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.register-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.logo-container {
+  margin-bottom: 32px;
+}
+
+.flya-logo {
+  display: inline-block;
+}
+
+.form-title {
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 0 40px 0;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+  margin-top: 32px;
+}
+
+.register-button {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a2e;
+  background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.1);
+}
+
+.register-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%);
+}
+
+.register-button:active {
+  transform: translateY(0);
+}
+
+.login-link {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.login-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+}
+
+.login-button {
+  background: none;
+  border: none;
+  color: #00bcd4;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.login-button:hover {
+  color: #00acc1;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .register-form {
+    padding: 16px;
+  }
+
+  .form-title {
+    font-size: 28px;
+    margin-bottom: 32px;
+  }
+}
