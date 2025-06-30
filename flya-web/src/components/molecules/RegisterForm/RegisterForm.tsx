@@ -3,13 +3,23 @@ import { Button, Input } from "../../atoms";
 import flyaLogo from "../../../assets/flyalogo.svg";
 import "./RegisterForm.css";
 
-const RegisterForm = ({ onSubmit, onLoginClick }) => {
-  const [formData, setFormData] = useState({
+interface FormData {
+  email: string;
+  password: string;
+}
+
+interface RegisterFormProps {
+  onSubmit?: (formData: FormData) => void;
+  onLoginClick?: () => void;
+}
+
+const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, onLoginClick }) => {
+  const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
   });
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -17,7 +27,7 @@ const RegisterForm = ({ onSubmit, onLoginClick }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (onSubmit) {
       onSubmit(formData);

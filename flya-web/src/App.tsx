@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { AuthCard } from "./components";
-import { authService } from "./services/authService";
+import { authService, User } from "./services/authService";
 import "./App.css";
 
-function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+interface FormData {
+  email: string;
+  password: string;
+}
 
-  const handleLogin = async (formData) => {
+function App() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleLogin = async (formData: FormData): Promise<void> => {
     setLoading(true);
     try {
       const result = await authService.login({
@@ -15,7 +20,7 @@ function App() {
         password: formData.password,
       });
 
-      if (result.success) {
+      if (result.success && result.data) {
         setUser(result.data.user);
         alert(`Bem-vindo, ${result.data.user.name}!`);
         // Here you could store the token in localStorage
@@ -31,7 +36,7 @@ function App() {
     }
   };
 
-  const handleRegister = async (formData) => {
+  const handleRegister = async (formData: FormData): Promise<void> => {
     setLoading(true);
     try {
       const result = await authService.register({
@@ -39,7 +44,7 @@ function App() {
         password: formData.password,
       });
 
-      if (result.success) {
+      if (result.success && result.data) {
         setUser(result.data.user);
         alert(`Conta criada com sucesso! Bem-vindo, ${result.data.user.name}!`);
         // Here you could store the token in localStorage
@@ -55,7 +60,7 @@ function App() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = (): void => {
     setUser(null);
     // localStorage.removeItem('token');
     alert("Logout realizado com sucesso!");

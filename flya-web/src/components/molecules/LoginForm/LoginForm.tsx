@@ -3,18 +3,28 @@ import { Button, Input } from "../../atoms";
 import flyaLogo from "../../../assets/flyalogo.svg";
 import "./LoginForm.css";
 
-const LoginForm = ({ onSubmit, onRegisterClick }) => {
-  const [formData, setFormData] = useState({
+interface FormData {
+  email: string;
+  password: string;
+}
+
+interface LoginFormProps {
+  onSubmit?: (formData: FormData) => void;
+  onRegisterClick?: () => void;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onRegisterClick }) => {
+  const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
   });
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (onSubmit) onSubmit(formData);
   };

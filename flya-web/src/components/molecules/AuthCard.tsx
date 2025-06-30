@@ -1,9 +1,20 @@
-import React, { useState } from "react";
-import { RegisterForm, LoginForm } from ".";
+import { useState } from "react";
+import RegisterForm from "./RegisterForm/RegisterForm";
 import "./AuthCard.css";
+import LoginForm from "./LoginForm/LoginForm";
 
-const AuthCard = ({ onLogin, onRegister }) => {
-  const [flipped, setFlipped] = useState(false);
+interface FormData {
+  email: string;
+  password: string;
+}
+
+interface AuthCardProps {
+  onLogin?: (formData: FormData) => void;
+  onRegister?: (formData: FormData) => void;
+}
+
+const AuthCard: React.FC<AuthCardProps> = ({ onLogin, onRegister }) => {
+  const [flipped, setFlipped] = useState<boolean>(false);
 
   const handleShowLogin = () => setFlipped(true);
   const handleShowRegister = () => setFlipped(false);

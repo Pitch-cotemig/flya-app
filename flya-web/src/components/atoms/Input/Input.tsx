@@ -1,7 +1,16 @@
 import React from "react";
 import "./Input.css";
 
-const Input = ({
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  type?: string;
+  placeholder?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  name?: string;
+  className?: string;
+}
+
+const Input: React.FC<InputProps> = ({
   type = "text",
   placeholder,
   value,
