@@ -1,12 +1,20 @@
-# React + Vite
+# Flya - 3A2
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bernardo Orsi do Amaral - 22301127
+Cairo Rodrigues - 22300643
+Eduarda Brandão - 22301755
+Gustavo Albuquerque - 22302093
+Izabela Ferreira - 22300376
+Lucas Diniz - 22301526
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Requisitos:
+[ ] RF01 - O sistema deve permitir que o usuário insira seu orçamento. (Alta)
+[ ] RF04 - O aplicativo deve integrar APIs de voos, hotéis e passeios para exibir preços (exemplos: Skyscanner, Booking, GetYourGuide). (Alta)
+[ ] RF05 - O usuário deve poder personalizar suas preferências de viagem. (Média)
+[ ] RF08 - O sistema deve permitir que o usuário salve e edite seu planejamento. (Média)
+[ ] RF10 - O sistema deve permitir login via autenticação de dois fatores. (Baixa)
+[ ] RF12 - O sistema deve permitir a exportação do planejamento em formato PDF. (Baixa)
+[ ] RF13 - O usuário deve receber notificações sobre promoções e mudanças de preço. (Média)
+[ ] RF14 - O sistema deve permitir avaliações e feedbacks de usuários sobre destinos e serviços. (Média)
+[ ] RF16 - O aplicativo deve permitir integração com redes sociais para compartilhamento de roteiros. (Baixa)
+[ ] RF17 - O usuário deve visualizar avaliações e notas de outros viajantes sobre hotéis e passeios. (Média)
