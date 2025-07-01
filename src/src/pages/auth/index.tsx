@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { AuthCard } from "../../components";
-import { authService, User } from "../../services/authService";
+import { authService, User } from "../../services/auth";
 import { authStyles } from "./styles";
 
-interface FormData {
+interface LoginData {
   email: string;
   password: string;
+}
+
+interface SignupData extends LoginData {
+  nome: string;
 }
 
 interface AuthPageProps {
@@ -15,7 +19,7 @@ interface AuthPageProps {
 function AuthPage({ onLogin }: AuthPageProps) {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleLoginSubmit = async (formData: FormData): Promise<void> => {
+  const handleLoginSubmit = async (formData: LoginData): Promise<void> => {
     setLoading(true);
     try {
       const result = await authService.login({
@@ -25,8 +29,7 @@ function AuthPage({ onLogin }: AuthPageProps) {
 
       if (result.success && result.data) {
         onLogin(result.data.user);
-        alert(`Bem-vindo, ${result.data.user.name}!`);
-        // Here you could store the token in localStorage
+        alert(`Bem-vindo, ${result.data.user.nome}!`);
         // localStorage.setItem('token', result.data.token);
       } else {
         alert(`Erro no login: ${result.message}`);
@@ -39,18 +42,18 @@ function AuthPage({ onLogin }: AuthPageProps) {
     }
   };
 
-  const handleRegisterSubmit = async (formData: FormData): Promise<void> => {
+  const handleRegisterSubmit = async (formData: SignupData): Promise<void> => {
     setLoading(true);
     try {
       const result = await authService.register({
+        nome: formData.nome,
         email: formData.email,
         password: formData.password,
       });
 
       if (result.success && result.data) {
         onLogin(result.data.user);
-        alert(`Conta criada com sucesso! Bem-vindo, ${result.data.user.name}!`);
-        // Here you could store the token in localStorage
+        alert(`Conta criada com sucesso! Bem-vindo, ${result.data.user.nome}!`);
         // localStorage.setItem('token', result.data.token);
       } else {
         alert(`Erro no cadastro: ${result.message}`);
@@ -63,12 +66,10 @@ function AuthPage({ onLogin }: AuthPageProps) {
     }
   };
 
-  // Show loading state
   if (loading) {
     return <div style={authStyles.loadingContainer}>Carregando...</div>;
   }
 
-  // Show AuthCard with login/register forms
   return (
     <AuthCard onLogin={handleLoginSubmit} onRegister={handleRegisterSubmit} />
   );

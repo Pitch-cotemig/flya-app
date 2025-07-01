@@ -3,18 +3,18 @@ import { Button, Input } from "../../atoms";
 import flyaLogo from "../../../assets/flyalogo.svg";
 import "./LoginForm.css";
 
-interface FormData {
+interface LoginData {
   email: string;
   password: string;
 }
 
 interface LoginFormProps {
-  onSubmit?: (formData: FormData) => void;
+  onSubmit?: (formData: LoginData) => void;
   onRegisterClick?: () => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onRegisterClick }) => {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<LoginData>({
     email: "",
     password: "",
   });
@@ -44,7 +44,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onRegisterClick }) => {
         <Input
           type="email"
           name="email"
-          placeholder="Digite seu e-mail ou nome de usuário"
+          placeholder="Digite seu e-mail"
           value={formData.email}
           onChange={handleInputChange}
           required

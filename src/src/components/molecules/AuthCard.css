@@ -47,11 +47,9 @@ body,
   box-sizing: border-box;
 }
 
-.auth-card-front {
-  z-index: 2;
-}
+
 
 .auth-card-back {
   transform: rotateY(180deg);
-  z-index: 1;
+  
 }

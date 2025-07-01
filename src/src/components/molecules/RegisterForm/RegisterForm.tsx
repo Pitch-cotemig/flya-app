@@ -4,6 +4,7 @@ import flyaLogo from "../../../assets/flyalogo.svg";
 import "./RegisterForm.css";
 
 interface FormData {
+  nome: string;    
   email: string;
   password: string;
 }
@@ -15,6 +16,7 @@ interface RegisterFormProps {
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, onLoginClick }) => {
   const [formData, setFormData] = useState<FormData>({
+    nome: "",      
     email: "",
     password: "",
   });
@@ -30,7 +32,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, onLoginClick }) =
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (onSubmit) {
-      onSubmit(formData);
+      onSubmit(formData); // 👈 Agora inclui nome
     }
   };
 
@@ -55,9 +57,20 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, onLoginClick }) =
 
       <div className="form-group">
         <Input
+          type="text"
+          name="nome"                               
+          placeholder="Digite seu nome completo"   
+          value={formData.nome}
+          onChange={handleInputChange}
+          required
+        />
+      </div>
+
+      <div className="form-group">
+        <Input
           type="email"
           name="email"
-          placeholder="Digite seu e-mail ou nome de usuário"
+          placeholder="Digite seu e-mail"
           value={formData.email}
           onChange={handleInputChange}
           required

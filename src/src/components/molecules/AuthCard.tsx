@@ -3,14 +3,18 @@ import RegisterForm from "./RegisterForm/RegisterForm";
 import "./AuthCard.css";
 import LoginForm from "./LoginForm/LoginForm";
 
-interface FormData {
+interface LoginData {
   email: string;
   password: string;
 }
 
+interface SignupData extends LoginData {
+  nome: string;
+}
+
 interface AuthCardProps {
-  onLogin?: (formData: FormData) => void;
-  onRegister?: (formData: FormData) => void;
+  onLogin?: (formData: LoginData) => void;
+  onRegister?: (formData: SignupData) => void;
 }
 
 const AuthCard: React.FC<AuthCardProps> = ({ onLogin, onRegister }) => {
