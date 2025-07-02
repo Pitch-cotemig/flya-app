@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
   /*
@@ -34,7 +34,7 @@ const GlobalStyles = createGlobalStyle`
   }
   body {
     line-height: 1;
-    background-color: ${({ theme }) => theme.colors.background};
+    background-color: ${({ theme }) => theme.colors.white};
     color: ${({ theme }) => theme.colors.gray[300]};
     font-family: ${({ theme }) => theme.fonts.main};
   }
@@ -59,4 +59,4 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
-export default GlobalStyles; 
+export default GlobalStyles;

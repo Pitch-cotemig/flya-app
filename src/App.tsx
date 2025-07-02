@@ -22,6 +22,9 @@ import { PlanningFormPage } from './pages/PlanningFormPage/PlanningFormPage';
 import { BagPage } from './pages/BagPage/BagPage';
 import { MainLayout } from './components/organisms/layout';
 
+// 5. Componente de teste do Supabase
+import SupabaseTest from './components/SupabaseTest';
+
 
 function App() {
   // Estado para guardar os dados do usuário logado.
@@ -51,6 +54,7 @@ function App() {
             <Route path="/politica-de-privacidade" element={<PrivacyPolicyPage />} />
             <Route path="/planejamento" element={<PlanningFormPage />} />
             <Route path="/mala" element={<BagPage />} />
+            <Route path="/teste-supabase" element={<SupabaseTest />} />
           </Route>
           
           {/* --- ROTAS SEM LAYOUT --- */}
