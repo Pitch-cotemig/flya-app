@@ -1,0 +1,57 @@
+import { Link } from "react-router-dom";
+import flyaLogo from "../../assets/flyalogo.svg";
+import {
+  HeaderContainer,
+  HeaderContent,
+  Logo,
+  Navigation,
+  StyledNavLink,
+  LoginSection,
+  LoginButton,
+  UserIcon,
+} from "./styles";
+
+export function Header() {
+  // Dados dos links de navegação
+  const navLinks = [
+    { label: "Home", to: "/" },
+    { label: "Nova Viagem", to: "/planejamento" },
+    { label: "Minha Mala", to: "/mala" }, // Exemplo de outra rota
+  ];
+
+  return (
+    <HeaderContainer>
+      <HeaderContent>
+        {/* Logo na Esquerda */}
+        <Logo to="/">
+          <img src={flyaLogo} alt="Flya Logo" />
+        </Logo>
+
+        {/* Links de Navegação no Centro (absoluto) */}
+        <Navigation>
+          {navLinks.map((link) => (
+            <StyledNavLink
+              key={link.to}
+              to={link.to}
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              {link.label}
+            </StyledNavLink>
+          ))}
+        </Navigation>
+
+        {/* Login na Direita */}
+        <LoginSection>
+          <Link to="/auth">
+            <LoginButton>
+              <UserIcon />
+              Login
+            </LoginButton>
+          </Link>
+        </LoginSection>
+      </HeaderContent>
+    </HeaderContainer>
+  );
+}
+
+export default Header;
