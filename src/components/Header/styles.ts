@@ -89,7 +89,7 @@ export const StyledNavLink = styled(NavLink)`
   border-radius: 8px;
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -2px;
     left: 50%;
@@ -104,7 +104,7 @@ export const StyledNavLink = styled(NavLink)`
     color: ${({ theme }) => theme.colors.white};
     background: rgba(0, 188, 212, 0.1);
     transform: translateY(-2px);
-    
+
     &::after {
       width: 80%;
     }
@@ -113,7 +113,7 @@ export const StyledNavLink = styled(NavLink)`
   &.active {
     color: ${({ theme }) => theme.colors.white};
     background: rgba(0, 188, 212, 0.15);
-    
+
     &::after {
       width: 80%;
     }
@@ -129,7 +129,11 @@ export const LoginButton = styled.button`
   align-items: center;
   gap: 0.5rem;
   border-radius: ${({ theme }) => theme.borderRadius.md};
-  background: linear-gradient(135deg, rgba(0, 188, 212, 0.1) 0%, rgba(0, 188, 212, 0.2) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 188, 212, 0.1) 0%,
+    rgba(0, 188, 212, 0.2) 100%
+  );
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   font-weight: 500;
@@ -141,22 +145,31 @@ export const LoginButton = styled.button`
   overflow: hidden;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
     transition: left 0.5s ease;
   }
 
   &:hover {
-    background: linear-gradient(135deg, rgba(0, 188, 212, 0.2) 0%, rgba(0, 188, 212, 0.3) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(0, 188, 212, 0.2) 0%,
+      rgba(0, 188, 212, 0.3) 100%
+    );
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
     border-color: rgba(0, 188, 212, 0.5);
-    
+
     &::before {
       left: 100%;
     }

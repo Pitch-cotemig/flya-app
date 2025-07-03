@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const DestinationsSection = styled.section`
   padding: 4rem 2rem;
-  background: #2c2c6b;
+  background: rgb(28, 28, 67);
   color: white;
   position: relative;
   overflow: hidden;
@@ -14,16 +14,7 @@ export const DestinationsSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-        circle at 20% 30%,
-        rgba(0, 188, 212, 0.1) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 80% 70%,
-        rgba(0, 188, 212, 0.1) 0%,
-        transparent 50%
-      );
+
     animation: backgroundPulse 8s ease-in-out infinite;
   }
 

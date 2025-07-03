@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const TestimonialsSection = styled.section`
   padding: 4rem 2rem;
-  background: #2c2c6b;
+  background: rgb(28, 28, 67);
   color: white;
   position: relative;
   overflow: hidden;
@@ -14,16 +14,7 @@ export const TestimonialsSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-        circle at 30% 40%,
-        rgba(0, 188, 212, 0.1) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 70% 60%,
-        rgba(0, 188, 212, 0.1) 0%,
-        transparent 50%
-      );
+
     animation: floatingBg 10s ease-in-out infinite;
   }
 

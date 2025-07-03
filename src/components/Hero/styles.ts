@@ -15,18 +15,24 @@ export const HeroContainer = styled.section`
   overflow: hidden;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, rgba(0, 188, 212, 0.1) 0%, transparent 50%, rgba(0, 188, 212, 0.1) 100%);
+    background: linear-gradient(
+      45deg,
+      rgba(0, 188, 212, 0.1) 0%,
+      transparent 50%,
+      rgba(0, 188, 212, 0.1) 100%
+    );
     animation: heroGradient 8s ease-in-out infinite;
   }
 
   @keyframes heroGradient {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 0.3;
     }
     50% {
@@ -166,18 +172,23 @@ export const HeroButton = styled.button`
   animation: pulseGlow 3s ease-in-out infinite;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
     transition: left 0.5s ease;
   }
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -194,11 +205,11 @@ export const HeroButton = styled.button`
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 188, 212, 0.4);
     animation: none;
-    
+
     &::before {
       left: 100%;
     }
-    
+
     &::after {
       opacity: 1;
     }
@@ -209,7 +220,8 @@ export const HeroButton = styled.button`
   }
 
   @keyframes pulseGlow {
-    0%, 100% {
+    0%,
+    100% {
       box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
     }
     50% {
@@ -228,7 +240,7 @@ export const FloatingParticles = styled.div`
   z-index: 1;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 15%;
     left: 20%;
@@ -241,7 +253,7 @@ export const FloatingParticles = styled.div`
   }
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 70%;
     right: 25%;
@@ -254,7 +266,8 @@ export const FloatingParticles = styled.div`
   }
 
   @keyframes floatParticle1 {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0) translateX(0) scale(1);
       opacity: 0.7;
     }
@@ -273,7 +286,8 @@ export const FloatingParticles = styled.div`
   }
 
   @keyframes floatParticle2 {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0) translateX(0) scale(1);
       opacity: 0.5;
     }
