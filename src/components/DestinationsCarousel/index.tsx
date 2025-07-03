@@ -13,6 +13,7 @@ import {
   DestinationOverlay,
   DestinationName,
   DestinationDescription,
+  FloatingElements,
 } from "./styles";
 
 const DestinationsCarousel: React.FC = () => {
@@ -135,6 +136,7 @@ const DestinationsCarousel: React.FC = () => {
 
   return (
     <DestinationsSection>
+      <FloatingElements />
       <DestinationsContainer>
         <SectionTitle>Destinos populares</SectionTitle>
         <CarouselContainer>

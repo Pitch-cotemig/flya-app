@@ -7,6 +7,7 @@ import {
   HeroForm,
   HeroInput,
   HeroButton,
+  FloatingParticles,
 } from "./styles";
 
 const Hero: React.FC = () => {
@@ -19,6 +20,7 @@ const Hero: React.FC = () => {
 
   return (
     <HeroContainer>
+      <FloatingParticles />
       <HeroContent>
         <HeroTitle>Sua viagem dos sonhos planejada com IA</HeroTitle>
       </HeroContent>
