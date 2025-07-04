@@ -194,22 +194,6 @@ export function BagPage() {
           </AddItemSection>
 
           <CategoriesSection>
-            <h3>Filtrar Por:</h3>
-            <CategoryTabs>
-              {CATEGORIES.map((category) => (
-                <CategoryTab
-                  key={category.id}
-                  active={selectedCategory === category.id}
-                  onClick={() => handleCategoryChange(category.id)}
-                >
-                  <span>{category.icon}</span>
-                  {category.name}
-                </CategoryTab>
-              ))}
-            </CategoryTabs>
-          </CategoriesSection>
-
-          <CategoriesSection>
             <h3>Adicionar em:</h3>
             <CategoryTabs>
               {CATEGORIES.slice(1).map((category) => (
@@ -225,7 +209,21 @@ export function BagPage() {
               ))}
             </CategoryTabs>
           </CategoriesSection>
-
+          <CategoriesSection>
+            <h3>Filtrar Por:</h3>
+            <CategoryTabs>
+              {CATEGORIES.map((category) => (
+                <CategoryTab
+                  key={category.id}
+                  active={selectedCategory === category.id}
+                  onClick={() => handleCategoryChange(category.id)}
+                >
+                  <span>{category.icon}</span>
+                  {category.name}
+                </CategoryTab>
+              ))}
+            </CategoryTabs>
+          </CategoriesSection>
           <ItemsList>
             {filteredItems.length === 0 ? (
               <EmptyState>
