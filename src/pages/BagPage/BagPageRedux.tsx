@@ -82,6 +82,7 @@ export function BagPage() {
   // Initialize trip data if not set
   useEffect(() => {
     if (!tripData) {
+      // TODO: Buscar dados da viagem do backend baseado no usuário logado
       dispatch(
         setTripData({
           destination: "Paris",
@@ -94,6 +95,7 @@ export function BagPage() {
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (newItemName.trim()) {
+      // TODO: Sincronizar novo item com o backend
       dispatch(
         addItem({
           name: newItemName.trim(),
@@ -107,6 +109,7 @@ export function BagPage() {
   };
 
   const handleAddSuggestedItem = (itemName: string, category: string) => {
+    // TODO: Sincronizar item sugerido com o backend
     dispatch(
       addItem({
         name: itemName,
@@ -118,10 +121,12 @@ export function BagPage() {
   };
 
   const handleToggleItem = (id: string) => {
+    // TODO: Sincronizar status do item (checked/unchecked) com o backend
     dispatch(toggleItem(id));
   };
 
   const handleDeleteItem = (id: string) => {
+    // TODO: Remover item do backend
     dispatch(removeItem(id));
   };
 

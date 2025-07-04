@@ -43,19 +43,8 @@ export function PlanningFormPage() {
     setError("");
 
     try {
-      const response = await fetch("/api/generate-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || "Falha na requisição para a API.");
-      }
-
-      const data = await response.json();
-      setGeneratedPlan(data.plan);
+      // TODO: Implementar backend primeiro
+      setError('Sistema de planejamento em desenvolvimento. Backend não implementado.');
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Ocorreu um erro desconhecido."
