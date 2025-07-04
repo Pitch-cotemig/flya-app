@@ -19,7 +19,7 @@ import LandingPage from "./pages/HomePage/HomePage";
 import TermsOfUsePage from "./pages/TermsOfUse/TermsOfUsePage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy/PrivacyPolicyPage";
 import { PlanningFormPage } from "./pages/PlanningFormPage/PlanningFormPage";
-import { BagPage } from "./pages/BagPage/BagPage";
+import { BagPage } from "./pages/BagPage/BagPageRedux";
 import { MainLayout } from "./components";
 
 function App() {
