@@ -17,6 +17,7 @@ interface SuggestionProps {
   onAddItem: (item: string, category: string) => void;
 }
 
+// TODO: Implementar API para buscar sugestões personalizadas baseadas no destino e perfil do usuário
 const DESTINATION_SUGGESTIONS = {
   Paris: {
     clothes: [
@@ -60,6 +61,7 @@ export const ItemSuggestions: React.FC<SuggestionProps> = ({
   duration,
   onAddItem,
 }) => {
+  // TODO: Substituir por chamada de API para buscar sugestões personalizadas do backend
   const suggestions =
     DESTINATION_SUGGESTIONS[
       destination as keyof typeof DESTINATION_SUGGESTIONS

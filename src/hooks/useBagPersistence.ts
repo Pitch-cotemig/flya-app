@@ -11,6 +11,7 @@ export const useBagPersistence = () => {
 
   // Load data from localStorage on mount
   useEffect(() => {
+    // TODO: Substituir localStorage por chamadas de API para buscar dados da mala do backend
     const savedData = localStorage.getItem(STORAGE_KEY);
     if (savedData) {
       try {
@@ -26,6 +27,7 @@ export const useBagPersistence = () => {
   useEffect(() => {
     if (bagState.items.length > 0 || bagState.tripData) {
       try {
+        // TODO: Substituir localStorage por chamadas de API para salvar dados da mala no backend
         localStorage.setItem(STORAGE_KEY, JSON.stringify(bagState));
         dispatch(setLastSync(new Date().toISOString()));
       } catch (error) {
@@ -36,6 +38,7 @@ export const useBagPersistence = () => {
 
   // Clear localStorage
   const clearStoredData = () => {
+    // TODO: Implementar limpeza dos dados no backend também
     localStorage.removeItem(STORAGE_KEY);
   };
 

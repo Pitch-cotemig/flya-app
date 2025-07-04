@@ -21,6 +21,8 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicy/PrivacyPolicyPage";
 import { PlanningFormPage } from "./pages/PlanningFormPage/PlanningFormPage";
 import { BagPage } from "./pages/BagPage/BagPageRedux";
 import { MainLayout } from "./components";
+// 5. Página de edição de perfil
+import { ProfileEditPage } from "./pages";
 
 function App() {
   // Estado para guardar os dados do usuário logado.
@@ -53,6 +55,7 @@ function App() {
             />
             <Route path="/planejamento" element={<PlanningFormPage />} />
             <Route path="/mala" element={<BagPage />} />
+            <Route path="/perfil" element={<ProfileEditPage />} />
           </Route>
 
           {/* --- ROTAS SEM LAYOUT --- */}
@@ -70,6 +73,16 @@ function App() {
                 <DashboardPage user={currentUser} onLogout={handleLogout} />
               ) : (
                 // Se NÃO, redireciona o usuário para a tela de login.
+                <Navigate to="/auth" replace />
+              )
+            }
+          />
+          <Route
+            path="/editar-perfil"
+            element={
+              currentUser ? (
+                <ProfileEditPage user={currentUser} onLogout={handleLogout} />
+              ) : (
                 <Navigate to="/auth" replace />
               )
             }
