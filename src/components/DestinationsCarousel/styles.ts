@@ -238,6 +238,7 @@ export const DestinationCard = styled.div`
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   opacity: 0;
   animation: slideInFromBottom 0.8s ease-out forwards;
+  top: 0;
 
   &:nth-child(1) {
     animation-delay: 0.1s;
@@ -276,7 +277,8 @@ export const DestinationCard = styled.div`
   }
 
   &:hover {
-    transform: translateY(-10px) scale(1.02);
+    top: -10px;
+    transform: scale(1.02);
     box-shadow: 0 20px 40px rgba(0, 188, 212, 0.3);
 
     &::before {
@@ -326,35 +328,34 @@ export const DestinationOverlay = styled.div`
   padding: 1.5rem 1rem 1rem;
   color: white;
   z-index: 2;
-  transform: translateY(20px);
-  transition: transform 0.4s ease;
-
-  ${DestinationCard}:hover & {
-    transform: translateY(0);
-  }
 `;
 
 export const DestinationName = styled.h3`
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  transform: translateY(10px);
-  transition: transform 0.4s ease 0.1s;
-
-  ${DestinationCard}:hover & {
-    transform: translateY(0);
-  }
+  position: relative;
+  top: 0;
 `;
 
 export const DestinationDescription = styled.p`
   font-size: 0.85rem;
-  opacity: 0.9;
+  opacity: 0;
   line-height: 1.4;
-  transform: translateY(10px);
-  transition: transform 0.4s ease 0.2s;
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  margin: 0;
+  transform: translateY(20px);
+  transition: all 0.4s ease 0.2s;
+  pointer-events: none;
 
   ${DestinationCard}:hover & {
+    opacity: 0.9;
+    height: auto;
+    margin-top: 0.5rem;
     transform: translateY(0);
+    pointer-events: auto;
   }
 `;
 export const HeroForm = styled.div`
