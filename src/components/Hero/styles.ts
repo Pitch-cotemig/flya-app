@@ -55,10 +55,9 @@ export const HeroTitle = styled.h1`
   font-size: 4.5rem;
   font-weight: 700;
   margin: 0;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   max-width: 800px;
   animation: heroTitleAnimation 1.5s ease-out;
-  background: linear-gradient(45deg, #ffffff, #00bcd4);
+  background: white;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
