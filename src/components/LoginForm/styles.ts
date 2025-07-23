@@ -53,21 +53,13 @@ export const LoginButton = styled.button`
   }
 `;
 
-export const RegisterButton = styled.button`
+export const RegisterButton = styled(LoginButton)`
   width: 100%;
-  padding: 16px;
-  background: linear-gradient(135deg, #00bcd4 0%, #0097a7 100%);
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
+`;
 
-  &:hover {
-    background: linear-gradient(135deg, #00acc1 0%, #00838f 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 188, 212, 0.3);
-  }
+export const ErrorMessage = styled.p`
+  color: #ff4d4f;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 16px;
 `;

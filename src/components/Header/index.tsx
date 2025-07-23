@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import flyaLogo from "../../assets/flyalogo.svg";
+import { User } from "../../services/authService";
 import {
   HeaderContainer,
   HeaderContent,
@@ -11,7 +12,11 @@ import {
   UserIcon,
 } from "./styles";
 
-export function Header() {
+interface HeaderProps {
+  user: User | null;
+}
+
+export function Header({ user }: HeaderProps) {
   // Dados dos links de navegação
   const navLinks = [
     { label: "Home", to: "/" },
@@ -42,12 +47,21 @@ export function Header() {
 
         {/* Login na Direita */}
         <LoginSection>
-          <Link to="/auth">
-            <LoginButton>
-              <UserIcon />
-              Login
-            </LoginButton>
-          </Link>
+          {user ? (
+            <Link to="/perfil">
+              <LoginButton>
+                <UserIcon />
+                Perfil
+              </LoginButton>
+            </Link>
+          ) : (
+            <Link to="/auth">
+              <LoginButton>
+                <UserIcon />
+                Login
+              </LoginButton>
+            </Link>
+          )}
         </LoginSection>
       </HeaderContent>
     </HeaderContainer>

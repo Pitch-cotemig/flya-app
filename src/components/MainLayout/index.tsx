@@ -1,17 +1,20 @@
 import { Outlet } from "react-router-dom";
-import Footer from "../Footer";
-import Header from "../Header";
-import { PageContainer, ContentWrap } from "./styles";
+import { Footer, Header } from "..";
+import { User } from "../../services/authService";
 
-export function MainLayout() {
+interface MainLayoutProps {
+  user: User | null;
+}
+
+export function MainLayout({ user }: MainLayoutProps) {
   return (
-    <PageContainer>
-      <Header />
-      <ContentWrap>
+    <>
+      <Header user={user} />
+      <main>
         <Outlet />
-      </ContentWrap>
+      </main>
       <Footer />
-    </PageContainer>
+    </>
   );
 }
 
