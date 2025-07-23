@@ -44,20 +44,66 @@ export interface ValidateSuccessData {
   user: User;
 }
 
-// Auth service class - TODO: Implementar métodos reais
+const API_URL = 'http://localhost:3000';
+
+// Auth service class
 class AuthService {
   async login(
-    _credentials: LoginCredentials
+    credentials: LoginCredentials,
   ): Promise<AuthResponse<LoginSuccessData>> {
-    // TODO: Implementar chamada real de API
-    throw new Error('Backend não implementado');
+    try {
+      const response = await fetch(`${API_URL}/auth/signin`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, message: data.message, data: null };
+      }
+
+      return { success: true, message: 'Login successful', data };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An unknown error occurred';
+      return {
+        success: false,
+        message,
+        data: null,
+      };
+    }
   }
 
   async register(
-    _credentials: RegisterCredentials
+    credentials: RegisterCredentials,
   ): Promise<AuthResponse<RegisterSuccessData>> {
-    // TODO: Implementar chamada real de API
-    throw new Error('Backend não implementado');
+    try {
+      const response = await fetch(`${API_URL}/auth/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, message: data.message, data: null };
+      }
+
+      return { success: true, message: 'Registration successful', data };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An unknown error occurred';
+      return {
+        success: false,
+        message,
+        data: null,
+      };
+    }
   }
 
   async validate(_token: string): Promise<AuthResponse<ValidateSuccessData>> {

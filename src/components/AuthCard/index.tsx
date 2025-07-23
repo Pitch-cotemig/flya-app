@@ -15,9 +15,16 @@ interface FormData {
 interface AuthCardProps {
   onLogin?: (formData: FormData) => void;
   onRegister?: (formData: FormData) => void;
+  loading?: boolean;
+  error?: string | null;
 }
 
-const AuthCard: React.FC<AuthCardProps> = ({ onLogin, onRegister }) => {
+const AuthCard: React.FC<AuthCardProps> = ({
+  onLogin,
+  onRegister,
+  loading,
+  error,
+}) => {
   const [flipped, setFlipped] = useState<boolean>(false);
 
   const handleShowLogin = () => setFlipped(true);
@@ -27,10 +34,20 @@ const AuthCard: React.FC<AuthCardProps> = ({ onLogin, onRegister }) => {
     <AuthCardContainer>
       <AuthCardFlip flipped={flipped}>
         <AuthCardFront>
-          <RegisterForm onSubmit={onRegister} onLoginClick={handleShowLogin} />
+          <RegisterForm
+            onSubmit={onRegister}
+            onLoginClick={handleShowLogin}
+            loading={loading}
+            error={error}
+          />
         </AuthCardFront>
         <AuthCardBack>
-          <LoginForm onSubmit={onLogin} onRegisterClick={handleShowRegister} />
+          <LoginForm
+            onSubmit={onLogin}
+            onRegisterClick={handleShowRegister}
+            loading={loading}
+            error={error}
+          />
         </AuthCardBack>
       </AuthCardFlip>
     </AuthCardContainer>

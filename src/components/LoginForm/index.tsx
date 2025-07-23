@@ -10,6 +10,7 @@ import {
   LoginText,
   LoginButton,
   RegisterButton,
+  ErrorMessage,
 } from "./styles";
 
 interface FormData {
@@ -20,9 +21,16 @@ interface FormData {
 interface LoginFormProps {
   onSubmit?: (formData: FormData) => void;
   onRegisterClick?: () => void;
+  loading?: boolean;
+  error?: string | null;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onRegisterClick }) => {
+const LoginForm: React.FC<LoginFormProps> = ({
+  onSubmit,
+  onRegisterClick,
+  loading,
+  error,
+}) => {
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -68,8 +76,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onRegisterClick }) => {
           required
         />
       </FormGroup>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
       <FormGroup>
-        <RegisterButton type="submit">Login</RegisterButton>
+        <RegisterButton type="submit" disabled={loading}>
+          {loading ? 'Carregando...' : 'Login'}
+        </RegisterButton>
       </FormGroup>
       <LoginLink>
         <LoginText>Não tem uma conta? </LoginText>

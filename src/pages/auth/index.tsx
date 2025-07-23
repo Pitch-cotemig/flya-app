@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { AuthCard } from "../../components";
-import { User } from "../../services/authService";
-import { authStyles } from "./styles";
+import { useState } from 'react';
+import { AuthCard } from '../../components';
+import { authService, User } from '../../services/authService';
+import { authStyles } from './styles';
 
 interface FormData {
   email: string;
@@ -9,30 +9,47 @@ interface FormData {
 }
 
 interface AuthPageProps {
-  onLogin: (user: User) => void;
+  onLoginSuccess: (user: User, token: string) => void;
 }
 
-function AuthPage({ }: AuthPageProps) {
-  const [loading] = useState<boolean>(false);
+function AuthPage({ onLoginSuccess }: AuthPageProps) {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleLoginSubmit = async (_formData: FormData): Promise<void> => {
-    // TODO: Implementar backend primeiro
-    alert('Sistema de autenticação em desenvolvimento. Backend não implementado.');
+  const handleLoginSubmit = async (formData: FormData): Promise<void> => {
+    setLoading(true);
+    setError(null);
+    const response = await authService.login(formData);
+    setLoading(false);
+
+    if (response.success && response.data) {
+      onLoginSuccess(response.data.user, response.data.token);
+    } else {
+      setError(response.message);
+    }
   };
 
-  const handleRegisterSubmit = async (_formData: FormData): Promise<void> => {
-    // TODO: Implementar backend primeiro
-    alert('Sistema de cadastro em desenvolvimento. Backend não implementado.');
+  const handleRegisterSubmit = async (formData: FormData): Promise<void> => {
+    setLoading(true);
+    setError(null);
+    const response = await authService.register(formData);
+    setLoading(false);
+
+    if (response.success && response.data) {
+      // Automatically log in the user after successful registration
+      onLoginSuccess(response.data.user, response.data.token);
+    } else {
+      setError(response.message);
+    }
   };
 
-  // Show loading state
-  if (loading) {
-    return <div style={authStyles.loadingContainer}>Carregando...</div>;
-  }
-
-  // Show AuthCard with login/register forms
   return (
-    <AuthCard onLogin={handleLoginSubmit} onRegister={handleRegisterSubmit} />
+    <AuthCard
+      onLogin={handleLoginSubmit}
+      onRegister={handleRegisterSubmit}
+      loading={loading}
+      error={error}
+    />
   );
 }
 

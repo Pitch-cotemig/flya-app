@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 
 // Importações de configuração e tipos
@@ -20,33 +20,47 @@ import TermsOfUsePage from "./pages/TermsOfUse/TermsOfUsePage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy/PrivacyPolicyPage";
 import { PlanningFormPage } from "./pages/PlanningFormPage/PlanningFormPage";
 import { BagPage } from "./pages/BagPage/BagPageRedux";
-import { MainLayout } from "./components";
+import { MainLayout, SuccessModal } from "./components";
 // 5. Página de edição de perfil
-import { ProfileEditPage } from "./pages";
+import { ProfileEditPage, ProfilePage } from "./pages";
 
 function App() {
-  // Estado para guardar os dados do usuário logado.
-  // Começa como 'null' (ninguém logado).
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  // Esta função será chamada pela AuthPage quando o login for bem-sucedido.
-  // Ela recebe os dados do usuário e os guarda no estado.
-  const handleLogin = (user: User) => {
+  const navigate = useNavigate(); // Hook para navegação
+
+  const handleLoginSuccess = (user: User, token: string) => {
     setCurrentUser(user);
+    // TODO: Salvar o token no localStorage para persistir o login
+    console.log('Login token:', token);
+    setShowSuccessModal(true);
   };
 
-  // Esta função zera o usuário, efetivamente fazendo o logout.
+  const handleModalConfirm = () => {
+    setShowSuccessModal(false);
+    navigate('/');
+  };
+
   const handleLogout = () => {
     setCurrentUser(null);
+    // TODO: Limpar o token do localStorage
+    navigate('/auth');
   };
 
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <BrowserRouter>
-        <Routes>
+      {showSuccessModal && (
+        <SuccessModal
+          title="Obrigado por se juntar a nós!"
+          onConfirm={handleModalConfirm}
+        />
+      )}
+      {/* O BrowserRouter precisa envolver o App para o hook useNavigate funcionar */}
+      <Routes>
           {/* --- ROTAS PÚBLICAS COM LAYOUT (Header/Footer) --- */}
-          <Route element={<MainLayout />}>
+          <Route element={<MainLayout user={currentUser} />}>
             <Route path="/" element={<LandingPage />} />
             <Route path="/termos-de-uso" element={<TermsOfUsePage />} />
             <Route
@@ -55,11 +69,13 @@ function App() {
             />
             <Route path="/planejamento" element={<PlanningFormPage />} />
             <Route path="/mala" element={<BagPage />} />
-            <Route path="/perfil" element={<ProfileEditPage />} />
           </Route>
 
           {/* --- ROTAS SEM LAYOUT --- */}
-          <Route path="/auth" element={<AuthPage onLogin={handleLogin} />} />
+          <Route
+            path="/auth"
+            element={<AuthPage onLoginSuccess={handleLoginSuccess} />}
+          />
 
           {/* --- ROTA PRIVADA (só para usuários logados) --- */}
 
@@ -77,6 +93,18 @@ function App() {
               )
             }
           />
+
+          <Route
+            path="/perfil"
+            element={
+              currentUser ? (
+                <ProfilePage user={currentUser} onLogout={handleLogout} />
+              ) : (
+                <Navigate to="/auth" replace />
+              )
+            }
+          />
+
           <Route
             path="/editar-perfil"
             element={
@@ -91,9 +119,15 @@ function App() {
           {/* Se o usuário digitar qualquer outra URL, ele é redirecionado para a home. */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </BrowserRouter>
     </ThemeProvider>
   );
 }
 
-export default App;
+// Envolver o App com BrowserRouter aqui
+const AppWrapper = () => (
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
+
+export default AppWrapper;
