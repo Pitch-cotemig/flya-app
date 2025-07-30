@@ -39,10 +39,8 @@ export const AuthCardFace = styled.div`
 `;
 
 export const AuthCardFront = styled(AuthCardFace)`
-  z-index: 2;
 `;
 
 export const AuthCardBack = styled(AuthCardFace)`
   transform: rotateY(180deg);
-  z-index: 1;
 `;
