@@ -1,17 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePlanningDto } from './dto/create-planning.dto';
+import { AiService } from 'src/ai/ai.service';
 
 @Injectable()
 export class PlanningService {
-  create(createPlanningDto: CreatePlanningDto) {
-    const prompt = this.buildPrompt(createPlanningDto);
-    console.log('Prompt Gerado:', prompt);
+  constructor(private readonly aiService: AiService) {}
 
-    // Futuramente, a lógica para chamar a IA virá aqui.
-    // Usaremos a variável 'prompt'.
+  async create(createPlanningDto: CreatePlanningDto) {
+    const prompt = this.buildPrompt(createPlanningDto);
+    
+    const generatedPlan = await this.aiService.generatePlan(prompt);
+
     return {
-      message: 'Prompt gerado com sucesso!',
-      prompt: prompt,
+      message: 'Plano de viagem gerado com sucesso!',
+      plan: generatedPlan,
     };
   }
 

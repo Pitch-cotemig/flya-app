@@ -30,21 +30,38 @@ const FinalScreenContainer = styled.div`
   }
 `;
 
+const PlanResult = styled.pre`
+  background-color: #2a215a;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: left;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  color: #dcd7ff;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 32px;
+`;
+
 
 interface FinalStepProps {
+  plan: string | null;
   onClose: () => void;
 }
 
-const FinalStep: React.FC<FinalStepProps> = ({ onClose }) => {
+const FinalStep: React.FC<FinalStepProps> = ({ plan, onClose }) => {
   return (
     <FinalScreenContainer>
       <img src={logoPlaceholder} alt="Logo" />
-      <h1>Done!</h1>
-      <p>
-        Your message has been sent successfully. Thank you for taking the time to
-        share your valuable input with us.
-      </p>
-      <ContinueButton onClick={onClose}>Finish</ContinueButton>
+      <h1>Seu Roteiro está Pronto!</h1>
+      {plan ? (
+        <PlanResult>{plan}</PlanResult>
+      ) : (
+        <p>
+          Ocorreu um erro ao gerar seu plano. Por favor, tente novamente.
+        </p>
+      )}
+      <ContinueButton onClick={onClose}>Finalizar</ContinueButton>
     </FinalScreenContainer>
   );
 };
