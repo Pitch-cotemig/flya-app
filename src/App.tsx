@@ -58,7 +58,7 @@ function App() {
         />
       )}
       {/* O BrowserRouter precisa envolver o App para o hook useNavigate funcionar */}
-      <Routes>
+        <Routes>
           {/* --- ROTAS PÚBLICAS COM LAYOUT (Header/Footer) --- */}
           <Route element={<MainLayout user={currentUser} />}>
             <Route path="/" element={<LandingPage />} />
