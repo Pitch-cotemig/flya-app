@@ -38,11 +38,8 @@ export const AuthCardFace = styled.div`
   box-sizing: border-box;
 `;
 
-export const AuthCardFront = styled(AuthCardFace)`
-
-`;
+export const AuthCardFront = styled(AuthCardFace)``;
 
 export const AuthCardBack = styled(AuthCardFace)`
   transform: rotateY(180deg);
-
 `;

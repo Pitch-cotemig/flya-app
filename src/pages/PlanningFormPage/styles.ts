@@ -1,128 +1,144 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const PageContainer = styled.div`
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 2rem;
-  color: ${({ theme }) => theme.colors.white};
-`;
-
-export const Title = styled.h1`
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 0.5rem;
-`;
-
-export const Subtitle = styled.p`
-  text-align: center;
-  color: ${({ theme }) => theme.colors.gray[400]};
-  margin-bottom: 3rem;
-`;
-
-export const Form = styled.form`
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    grid-template-columns: 1fr 1fr;
-  }
-`;
-
-export const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-export const Label = styled.label`
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.gray[300]};
-`;
-
-export const Input = styled.input`
-  padding: 0.75rem 1rem;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  border: 1px solid ${({ theme }) => theme.colors.gray[700]};
-  background-color: ${({ theme }) => theme.colors.gray[800]};
-  color: ${({ theme }) => theme.colors.white};
-  font-size: 1rem;
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary[500]};
-  }
-`;
-
-export const TextArea = styled.textarea`
-  padding: 0.75rem 1rem;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  border: 1px solid ${({ theme }) => theme.colors.gray[700]};
-  background-color: ${({ theme }) => theme.colors.gray[800]};
-  color: ${({ theme }) => theme.colors.white};
-  font-size: 1rem;
-  min-height: 100px;
-  resize: vertical;
-
-  &:focus {
-    outline: none;
-    border-color: ${({ theme }) => theme.colors.primary[500]};
-  }
-`;
-
-export const FullWidthField = styled(FormGroup)`
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    grid-column: span 2;
-  }
-`;
-
-export const SubmitButton = styled.button`
-  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  border: none;
-  background-color: ${({ theme }) => theme.colors.primary[600]};
-  color: ${({ theme }) => theme.colors.white};
-  cursor: pointer;
-  grid-column: span 1;
+  min-height: calc(100vh - 160px); // Ajusta para altura do header/footer
+  padding: 40px 24px;
+  background: linear-gradient(145deg, #2a215a 0%, #4a3a96 100%);
+  color: #ffffff;
+`;
 
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    grid-column: span 2;
-  }
+export const FormContainer = styled.div`
+  background-color: #1e1548;
+  padding: 40px;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+`;
+
+export const CloseButton = styled.button`
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+`;
+
+export const StepIndicator = styled.p`
+  text-align: right;
+  font-size: 14px;
+  color: #a9a1d4;
+  margin-bottom: 20px;
+`;
+
+export const QuestionTitle = styled.h2`
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 32px;
+  text-align: left;
+`;
+
+export const OptionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+`;
+
+export const OptionLabel = styled.label`
+  display: flex;
+  align-items: center;
+  padding: 18px;
+  background-color: #2a215a;
+  border-radius: 12px;
+  border: 1px solid #4a3a96;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.primary[700]};
+    border-color: #8a7de4;
+  }
+
+  &.selected {
+    background-color: #8a7de4;
+    border-color: #8a7de4;
+  }
+`;
+
+export const RadioInput = styled.input.attrs({ type: 'radio' })`
+  margin-right: 12px;
+  accent-color: #fff;
+  width: 18px;
+  height: 18px;
+`;
+
+export const CheckboxInput = styled.input.attrs({ type: 'checkbox' })`
+  margin-right: 12px;
+  accent-color: #8a7de4;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+`;
+
+export const NavigationButtons = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+`;
+
+const BaseButton = styled.button`
+  padding: 14px 28px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+`;
+
+export const BackButton = styled(BaseButton)`
+  background-color: #4a3a96;
+  color: #fff;
+
+  &:hover {
+    background-color: #5a4aae;
+  }
+`;
+
+export const ContinueButton = styled(BaseButton)`
+  background-color: #fff;
+  color: #1e1548;
+  
+  &:hover {
+    transform: scale(1.05);
   }
 
   &:disabled {
-    background-color: ${({ theme }) => theme.colors.gray[600]};
+    background-color: #ccc;
     cursor: not-allowed;
   }
 `;
 
-export const ResultContainer = styled.div`
-  margin-top: 3rem;
-  padding: 2rem;
-  border: 1px solid ${({ theme }) => theme.colors.gray[800]};
-  border-radius: ${({ theme }) => theme.borderRadius.xl};
-  background-color: rgba(0, 0, 0, 0.2);
-`;
+export const InitialScreenContainer = styled.div`
+  text-align: center;
 
-export const ResultTitle = styled.h2`
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-`;
+  h1 {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
 
-export const PlanContent = styled.pre`
-  white-space: pre-wrap; /* Permite que o texto quebre a linha */
-  word-wrap: break-word;
-  color: ${({ theme }) => theme.colors.gray[300]};
-  line-height: 1.6;
-  font-family: ${({ theme }) => theme.fonts.main};
+  p {
+    font-size: 18px;
+    color: #a9a1d4;
+    margin-bottom: 32px;
+  }
 `;
