@@ -39,6 +39,8 @@ export function PlanningFormPage() {
     transporte: '',
     clima: [],
   });
+  const [generatedPlan, setGeneratedPlan] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleNextStep = () => setStep((prev) => prev + 1);
@@ -64,6 +66,7 @@ export function PlanningFormPage() {
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     console.log('Enviando dados para o backend:', formData);
     
     try {
@@ -83,11 +86,14 @@ export function PlanningFormPage() {
 
       const result = await response.json();
       console.log('Resposta do backend:', result);
+      setGeneratedPlan(result.plan);
       
       handleNextStep(); // Avança para a tela de "Done"
     } catch (error) {
       console.error('Erro no handleSubmit:', error);
       // TODO: Mostrar um erro para o usuário na UI
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -139,7 +145,7 @@ export function PlanningFormPage() {
       return (
         <PageContainer>
             <FormContainer>
-                <FinalStep onClose={handleClose} />
+                <FinalStep plan={generatedPlan} onClose={handleClose} />
             </FormContainer>
         </PageContainer>
       )
@@ -156,8 +162,8 @@ export function PlanningFormPage() {
         <NavigationButtons>
           <BackButton onClick={handlePrevStep}>Voltar</BackButton>
           {step === 4 ? (
-            <ContinueButton onClick={handleSubmit} disabled={isNextDisabled()}>
-              Finalizar
+            <ContinueButton onClick={handleSubmit} disabled={isNextDisabled() || isLoading}>
+              {isLoading ? 'Gerando...' : 'Finalizar'}
             </ContinueButton>
           ) : (
             <ContinueButton onClick={handleNextStep} disabled={isNextDisabled()}>
