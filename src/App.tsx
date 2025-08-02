@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 
 // Importações de configuração e tipos
 import { theme } from "./lib/theme";
 import GlobalStyles from "./lib/globalStyles";
-import { User } from "./services/authService";
+import { User, authService } from "./services/authService";
 
 // --- Importação das Páginas ---
 
@@ -23,17 +23,35 @@ import { BagPage } from "./pages/BagPage/BagPageRedux";
 import { MainLayout, SuccessModal } from "./components";
 // 5. Página de edição de perfil
 import { ProfileEditPage, ProfilePage } from "./pages";
+import MyTripsPage from "./pages/MyTripsPage";
 
 function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Para o check inicial do token
 
-  const navigate = useNavigate(); // Hook para navegação
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        const response = await authService.validateToken(token);
+        if (response.success && response.data) {
+          setCurrentUser(response.data.user);
+        } else {
+          localStorage.removeItem('authToken'); // Token inválido
+        }
+      }
+      setIsLoading(false);
+    };
+    checkUser();
+  }, []);
+
 
   const handleLoginSuccess = (user: User, token: string) => {
     setCurrentUser(user);
-    // TODO: Salvar o token no localStorage para persistir o login
-    console.log('Login token:', token);
+    localStorage.setItem('authToken', token);
     setShowSuccessModal(true);
   };
 
@@ -44,9 +62,13 @@ function App() {
 
   const handleLogout = () => {
     setCurrentUser(null);
-    // TODO: Limpar o token do localStorage
+    localStorage.removeItem('authToken');
     navigate('/auth');
   };
+
+  if (isLoading) {
+    return <div>Verificando autenticação...</div>; // Ou um componente de Spinner
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -99,6 +121,17 @@ function App() {
             element={
               currentUser ? (
                 <ProfilePage user={currentUser} onLogout={handleLogout} />
+              ) : (
+                <Navigate to="/auth" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/minhas-viagens"
+            element={
+              currentUser ? (
+                <MyTripsPage />
               ) : (
                 <Navigate to="/auth" replace />
               )

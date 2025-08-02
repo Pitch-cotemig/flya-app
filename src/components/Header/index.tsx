@@ -21,7 +21,8 @@ export function Header({ user }: HeaderProps) {
   const navLinks = [
     { label: "Home", to: "/" },
     { label: "Nova Viagem", to: "/planejamento" },
-    { label: "Minha Mala", to: "/mala" }, // Exemplo de outra rota
+    { label: "Minha Mala", to: "/mala" },
+    { label: "Minhas Viagens", to: "/minhas-viagens" },
   ];
 
   return (

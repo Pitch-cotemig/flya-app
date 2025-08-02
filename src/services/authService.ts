@@ -106,9 +106,25 @@ class AuthService {
     }
   }
 
-  async validate(_token: string): Promise<AuthResponse<ValidateSuccessData>> {
-    // TODO: Implementar chamada real de API
-    throw new Error('Backend não implementado');
+  async validateToken(token: string): Promise<AuthResponse<ValidateSuccessData>> {
+    try {
+      const response = await fetch(`${API_URL}/auth/validate`, { // Este endpoint não existe ainda
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, message: data.message, data: null };
+      }
+      return { success: true, message: 'Token is valid', data };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An unknown error occurred';
+      return { success: false, message, data: null };
+    }
   }
 
   async logout(): Promise<AuthResponse<null>> {
