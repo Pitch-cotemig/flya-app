@@ -10,8 +10,8 @@
 - [✅] **RF06** Sistema de favoritos para organizar e priorizar viagens salvas.
 - [✅] **RF07** Visualização do itinerário detalhado da viagem.
 - [✅] **RF09** Sugestões com IA (clima, orçamento, avaliações).
-- [ ] **RF11** Resumo de custos detalhado.
-- [ ] **RF15** Sistema de busca para destinos e atividades.
+- [✅] **RF11** Resumo de custos detalhado.
+- [✅] **RF15** Sistema de busca para destinos e atividades.
 
 #### 🟡 Média prioridade
 - [✅] **RF05** Personalização de preferências de viagem.
