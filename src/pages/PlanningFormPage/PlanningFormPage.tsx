@@ -16,6 +16,11 @@ import Step3 from '../../components/PlanningForm/Step3';
 import Step4 from '../../components/PlanningForm/Step4';
 import FinalStep from '../../components/PlanningForm/FinalStep';
 
+interface TripData {
+  prompt_data: object;
+  ai_prompt: string;
+  plan_result: string;
+}
 
 // Definindo a estrutura dos dados do formulário
 interface IFormData {
@@ -39,7 +44,7 @@ export function PlanningFormPage() {
     transporte: '',
     clima: [],
   });
-  const [generatedPlan, setGeneratedPlan] = useState<string | null>(null);
+  const [generatedPlan, setGeneratedPlan] = useState<TripData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -67,7 +72,7 @@ export function PlanningFormPage() {
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    console.log('Enviando dados para o backend:', formData);
+    const prompt = buildPrompt(formData); // Gerando o prompt aqui
     
     try {
       const response = await fetch('http://localhost:3000/planning', {
@@ -86,9 +91,15 @@ export function PlanningFormPage() {
 
       const result = await response.json();
       console.log('Resposta do backend:', result);
-      setGeneratedPlan(result.plan);
       
-      handleNextStep(); // Avança para a tela de "Done"
+      // Armazenar tudo para a próxima tela
+      setGeneratedPlan({
+        prompt_data: formData,
+        ai_prompt: prompt,
+        plan_result: result.plan,
+      });
+      
+      handleNextStep();
     } catch (error) {
       console.error('Erro no handleSubmit:', error);
       // TODO: Mostrar um erro para o usuário na UI
@@ -96,6 +107,22 @@ export function PlanningFormPage() {
       setIsLoading(false);
     }
   };
+
+  // Helper para construir o prompt (pode ser movido para um utilitário depois)
+  const buildPrompt = (data: IFormData) => {
+    // Lógica do buildPrompt do backend, replicada aqui para ter acesso ao prompt
+    let promptParts: string[] = [];
+    promptParts.push(`Planeje um roteiro de viagem com as seguintes características:`);
+    promptParts.push(`- Motivo da Viagem: ${data.motivo}.`);
+    promptParts.push(`- Tipo de Destino: ${data.destino}.`);
+    if (data.pet === 'Sim') promptParts.push(`- O viajante levará um pet.`);
+    promptParts.push(`- Orçamento: ${data.orcamento}.`);
+    promptParts.push(`- Número de Acompanhantes: ${data.acompanhantes}.`);
+    if (data.transporte !== 'Não') promptParts.push(`- Preferência de Transporte: ${data.transporte.replace('Sim, ', '')}.`);
+    if (data.clima.length > 0) promptParts.push(`- Preferência de Clima: ${data.clima.join(', ')}.`);
+    promptParts.push(`\nCrie um roteiro detalhado dia a dia baseado nessas informações.`);
+    return promptParts.join('\n');
+  }
 
   const renderStepContent = () => {
     switch (step) {
@@ -145,7 +172,7 @@ export function PlanningFormPage() {
       return (
         <PageContainer>
             <FormContainer>
-                <FinalStep plan={generatedPlan} onClose={handleClose} />
+                <FinalStep tripData={generatedPlan} onClose={handleClose} />
             </FormContainer>
         </PageContainer>
       )
