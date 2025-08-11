@@ -1,20 +1,74 @@
-# Flya - 3A2
+# Flya App
 
-Bernardo Orsi do Amaral - 22301127  
-Cairo Rodrigues - 22300643  
-Eduarda Brandão - 22301755  
-Gustavo Albuquerque - 22302093  
-Izabela Ferreira - 22300376  
-Lucas Diniz - 22301526  
+Sua parceira para viagem da sua vida.
 
-Requisitos:
-[ ] RF01 - O sistema deve permitir que o usuário insira seu orçamento. (Alta)  
-[ ] RF04 - O aplicativo deve integrar APIs de voos, hotéis e passeios para exibir preços (exemplos: Skyscanner, Booking, GetYourGuide). (Alta)  
-[ ] RF05 - O usuário deve poder personalizar suas preferências de viagem. (Média)  
-[ ] RF08 - O sistema deve permitir que o usuário salve e edite seu planejamento. (Média)  
-[ ] RF10 - O sistema deve permitir login via autenticação de dois fatores. (Baixa)  
-[ ] RF12 - O sistema deve permitir a exportação do planejamento em formato PDF. (Baixa)    
-[ ] RF13 - O usuário deve receber notificações sobre promoções e mudanças de preço. (Média)  
-[ ] RF14 - O sistema deve permitir avaliações e feedbacks de usuários sobre destinos e serviços. (Média)  
-[ ] RF16 - O aplicativo deve permitir integração com redes sociais para compartilhamento de roteiros. (Baixa)  
-[ ] RF17 - O usuário deve visualizar avaliações e notas de outros viajantes sobre hotéis e passeios. (Média)  
+## 🚀 Como rodar o projeto
+
+### Opção 1: Rodar tudo junto (Recomendado)
+```bash
+npm run start
+```
+Este comando irá:
+- Instalar todas as dependências (frontend e backend)
+- Rodar o backend na porta 3000
+- Rodar o frontend na porta 5173
+
+### Opção 2: Rodar apenas o desenvolvimento
+```bash
+npm run dev:all
+```
+Este comando roda apenas o desenvolvimento (assume que as dependências já estão instaladas)
+
+### Opção 3: Rodar separadamente
+
+**Backend:**
+```bash
+cd backend
+npm install
+npm run start:dev
+```
+
+**Frontend:**
+```bash
+npm install
+npm run dev
+```
+
+## 📁 Estrutura do projeto
+
+```
+flya-app/
+├── backend/          # API NestJS
+├── src/             # Frontend React
+├── public/          # Arquivos estáticos
+└── package.json     # Scripts do projeto
+```
+
+## 🛠️ Scripts disponíveis
+
+- `npm run start` - Instala dependências e roda tudo
+- `npm run dev:all` - Roda frontend e backend juntos
+- `npm run dev:backend` - Roda apenas o backend
+- `npm run dev:frontend` - Roda apenas o frontend
+- `npm run install:all` - Instala dependências de frontend e backend
+- `npm run build` - Build do frontend
+- `npm run lint` - Lint do código
+
+## 🌐 Portas
+
+- **Frontend**: http://localhost:5173
+- **Backend**: http://localhost:3000
+
+## 🔧 Tecnologias
+
+**Frontend:**
+- React + TypeScript
+- Vite
+- Styled Components
+- React Router
+- Redux Toolkit
+
+**Backend:**
+- NestJS
+- TypeScript
+- Supabase

@@ -1,6 +1,7 @@
-import { Body, Controller, Post, Get, UseGuards, Req } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, Req, Headers } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
+import { LoginDto } from './dto/login.dto';
 import { JwtGuard } from './jwt.guard';
 
 @Controller('auth')
@@ -13,13 +14,17 @@ export class AuthController {
   }
 
   @Post('signin')
-  signIn(@Body() authDto: AuthDto) {
-    return this.authService.signIn(authDto);
+  signIn(@Body() loginDto: LoginDto) {
+    return this.authService.signIn(loginDto);
   }
 
-  @UseGuards(JwtGuard)
-  @Get('validate')
-  validate(@Req() req) {
-    return req.user;
+  @Post('validate')
+  async validate(@Headers('authorization') authHeader: string) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new Error('Token não fornecido');
+    }
+    
+    const token = authHeader.substring(7); // Remove 'Bearer '
+    return this.authService.validateToken(token);
   }
 }

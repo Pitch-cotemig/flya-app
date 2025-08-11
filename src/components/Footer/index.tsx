@@ -38,7 +38,7 @@ export function Footer() {
   ];
 
   const companyLinks = [
-    { label: "Sobre Nós", to: "#" },
+    { label: "Sobre Nós", to: "/sobre-nos" },
     { label: "Nossa Missão", to: "#" },
     { label: "Carreiras", to: "#" },
     { label: "Blog", to: "#" },

@@ -3,10 +3,13 @@
 
 // Type definitions
 export interface User {
-  id: number;
+  id: string;
   email: string;
-  name: string;
-  username?: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  birthDate: string;
   avatar?: string;
 }
 
@@ -20,8 +23,13 @@ export interface LoginCredentials {
 }
 
 export interface RegisterCredentials {
+  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  birthDate: string;
   password: string;
+  confirmPassword: string;
 }
 
 export interface AuthResponse<T = any> {
@@ -108,7 +116,7 @@ class AuthService {
 
   async validateToken(token: string): Promise<AuthResponse<ValidateSuccessData>> {
     try {
-      const response = await fetch(`${API_URL}/auth/validate`, { // Este endpoint não existe ainda
+      const response = await fetch(`${API_URL}/auth/validate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
