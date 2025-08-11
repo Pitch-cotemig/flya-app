@@ -18,11 +18,12 @@ import LandingPage from "./pages/HomePage/HomePage";
 // 4. As páginas de conteúdo estático
 import TermsOfUsePage from "./pages/TermsOfUse/TermsOfUsePage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy/PrivacyPolicyPage";
+import AboutUsPage from "./pages/AboutUs/AboutUsPage";
 import { PlanningFormPage } from "./pages/PlanningFormPage/PlanningFormPage";
 import { BagPage } from "./pages/BagPage/BagPageRedux";
 import { MainLayout, SuccessModal } from "./components";
-// 5. Página de edição de perfil
-import { ProfileEditPage, ProfilePage } from "./pages";
+// 5. Página de perfil
+import { ProfilePage } from "./pages";
 import MyTripsPage from "./pages/MyTripsPage";
 
 function App() {
@@ -35,13 +36,28 @@ function App() {
   useEffect(() => {
     const checkUser = async () => {
       const token = localStorage.getItem('authToken');
+      console.log('Checking token:', token ? 'Token exists' : 'No token');
+      
       if (token) {
-        const response = await authService.validateToken(token);
-        if (response.success && response.data) {
-          setCurrentUser(response.data.user);
-        } else {
-          localStorage.removeItem('authToken'); // Token inválido
+        try {
+          const response = await authService.validateToken(token);
+          console.log('Validation response:', response);
+          
+          if (response.success && response.data) {
+            setCurrentUser(response.data.user);
+            console.log('User set:', response.data.user);
+          } else {
+            console.log('Token validation failed:', response.message);
+            localStorage.removeItem('authToken'); // Token inválido
+            setCurrentUser(null);
+          }
+        } catch (error) {
+          console.error('Error validating token:', error);
+          localStorage.removeItem('authToken');
+          setCurrentUser(null);
         }
+      } else {
+        setCurrentUser(null);
       }
       setIsLoading(false);
     };
@@ -50,6 +66,7 @@ function App() {
 
 
   const handleLoginSuccess = (user: User, token: string) => {
+    console.log('Login success:', user);
     setCurrentUser(user);
     localStorage.setItem('authToken', token);
     setShowSuccessModal(true);
@@ -61,6 +78,7 @@ function App() {
   };
 
   const handleLogout = () => {
+    console.log('Logging out');
     setCurrentUser(null);
     localStorage.removeItem('authToken');
     navigate('/auth');
@@ -89,6 +107,7 @@ function App() {
               path="/politica-de-privacidade"
               element={<PrivacyPolicyPage />}
             />
+            <Route path="/sobre-nos" element={<AboutUsPage />} />
             <Route path="/planejamento" element={<PlanningFormPage />} />
             <Route path="/mala" element={<BagPage />} />
           </Route>
@@ -132,17 +151,6 @@ function App() {
             element={
               currentUser ? (
                 <MyTripsPage />
-              ) : (
-                <Navigate to="/auth" replace />
-              )
-            }
-          />
-
-          <Route
-            path="/editar-perfil"
-            element={
-              currentUser ? (
-                <ProfileEditPage user={currentUser} onLogout={handleLogout} />
               ) : (
                 <Navigate to="/auth" replace />
               )

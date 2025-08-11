@@ -36,3 +36,5 @@ Eduarda Brandão - 22301755
 Gustavo Albuquerque - 22302093  
 Izabela Ferreira - 22300376  
 Lucas Diniz - 22301526  
+
+Sua parceira para viagem da sua vida.

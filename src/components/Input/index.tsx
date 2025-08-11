@@ -8,6 +8,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   name?: string;
   className?: string;
+  error?: string;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -17,6 +18,7 @@ const Input: React.FC<InputProps> = ({
   onChange,
   name,
   className = "",
+  error,
   ...props
 }) => {
   return (
@@ -27,6 +29,7 @@ const Input: React.FC<InputProps> = ({
       onChange={onChange}
       name={name}
       className={className}
+      hasError={!!error}
       {...props}
     />
   );
