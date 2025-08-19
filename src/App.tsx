@@ -66,7 +66,7 @@ function App() {
 
 
   const handleLoginSuccess = (user: User, token: string) => {
-    console.log('Login success:', user);
+    // console.log('Login success:', user);
     setCurrentUser(user);
     localStorage.setItem('authToken', token);
     setShowSuccessModal(true);
@@ -109,6 +109,17 @@ function App() {
             />
             <Route path="/sobre-nos" element={<AboutUsPage />} />
             <Route path="/planejamento" element={<PlanningFormPage />} />
+            {/* <Route path="/minhas-viagens" element={<PlanningFormPage />} /> */}
+            <Route
+            path="/minhas-viagens"
+            element={
+              currentUser ? (
+                <MyTripsPage />
+              ) : (
+                <Navigate to="/auth" replace />
+              )
+            }
+          />
             <Route path="/mala" element={<BagPage />} />
           </Route>
 
@@ -146,16 +157,7 @@ function App() {
             }
           />
 
-          <Route
-            path="/minhas-viagens"
-            element={
-              currentUser ? (
-                <MyTripsPage />
-              ) : (
-                <Navigate to="/auth" replace />
-              )
-            }
-          />
+
 
           {/* Se o usuário digitar qualquer outra URL, ele é redirecionado para a home. */}
           <Route path="*" element={<Navigate to="/" replace />} />
