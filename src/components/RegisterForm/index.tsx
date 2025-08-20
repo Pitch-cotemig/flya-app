@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Input } from "..";
+import { useNavigate } from 'react-router-dom';
 import flyaLogo from "../../assets/flyalogo.svg";
 import {
   RegisterFormContainer,
@@ -38,6 +39,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   loading,
   error,
 }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     username: "",
     firstName: "",
@@ -129,6 +131,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     if (onLoginClick) {
       onLoginClick();
     }
+  }
+  const handleGoToHome = () => {
+    navigate('/');
   };
 
   return (
@@ -260,6 +265,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         <LoginText>Já tem uma conta? </LoginText>
         <LoginButton type="button" onClick={handleLoginClick}>
           Faça login
+        </LoginButton>
+        <LoginText>{' '}ou </LoginText>
+        <LoginButton type="button" onClick={handleGoToHome}>
+          Volte
         </LoginButton>
       </LoginLink>
     </RegisterFormContainer>

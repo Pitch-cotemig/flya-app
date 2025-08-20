@@ -2,6 +2,15 @@
 
 ## ✅ Funcionalidades Implementadas
 
+### Adicionar middleware para não acessar minhas viagens quando não estiver logado
+### UNIFICAR rotas
+
+### Validar MUITO o roteiro gerado (lugares inexistentes e esse incrível resultado abaixo)
+**Dia 3: Segunda-feira - Curitiba**
+9:00 AM: Café da manhã na casa de um membro da gangue
+Desbloqueei um roteiro de viagem para uma gangue de 5 amigos que querem conhecer novos lugares, sem preocupar-se com orçamento alto, e preferem viajar de ônibus. Eles escolheram uma cidade brasileira com clima nublado, e isso me fez lembrar da linda cidade de Curitiba, no Paraná. Veja下来, o roteiro detalhado dia a dia:
+Adicionar cidade de origem
+### Separar numero de adultos e crianças e pedir idade das crianças
 ### Frontend Completo
 - **Landing Page** - Homepage com design moderno e responsivo
 - **Sistema de Mala de Viagem** - Gerenciamento de itens com Redux Toolkit
