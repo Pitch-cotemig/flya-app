@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 
 // Importações de configuração e tipos
@@ -35,25 +41,25 @@ function App() {
 
   useEffect(() => {
     const checkUser = async () => {
-      const token = localStorage.getItem('authToken');
-      console.log('Checking token:', token ? 'Token exists' : 'No token');
-      
+      const token = localStorage.getItem("authToken");
+      console.log("Checking token:", token ? "Token exists" : "No token");
+
       if (token) {
         try {
           const response = await authService.validateToken(token);
-          console.log('Validation response:', response);
-          
+          console.log("Validation response:", response);
+
           if (response.success && response.data) {
             setCurrentUser(response.data.user);
-            console.log('User set:', response.data.user);
+            console.log("User set:", response.data.user);
           } else {
-            console.log('Token validation failed:', response.message);
-            localStorage.removeItem('authToken'); // Token inválido
+            console.log("Token validation failed:", response.message);
+            localStorage.removeItem("authToken"); // Token inválido
             setCurrentUser(null);
           }
         } catch (error) {
-          console.error('Error validating token:', error);
-          localStorage.removeItem('authToken');
+          console.error("Error validating token:", error);
+          localStorage.removeItem("authToken");
           setCurrentUser(null);
         }
       } else {
@@ -64,24 +70,23 @@ function App() {
     checkUser();
   }, []);
 
-
   const handleLoginSuccess = (user: User, token: string) => {
     // console.log('Login success:', user);
     setCurrentUser(user);
-    localStorage.setItem('authToken', token);
+    localStorage.setItem("authToken", token);
     setShowSuccessModal(true);
   };
 
   const handleModalConfirm = () => {
     setShowSuccessModal(false);
-    navigate('/');
+    navigate("/");
   };
 
   const handleLogout = () => {
-    console.log('Logging out');
+    console.log("Logging out");
     setCurrentUser(null);
-    localStorage.removeItem('authToken');
-    navigate('/auth');
+    localStorage.removeItem("authToken");
+    navigate("/auth");
   };
 
   if (isLoading) {
@@ -98,70 +103,61 @@ function App() {
         />
       )}
       {/* O BrowserRouter precisa envolver o App para o hook useNavigate funcionar */}
-        <Routes>
-          {/* --- ROTAS PÚBLICAS COM LAYOUT (Header/Footer) --- */}
-          <Route element={<MainLayout user={currentUser} />}>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/termos-de-uso" element={<TermsOfUsePage />} />
-            <Route
-              path="/politica-de-privacidade"
-              element={<PrivacyPolicyPage />}
-            />
-            <Route path="/sobre-nos" element={<AboutUsPage />} />
-            <Route path="/planejamento" element={<PlanningFormPage />} />
-            {/* <Route path="/minhas-viagens" element={<PlanningFormPage />} /> */}
-            <Route
-            path="/minhas-viagens"
-            element={
-              currentUser ? (
-                <MyTripsPage />
-              ) : (
-                <Navigate to="/auth" replace />
-              )
-            }
+      <Routes>
+        {/* --- ROTAS PÚBLICAS COM LAYOUT (Header/Footer) --- */}
+        <Route element={<MainLayout user={currentUser} />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/termos-de-uso" element={<TermsOfUsePage />} />
+          <Route
+            path="/politica-de-privacidade"
+            element={<PrivacyPolicyPage />}
           />
-            <Route path="/mala" element={<BagPage />} />
-          </Route>
-
-          {/* --- ROTAS SEM LAYOUT --- */}
+          <Route path="/sobre-nos" element={<AboutUsPage />} />
+          <Route path="/planejamento" element={<PlanningFormPage />} />
           <Route
             path="/auth"
             element={<AuthPage onLoginSuccess={handleLoginSuccess} />}
           />
-
-          {/* --- ROTA PRIVADA (só para usuários logados) --- */}
-
           <Route
-            path="/dashboard"
+            path="/minhas-viagens"
             element={
-              // A condição é: currentUser existe?
-              currentUser ? (
-                // Se SIM, renderiza o Dashboard, passando os dados do usuário
-                // e a função de logout que ele precisa.
-                <DashboardPage user={currentUser} onLogout={handleLogout} />
-              ) : (
-                // Se NÃO, redireciona o usuário para a tela de login.
-                <Navigate to="/auth" replace />
-              )
+              currentUser ? <MyTripsPage /> : <Navigate to="/auth" replace />
             }
           />
+          <Route path="/mala" element={<BagPage />} />
+        </Route>
 
-          <Route
-            path="/perfil"
-            element={
-              currentUser ? (
-                <ProfilePage user={currentUser} onLogout={handleLogout} />
-              ) : (
-                <Navigate to="/auth" replace />
-              )
-            }
-          />
+        {/* --- ROTA PRIVADA (só para usuários logados) --- */}
 
+        <Route
+          path="/dashboard"
+          element={
+            // A condição é: currentUser existe?
+            currentUser ? (
+              // Se SIM, renderiza o Dashboard, passando os dados do usuário
+              // e a função de logout que ele precisa.
+              <DashboardPage user={currentUser} onLogout={handleLogout} />
+            ) : (
+              // Se NÃO, redireciona o usuário para a tela de login.
+              <Navigate to="/auth" replace />
+            )
+          }
+        />
 
+        <Route
+          path="/perfil"
+          element={
+            currentUser ? (
+              <ProfilePage user={currentUser} onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/auth" replace />
+            )
+          }
+        />
 
-          {/* Se o usuário digitar qualquer outra URL, ele é redirecionado para a home. */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        {/* Se o usuário digitar qualquer outra URL, ele é redirecionado para a home. */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </ThemeProvider>
   );
 }

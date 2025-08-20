@@ -55,6 +55,23 @@ export const LoginButton = styled.button`
 
 export const RegisterButton = styled(LoginButton)`
   width: 100%;
+  padding: 16px;
+  background: #00bcd4;
+  color: white;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+
+  &:hover {
+    background: #00acc1;
+    color: white;
+  }
+
+  &:disabled {
+    background: #666;
+    cursor: not-allowed;
+  }
 `;
 
 export const ErrorMessage = styled.p`

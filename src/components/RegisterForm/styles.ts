@@ -7,13 +7,11 @@ export const RegisterFormContainer = styled.form`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  min-height: 100vh;
-  padding: 2rem 1rem;
   overflow-y: auto;
 `;
 
 export const LogoContainer = styled.div`
-  margin-bottom: 24px;
+  margin-bottom: 12px;
   text-align: center;
 `;
 
@@ -26,7 +24,7 @@ export const FormTitle = styled.h1`
 `;
 
 export const FormGroup = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   width: 100%;
 `;
 

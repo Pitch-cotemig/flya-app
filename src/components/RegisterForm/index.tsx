@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Input } from "..";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import flyaLogo from "../../assets/flyalogo.svg";
 import {
   RegisterFormContainer,
@@ -50,7 +50,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     confirmPassword: "",
   });
 
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
 
   const validateForm = () => {
     const errors: Record<string, string> = {};
@@ -89,9 +91,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     }
 
     // Validar senha
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(formData.password)) {
-      errors.password = "Senha deve ter pelo menos 8 caracteres, uma maiúscula, uma minúscula, um número e um caractere especial";
+      errors.password =
+        "Senha deve ter pelo menos 8 caracteres, uma maiúscula, uma minúscula, um número e um caractere especial";
     }
 
     // Validar confirmação de senha
@@ -121,7 +125,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (validateForm() && onSubmit) {
       onSubmit(formData);
     }
@@ -131,22 +135,18 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     if (onLoginClick) {
       onLoginClick();
     }
-  }
+  };
   const handleGoToHome = () => {
-    navigate('/');
+    navigate("/");
   };
 
   return (
     <RegisterFormContainer onSubmit={handleSubmit}>
       <LogoContainer>
-        <img
-          src={flyaLogo}
-          alt="Flya Logo"
-          style={{ width: 60, height: 60, marginBottom: 16 }}
-        />
+        <img src={flyaLogo} alt="Flya Logo" style={{ width: 60, height: 60 }} />
       </LogoContainer>
       <FormTitle>Cadastro Flya</FormTitle>
-      
+
       <FormGroup>
         <Input
           type="text"
@@ -254,21 +254,17 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
       </FormGroup>
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
-      
+
       <FormGroup>
         <RegisterButton type="submit" disabled={loading}>
-          {loading ? 'Cadastrando...' : 'Cadastrar'}
+          {loading ? "Cadastrando..." : "Cadastrar"}
         </RegisterButton>
       </FormGroup>
-      
+
       <LoginLink>
         <LoginText>Já tem uma conta? </LoginText>
         <LoginButton type="button" onClick={handleLoginClick}>
           Faça login
-        </LoginButton>
-        <LoginText>{' '}ou </LoginText>
-        <LoginButton type="button" onClick={handleGoToHome}>
-          Volte
         </LoginButton>
       </LoginLink>
     </RegisterFormContainer>

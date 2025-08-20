@@ -79,7 +79,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
       {error && <ErrorMessage>{error}</ErrorMessage>}
       <FormGroup>
         <RegisterButton type="submit" disabled={loading}>
-          {loading ? 'Carregando...' : 'Login'}
+          {loading ? "Carregando..." : "Login"}
         </RegisterButton>
       </FormGroup>
       <LoginLink>
