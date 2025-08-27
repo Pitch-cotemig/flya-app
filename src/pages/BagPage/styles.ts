@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 export const BagContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #1c1c43 0%, #2c2c6b 50%, #1c1c43 100%);
   color: white;
   position: relative;
   overflow: hidden;
