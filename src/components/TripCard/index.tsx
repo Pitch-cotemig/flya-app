@@ -1,6 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import { exportToPDF, exportToText } from '../../utils/pdfExport';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { exportToPDF, exportToText } from "../../utils/pdfExport";
 
 interface CardProps {
   isFavorite?: boolean;
@@ -11,27 +11,102 @@ interface FavoriteButtonProps {
 }
 
 const Card = styled.div<CardProps>`
-  background-color: #fff;
-  color: #333;
+  background-color: rgba(28, 28, 67, 0.9);
+  backdrop-filter: blur(12px);
+  color: #fff;
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   position: relative;
-  border: 2px solid ${props => props.isFavorite ? '#ffd700' : 'transparent'};
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-left: 4px solid #00bcd4;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border-color: rgba(0, 188, 212, 0.3);
+  }
 `;
 
-const PlanContent = styled.p`
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  line-height: 1.6;
+const CardHeader = styled.div`
   margin-bottom: 16px;
 `;
 
+const TripTitle = styled.h3`
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px 0;
+  background: linear-gradient(135deg, #00bcd4 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+`;
+
+const TripDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+`;
+
+const DetailItem = styled.span`
+  font-size: 0.875rem;
+  color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  &::before {
+    content: "•";
+    color: #00bcd4;
+    font-weight: bold;
+  }
+`;
+
+const TripSummary = styled.p`
+  font-size: 0.875rem;
+  color: #ccc;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
+const CardActions = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const ActionButtons = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+const ViewDetailsButton = styled.button`
+  background: linear-gradient(135deg, #00bcd4 0%, #7c3aed 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: linear-gradient(135deg, #0097a7 0%, #6b21a8 100%);
+    transform: scale(1.05);
+  }
+`;
+
 const DeleteButton = styled.button`
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: #ff4d4f;
+  background: linear-gradient(135deg, #ff4d4f 0%, #d4380d 100%);
   color: white;
   border: none;
   border-radius: 50%;
@@ -39,15 +114,20 @@ const DeleteButton = styled.button`
   height: 30px;
   cursor: pointer;
   font-weight: bold;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: linear-gradient(135deg, #d4380d 0%, #b3300b 100%);
+    transform: scale(1.1);
+  }
 `;
 
 const FavoriteButton = styled.button<FavoriteButtonProps>`
-  position: absolute;
-  top: 16px;
-  right: 56px;
-  background: ${props => props.isFavorite ? '#ffd700' : '#f0f0f0'};
-  color: ${props => props.isFavorite ? '#333' : '#666'};
-  border: none;
+  background: ${(props) =>
+    props.isFavorite ? "#ffd700" : "rgba(255, 255, 255, 0.1)"};
+  color: ${(props) => (props.isFavorite ? "#333" : "#fff")};
+  border: 2px solid
+    ${(props) => (props.isFavorite ? "#ffd700" : "rgba(0, 188, 212, 0.3)")};
   border-radius: 50%;
   width: 30px;
   height: 30px;
@@ -57,22 +137,113 @@ const FavoriteButton = styled.button<FavoriteButtonProps>`
 
   &:hover {
     transform: scale(1.1);
+    background: ${(props) =>
+      props.isFavorite ? "#ffd700" : "rgba(0, 188, 212, 0.2)"};
+    border-color: ${(props) => (props.isFavorite ? "#ffd700" : "#00bcd4")};
   }
+`;
+
+const Modal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(28, 28, 67, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+`;
+
+const ModalContent = styled.div`
+  background-color: rgba(28, 28, 67, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+  width: 100%;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  color: #fff;
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 16px;
+`;
+
+const ModalTitle = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(135deg, #00bcd4 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+`;
+
+const CloseButton = styled.button`
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(0, 188, 212, 0.3);
+  color: #fff;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(0, 188, 212, 0.2);
+    border-color: #00bcd4;
+    color: #00bcd4;
+    transform: scale(1.1);
+  }
+`;
+
+const ModalBody = styled.div`
+  margin-bottom: 24px;
+`;
+
+const PlanContent = styled.p`
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-height: 1.6;
+  color: #e0e0e0;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #00bcd4;
 `;
 
 const ExportButtons = styled.div`
   display: flex;
   gap: 8px;
-  margin-top: 16px;
+  justify-content: flex-end;
 `;
 
 const ExportButton = styled.button`
-  padding: 6px 12px;
-  border: 1px solid #00bcd4;
+  padding: 8px 16px;
+  border: 2px solid #00bcd4;
   background: transparent;
   color: #00bcd4;
-  border-radius: 6px;
-  font-size: 12px;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -80,28 +251,68 @@ const ExportButton = styled.button`
   &:hover {
     background: #00bcd4;
     color: white;
+    transform: translateY(-2px);
   }
 `;
 
 interface TripCardProps {
-  trip: { 
-    id: string; 
-    plan_result: string; 
+  trip: {
+    id: string;
+    plan_result: string;
     is_favorite?: boolean;
     prompt_data?: object;
     ai_prompt?: string;
+    created_at?: string;
   };
   onDelete: (id: string) => void;
   onToggleFavorite: (id: string) => void;
 }
 
-const TripCard: React.FC<TripCardProps> = ({ trip, onDelete, onToggleFavorite }) => {
+const TripCard: React.FC<TripCardProps> = ({
+  trip,
+  onDelete,
+  onToggleFavorite,
+}) => {
+  const [showModal, setShowModal] = useState(false);
+
+  // Função para extrair informações básicas do plano
+  const extractTripInfo = (planResult: string) => {
+    const lines = planResult.split("\n");
+    let title = "Minha Viagem";
+    let destination = "Destino não especificado";
+    let dates = "Datas não especificadas";
+
+    // Procurar pelo título
+    const titleMatch = lines.find((line) => line.includes("### Título:"));
+    if (titleMatch) {
+      title = titleMatch.replace("### Título:", "").trim();
+    }
+
+    // Procurar por informações de destino no prompt_data se disponível
+    if (trip.prompt_data) {
+      const promptData = trip.prompt_data as any;
+      if (promptData.destino) {
+        destination = promptData.destino;
+      }
+    }
+
+    // Procurar por dias no plano
+    const dayMatches = lines.filter((line) => line.includes("**Dia"));
+    if (dayMatches.length > 0) {
+      dates = `${dayMatches.length} dias de viagem`;
+    }
+
+    return { title, destination, dates };
+  };
+
+  const tripInfo = extractTripInfo(trip.plan_result);
+
   const handleExportPDF = () => {
     if (trip.prompt_data && trip.ai_prompt) {
       exportToPDF({
         prompt_data: trip.prompt_data,
         ai_prompt: trip.ai_prompt,
-        plan_result: trip.plan_result
+        plan_result: trip.plan_result,
       });
     }
   };
@@ -111,34 +322,101 @@ const TripCard: React.FC<TripCardProps> = ({ trip, onDelete, onToggleFavorite })
       exportToText({
         prompt_data: trip.prompt_data,
         ai_prompt: trip.ai_prompt,
-        plan_result: trip.plan_result
+        plan_result: trip.plan_result,
       });
     }
   };
 
   return (
-    <Card isFavorite={trip.is_favorite}>
-      <DeleteButton onClick={() => onDelete(trip.id)}>&times;</DeleteButton>
-      <FavoriteButton 
-        isFavorite={trip.is_favorite} 
-        onClick={() => onToggleFavorite(trip.id)}
-      >
-        {trip.is_favorite ? '★' : '☆'}
-      </FavoriteButton>
-      <PlanContent>{trip.plan_result}</PlanContent>
-      
-      {trip.prompt_data && trip.ai_prompt && (
-        <ExportButtons>
-          <ExportButton onClick={handleExportPDF}>
-            📄 PDF
-          </ExportButton>
-          <ExportButton onClick={handleExportTXT}>
-            📝 TXT
-          </ExportButton>
-        </ExportButtons>
+    <>
+      <Card isFavorite={trip.is_favorite} onClick={() => setShowModal(true)}>
+        <CardHeader>
+          <TripTitle>{tripInfo.title}</TripTitle>
+        </CardHeader>
+
+        <TripDetails>
+          <DetailItem>📍 {tripInfo.destination}</DetailItem>
+          <DetailItem>📅 {tripInfo.dates}</DetailItem>
+          {trip.created_at && (
+            <DetailItem>
+              🗓️ Criada em{" "}
+              {new Date(trip.created_at).toLocaleDateString("pt-BR")}
+            </DetailItem>
+          )}
+        </TripDetails>
+
+        <TripSummary>{trip.plan_result.substring(0, 200)}...</TripSummary>
+
+        <CardActions>
+          <ViewDetailsButton
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowModal(true);
+            }}
+          >
+            Ver Detalhes
+          </ViewDetailsButton>
+
+          <ActionButtons>
+            <FavoriteButton
+              isFavorite={trip.is_favorite}
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleFavorite(trip.id);
+              }}
+            >
+              {trip.is_favorite ? "★" : "☆"}
+            </FavoriteButton>
+            <DeleteButton
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(trip.id);
+              }}
+            >
+              ×
+            </DeleteButton>
+          </ActionButtons>
+        </CardActions>
+      </Card>
+
+      {showModal && (
+        <Modal onClick={() => setShowModal(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <ModalHeader>
+              <ModalTitle>{tripInfo.title}</ModalTitle>
+              <CloseButton onClick={() => setShowModal(false)}>×</CloseButton>
+            </ModalHeader>
+
+            <ModalBody>
+              <TripDetails>
+                <DetailItem>📍 {tripInfo.destination}</DetailItem>
+                <DetailItem>📅 {tripInfo.dates}</DetailItem>
+                {trip.created_at && (
+                  <DetailItem>
+                    🗓️ Criada em{" "}
+                    {new Date(trip.created_at).toLocaleDateString("pt-BR")}
+                  </DetailItem>
+                )}
+              </TripDetails>
+
+              <PlanContent>{trip.plan_result}</PlanContent>
+            </ModalBody>
+
+            {trip.prompt_data && trip.ai_prompt && (
+              <ExportButtons>
+                <ExportButton onClick={handleExportPDF}>
+                  📄 Exportar PDF
+                </ExportButton>
+                <ExportButton onClick={handleExportTXT}>
+                  📝 Exportar TXT
+                </ExportButton>
+              </ExportButtons>
+            )}
+          </ModalContent>
+        </Modal>
       )}
-    </Card>
+    </>
   );
 };
 
-export default TripCard; 
+export default TripCard;
