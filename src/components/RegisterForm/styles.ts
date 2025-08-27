@@ -6,8 +6,7 @@ export const RegisterFormContainer = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  overflow-y: auto;
+  height: fit-content;
 `;
 
 export const LogoContainer = styled.div`
