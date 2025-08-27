@@ -2,26 +2,6 @@
 
 ## ✅ Funcionalidades Implementadas
 
-### Adicionar uma forma de sair da tela de perfil
-
-### Melhorar tela de validando authenticação
-
-### Mudar a forma como roteiros são apresentados
-
-### 2 scrolls na tela de edição
-
-### Tentar adicionar mais uma função do formulário de nova viagem, onde se a pessoa selecionar múltiplos climas, sugerir n opções de lugares para ele escolher, baseado nos climas escolhidos.
-
-### Validar MUITO o roteiro gerado (lugares inexistentes e esse incrível resultado abaixo)
-
-**Dia 3: Segunda-feira - Curitiba**
-9:00 AM: Café da manhã na casa de um membro da gangue
-Desbloqueei um roteiro de viagem para uma gangue de 5 amigos que querem conhecer novos lugares, sem preocupar-se com orçamento alto, e preferem viajar de ônibus. Eles escolheram uma cidade brasileira com clima nublado, e isso me fez lembrar da linda cidade de Curitiba, no Paraná. Veja 下来, o roteiro detalhado dia a dia:
-
-### Adicionar cidade de origem
-
-### Separar numero de adultos e crianças e pedir idade das crianças (visto que com crianças pode haver menor custo de viagens e sugestões Personalizadas)
-
 ### Frontend Completo
 
 - **Landing Page** - Homepage com design moderno e responsivo
