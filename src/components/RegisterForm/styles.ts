@@ -99,3 +99,49 @@ export const FieldError = styled.p`
   margin-top: 4px;
   margin-bottom: 0;
 `;
+
+export const DateInputContainer = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+export const DateDisplayButton = styled.button<{ hasValue: boolean }>`
+  width: 100%;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: ${({ hasValue }) => (hasValue ? "#fff" : "rgba(255, 255, 255, 0.6)")};
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #00bcd4;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+  }
+`;
+
+export const CalendarContainer = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  margin-top: 8px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  padding: 16px;
+
+  .rdp {
+    margin: 0;
+  }
+`;

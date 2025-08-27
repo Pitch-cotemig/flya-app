@@ -2,6 +2,16 @@
 
 ## ✅ Funcionalidades Implementadas
 
+### Adicionar uma forma de sair da tela de perfil
+
+### Melhorar tela de validando authenticação
+
+### Mudar a forma como roteiros são apresentados
+
+### 2 scrolls na tela de edição
+
+### Tentar adicionar mais uma função do formulário de nova viagem, onde se a pessoa selecionar múltiplos climas, sugerir n opções de lugares para ele escolher, baseado nos climas escolhidos.
+
 ### Validar MUITO o roteiro gerado (lugares inexistentes e esse incrível resultado abaixo)
 
 **Dia 3: Segunda-feira - Curitiba**

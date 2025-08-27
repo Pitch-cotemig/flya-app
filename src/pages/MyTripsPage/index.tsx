@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { tripsService } from '../../services/tripsService';
-import TripCard from '../../components/TripCard';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { tripsService } from "../../services/tripsService";
+import TripCard from "../../components/TripCard";
 
 const TripsContainer = styled.div`
   padding: 40px;
@@ -12,7 +12,7 @@ const TripsContainer = styled.div`
 
 const Title = styled.h1`
   font-size: 2.5rem;
-  color: #333;
+  color: #e4e4e4;
   margin-bottom: 24px;
 `;
 
@@ -25,9 +25,9 @@ const FilterContainer = styled.div`
 
 const FilterButton = styled.button<{ active?: boolean }>`
   padding: 8px 16px;
-  border: 2px solid ${props => props.active ? '#00bcd4' : '#ddd'};
-  background: ${props => props.active ? '#00bcd4' : 'white'};
-  color: ${props => props.active ? 'white' : '#333'};
+  border: 2px solid ${(props) => (props.active ? "#00bcd4" : "#ddd")};
+  background: ${(props) => (props.active ? "#00bcd4" : "white")};
+  color: ${(props) => (props.active ? "white" : "#333")};
   border-radius: 20px;
   cursor: pointer;
   font-weight: 600;
@@ -35,7 +35,7 @@ const FilterButton = styled.button<{ active?: boolean }>`
 
   &:hover {
     border-color: #00bcd4;
-    background: ${props => props.active ? '#00bcd4' : '#f0f0f0'};
+    background: ${(props) => (props.active ? "#00bcd4" : "#f0f0f0")};
   }
 `;
 
@@ -58,18 +58,18 @@ const MyTripsPage: React.FC = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<'all' | 'favorites'>('all');
+  const [filter, setFilter] = useState<"all" | "favorites">("all");
 
   const fetchTrips = async (favoriteFilter?: boolean) => {
     try {
       const response = await tripsService.findAll(favoriteFilter);
-      if(response.success && response.data) {
+      if (response.success && response.data) {
         setTrips(response.data);
       } else {
         setError(response.message);
       }
     } catch (err) {
-      setError('Falha ao carregar viagens.');
+      setError("Falha ao carregar viagens.");
     } finally {
       setIsLoading(false);
     }
@@ -79,16 +79,16 @@ const MyTripsPage: React.FC = () => {
     fetchTrips();
   }, []);
 
-  const handleFilterChange = (newFilter: 'all' | 'favorites') => {
+  const handleFilterChange = (newFilter: "all" | "favorites") => {
     setFilter(newFilter);
-    const favoriteFilter = newFilter === 'favorites' ? true : undefined;
+    const favoriteFilter = newFilter === "favorites" ? true : undefined;
     fetchTrips(favoriteFilter);
   };
 
   const handleDelete = async (id: string) => {
     const response = await tripsService.remove(id);
     if (response.success) {
-      setTrips(prevTrips => prevTrips.filter(trip => trip.id !== id));
+      setTrips((prevTrips) => prevTrips.filter((trip) => trip.id !== id));
     } else {
       setError(response.message);
     }
@@ -97,9 +97,9 @@ const MyTripsPage: React.FC = () => {
   const handleToggleFavorite = async (id: string) => {
     const response = await tripsService.toggleFavorite(id);
     if (response.success && response.data) {
-      setTrips(prevTrips => 
-        prevTrips.map(trip => 
-          trip.id === id 
+      setTrips((prevTrips) =>
+        prevTrips.map((trip) =>
+          trip.id === id
             ? { ...trip, is_favorite: response.data!.is_favorite }
             : trip
         )
@@ -110,27 +110,35 @@ const MyTripsPage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <TripsContainer><h1>Carregando suas viagens...</h1></TripsContainer>;
+    return (
+      <TripsContainer>
+        <h1>Carregando suas viagens...</h1>
+      </TripsContainer>
+    );
   }
 
   if (error) {
-    return <TripsContainer><h1>{error}</h1></TripsContainer>;
+    return (
+      <TripsContainer>
+        <h1>{error}</h1>
+      </TripsContainer>
+    );
   }
 
   return (
     <TripsContainer>
       <Title>Minhas Viagens</Title>
-      
+
       <FilterContainer>
-        <FilterButton 
-          active={filter === 'all'} 
-          onClick={() => handleFilterChange('all')}
+        <FilterButton
+          active={filter === "all"}
+          onClick={() => handleFilterChange("all")}
         >
           Todas as Viagens
         </FilterButton>
-        <FilterButton 
-          active={filter === 'favorites'} 
-          onClick={() => handleFilterChange('favorites')}
+        <FilterButton
+          active={filter === "favorites"}
+          onClick={() => handleFilterChange("favorites")}
         >
           Apenas Favoritas
         </FilterButton>
@@ -140,10 +148,10 @@ const MyTripsPage: React.FC = () => {
         <p>Você ainda não salvou nenhuma viagem.</p>
       ) : (
         <TripsGrid>
-          {trips.map(trip => (
-            <TripCard 
-              key={trip.id} 
-              trip={trip} 
+          {trips.map((trip) => (
+            <TripCard
+              key={trip.id}
+              trip={trip}
               onDelete={handleDelete}
               onToggleFavorite={handleToggleFavorite}
             />
@@ -154,4 +162,4 @@ const MyTripsPage: React.FC = () => {
   );
 };
 
-export default MyTripsPage; 
+export default MyTripsPage;
