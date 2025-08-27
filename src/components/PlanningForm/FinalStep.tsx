@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { ContinueButton, BackButton } from '../../pages/PlanningFormPage/styles';
-import { tripsService } from '../../services/tripsService';
-import { exportToPDF, exportToText } from '../../utils/pdfExport';
-import logoPlaceholder from '../../../public/images/logo-placeholder.svg';
+import React, { useState } from "react";
+import styled from "styled-components";
+import {
+  ContinueButton,
+  BackButton,
+} from "../../pages/PlanningFormPage/styles";
+import { tripsService } from "../../services/tripsService";
+import { exportToPDF, exportToText } from "../../utils/pdfExport";
+import logoPlaceholder from "../../../public/images/logo-placeholder.svg";
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -136,7 +139,7 @@ const RoteiroItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+
   & + & {
     margin-top: 0.5rem;
   }
@@ -191,7 +194,7 @@ const PlanResult = styled.pre`
 
 const ExportSection = styled.div`
   margin-bottom: 24px;
-  
+
   h3 {
     color: #fff;
     margin-bottom: 16px;
@@ -208,6 +211,7 @@ interface TripData {
 interface FinalStepProps {
   tripData: TripData | null;
   onClose: () => void;
+  onSaveSuccess?: () => void;
 }
 
 interface Roteiro {
@@ -223,35 +227,45 @@ interface ParsedPlan {
 }
 
 const parsePlan = (text: string): ParsedPlan => {
-  const lines = text.split('\n').filter(line => line.trim() !== '');
-  
-  const titleMatch = lines.find(line => line.startsWith('### Título:'));
-  const title = titleMatch ? titleMatch.replace('### Título:', '').trim() : 'Seu Roteiro de Viagem';
+  const lines = text.split("\n").filter((line) => line.trim() !== "");
 
-  const summaryIndex = lines.findIndex(line => line.startsWith('### Resumo Geral da Viagem'));
-  
-  const roteiroLines = summaryIndex !== -1 ? lines.slice(1, summaryIndex) : lines.slice(1);
+  const titleMatch = lines.find((line) => line.startsWith("### Título:"));
+  const title = titleMatch
+    ? titleMatch.replace("### Título:", "").trim()
+    : "Seu Roteiro de Viagem";
+
+  const summaryIndex = lines.findIndex((line) =>
+    line.startsWith("### Resumo Geral da Viagem")
+  );
+
+  const roteiroLines =
+    summaryIndex !== -1 ? lines.slice(1, summaryIndex) : lines.slice(1);
   const summaryLines = summaryIndex !== -1 ? lines.slice(summaryIndex + 1) : [];
 
   const roteiro: Roteiro = {};
-  let currentDay = '';
-  let currentPeriod = '';
+  let currentDay = "";
+  let currentPeriod = "";
 
-  roteiroLines.forEach(line => {
+  roteiroLines.forEach((line) => {
     const dayMatch = line.match(/^\s*\*\*(Dia\s*\d+.*)\*\*/i);
     const periodMatch = line.match(/^\s*-\s*\*\*(Manhã|Tarde|Noite):\*\*/i);
-    const activityMatch = line.trim().startsWith('*');
+    const activityMatch = line.trim().startsWith("*");
 
     if (dayMatch) {
       currentDay = dayMatch[1].trim();
       roteiro[currentDay] = {};
-      currentPeriod = '';
+      currentPeriod = "";
     } else if (periodMatch && currentDay) {
       currentPeriod = periodMatch[1].trim();
       roteiro[currentDay][currentPeriod] = [];
     } else if (activityMatch && currentDay && currentPeriod) {
       roteiro[currentDay][currentPeriod].push(line.trim().substring(1).trim());
-    } else if (line.trim() && currentDay && currentPeriod && roteiro[currentDay][currentPeriod]?.length > 0) {
+    } else if (
+      line.trim() &&
+      currentDay &&
+      currentPeriod &&
+      roteiro[currentDay][currentPeriod]?.length > 0
+    ) {
       const lastIndex = roteiro[currentDay][currentPeriod].length - 1;
       roteiro[currentDay][currentPeriod][lastIndex] += `\n${line.trim()}`;
     }
@@ -260,10 +274,18 @@ const parsePlan = (text: string): ParsedPlan => {
   return { title, roteiro, summary: summaryLines };
 };
 
-const FinalStep: React.FC<FinalStepProps> = ({ tripData, onClose }) => {
+const FinalStep: React.FC<FinalStepProps> = ({
+  tripData,
+  onClose,
+  onSaveSuccess,
+}) => {
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
-  const [plan, setPlan] = useState<ParsedPlan>({ title: '', roteiro: {}, summary: [] });
+  const [plan, setPlan] = useState<ParsedPlan>({
+    title: "",
+    roteiro: {},
+    summary: [],
+  });
 
   React.useEffect(() => {
     if (tripData?.plan_result) {
@@ -276,36 +298,39 @@ const FinalStep: React.FC<FinalStepProps> = ({ tripData, onClose }) => {
     if (novoTexto !== null) {
       const novoRoteiro = { ...plan.roteiro };
       novoRoteiro[dia][periodo][index] = novoTexto;
-      setPlan(prevPlan => ({...prevPlan, roteiro: novoRoteiro}));
+      setPlan((prevPlan) => ({ ...prevPlan, roteiro: novoRoteiro }));
     }
   };
 
   const handleRemoveItem = (dia: string, periodo: string, index: number) => {
     if (window.confirm("Tem certeza que deseja remover este item?")) {
       const novoRoteiro = { ...plan.roteiro };
-      novoRoteiro[dia][periodo] = novoRoteiro[dia][periodo].filter((_, i) => i !== index);
-      if (novoRoteiro[dia][periodo].length === 0) delete novoRoteiro[dia][periodo];
+      novoRoteiro[dia][periodo] = novoRoteiro[dia][periodo].filter(
+        (_, i) => i !== index
+      );
+      if (novoRoteiro[dia][periodo].length === 0)
+        delete novoRoteiro[dia][periodo];
       if (Object.keys(novoRoteiro[dia]).length === 0) delete novoRoteiro[dia];
-      setPlan(prevPlan => ({...prevPlan, roteiro: novoRoteiro}));
+      setPlan((prevPlan) => ({ ...prevPlan, roteiro: novoRoteiro }));
     }
   };
-  
+
   const stringifyPlan = (planData: ParsedPlan): string => {
     let result = `### Título: ${planData.title}\n\n`;
-    
+
     for (const dia in planData.roteiro) {
       result += `**${dia}**\n`;
       for (const periodo in planData.roteiro[dia]) {
         result += `- **${periodo}:**\n`;
-        planData.roteiro[dia][periodo].forEach(item => {
-          result += `* ${item.replace(/\n/g, '\n  ')}\n`;
+        planData.roteiro[dia][periodo].forEach((item) => {
+          result += `* ${item.replace(/\n/g, "\n  ")}\n`;
         });
       }
-      result += '\n';
+      result += "\n";
     }
-    
+
     result += `### Resumo Geral da Viagem\n`;
-    planData.summary.forEach(item => {
+    planData.summary.forEach((item) => {
       result += `${item}\n`;
     });
 
@@ -322,7 +347,10 @@ const FinalStep: React.FC<FinalStepProps> = ({ tripData, onClose }) => {
     const response = await tripsService.create(updatedTripData);
     setIsSaving(false);
     if (response.success) {
-      setSaveMessage('Viagem salva com sucesso!');
+      setSaveMessage("Viagem salva com sucesso!");
+      if (onSaveSuccess) {
+        onSaveSuccess();
+      }
     } else {
       setSaveMessage(response.message);
     }
@@ -345,24 +373,34 @@ const FinalStep: React.FC<FinalStepProps> = ({ tripData, onClose }) => {
   return (
     <FinalScreenContainer>
       <HeaderSection>
-        <h1>{plan.title || 'Seu Roteiro está Pronto!'}</h1>
+        <h1>{plan.title || "Seu Roteiro está Pronto!"}</h1>
         <p>Edite, remova ou adicione itens ao seu roteiro antes de salvar.</p>
       </HeaderSection>
-      
+
       <RoteiroContainer>
         {Object.keys(plan.roteiro).length > 0 ? (
-          Object.keys(plan.roteiro).map(dia => (
+          Object.keys(plan.roteiro).map((dia) => (
             <DayBlock key={dia}>
               <DayTitle>{dia}</DayTitle>
-              {Object.keys(plan.roteiro[dia]).map(periodo => (
+              {Object.keys(plan.roteiro[dia]).map((periodo) => (
                 <PeriodSection key={periodo}>
                   <PeriodTitle>{periodo}</PeriodTitle>
                   {plan.roteiro[dia][periodo].map((item, index) => (
                     <RoteiroItem key={index}>
-                      <ItemContent>{item.replace(/^(\*|-)\s*/, '').trim()}</ItemContent>
+                      <ItemContent>
+                        {item.replace(/^(\*|-)\s*/, "").trim()}
+                      </ItemContent>
                       <ItemActions>
-                        <ActionButton onClick={() => handleEditItem(dia, periodo, index)}>Editar</ActionButton>
-                        <ActionButton onClick={() => handleRemoveItem(dia, periodo, index)}>Excluir</ActionButton>
+                        <ActionButton
+                          onClick={() => handleEditItem(dia, periodo, index)}
+                        >
+                          Editar
+                        </ActionButton>
+                        <ActionButton
+                          onClick={() => handleRemoveItem(dia, periodo, index)}
+                        >
+                          Excluir
+                        </ActionButton>
                       </ItemActions>
                     </RoteiroItem>
                   ))}
@@ -373,35 +411,34 @@ const FinalStep: React.FC<FinalStepProps> = ({ tripData, onClose }) => {
         ) : (
           <p>Gerando seu roteiro, por favor aguarde...</p>
         )}
-        
+
         {plan.summary.length > 0 && (
-            <SummaryBlock>
-                <h2>Resumo Geral da Viagem</h2>
-                <ul>
-                    {plan.summary.map((item, index) => (
-                        <li key={index}>{item.replace(/^\*/, '').trim()}</li>
-                    ))}
-                </ul>
-            </SummaryBlock>
+          <SummaryBlock>
+            <h2>Resumo Geral da Viagem</h2>
+            <ul>
+              {plan.summary.map((item, index) => (
+                <li key={index}>{item.replace(/^\*/, "").trim()}</li>
+              ))}
+            </ul>
+          </SummaryBlock>
         )}
       </RoteiroContainer>
 
       {saveMessage && <p>{saveMessage}</p>}
-      
+
       <FooterActions>
-        <ExportButton onClick={handleExportPDF}>
-          Exportar PDF
-        </ExportButton>
-        <ExportButton onClick={handleExportTXT}>
-          Exportar TXT
-        </ExportButton>
+        <ExportButton onClick={handleExportPDF}>Exportar PDF</ExportButton>
+        <ExportButton onClick={handleExportTXT}>Exportar TXT</ExportButton>
         <BackButton onClick={onClose}>Fechar</BackButton>
-        <ContinueButton onClick={handleSave} disabled={isSaving || !!saveMessage}>
-          {isSaving ? 'Salvando...' : 'Salvar Viagem'}
+        <ContinueButton
+          onClick={handleSave}
+          disabled={isSaving || !!saveMessage}
+        >
+          {isSaving ? "Salvando..." : "Salvar Viagem"}
         </ContinueButton>
       </FooterActions>
     </FinalScreenContainer>
   );
 };
 
-export default FinalStep; 
+export default FinalStep;
