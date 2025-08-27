@@ -104,20 +104,21 @@ export const HeroSubtitle = styled.p`
 export const HeroForm = styled.div`
   position: relative;
   z-index: 3;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(2px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  padding: 2rem;
-  background: rgba(255, 255, 255, 0.1);
+  padding: 12px 24px;
   backdrop-filter: blur(10px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
   width: 100%;
-  max-width: 600px;
+  max-width: 500px;
   margin: 0 auto;
   animation: heroFormAnimation 1.5s ease-out 0.6s both;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 
   @keyframes heroFormAnimation {
     0% {
@@ -137,8 +138,7 @@ export const HeroInput = styled.input`
   border-radius: 12px;
   font-size: 1rem;
   outline: none;
-  width: 100%;
-  max-width: 400px;
+  width: min(100%, 400px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
