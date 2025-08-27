@@ -113,10 +113,20 @@ function App() {
             element={<PrivacyPolicyPage />}
           />
           <Route path="/sobre-nos" element={<AboutUsPage />} />
-          <Route path="/planejamento" element={<PlanningFormPage />} />
           <Route
             path="/auth"
             element={<AuthPage onLoginSuccess={handleLoginSuccess} />}
+          />
+
+          <Route
+            path="/planejamento"
+            element={
+              currentUser ? (
+                <PlanningFormPage />
+              ) : (
+                <Navigate to="/auth" replace />
+              )
+            }
           />
           <Route
             path="/minhas-viagens"
@@ -132,13 +142,9 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            // A condição é: currentUser existe?
             currentUser ? (
-              // Se SIM, renderiza o Dashboard, passando os dados do usuário
-              // e a função de logout que ele precisa.
               <DashboardPage user={currentUser} onLogout={handleLogout} />
             ) : (
-              // Se NÃO, redireciona o usuário para a tela de login.
               <Navigate to="/auth" replace />
             )
           }
