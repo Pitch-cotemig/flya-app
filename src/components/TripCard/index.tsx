@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { exportToPDF, exportToText } from "../../utils/pdfExport";
+import { colors } from "../../design-tokens/colors";
 
 interface CardProps {
   isFavorite?: boolean;
@@ -11,22 +12,22 @@ interface FavoriteButtonProps {
 }
 
 const Card = styled.div<CardProps>`
-  background-color: rgba(28, 28, 67, 0.9);
+  background-color: ${colors.background.primaryAlpha};
   backdrop-filter: blur(12px);
   color: #fff;
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  box-shadow: ${colors.shadow.card};
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid ${colors.alpha.white01};
   cursor: pointer;
   transition: all 0.3s ease;
-  border-left: 4px solid #00bcd4;
+  border-left: 4px solid ${colors.primary.cyan};
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-    border-color: rgba(0, 188, 212, 0.3);
+    box-shadow: ${colors.shadow.cardHover};
+    border-color: ${colors.alpha.cyan03};
   }
 `;
 
@@ -39,7 +40,7 @@ const TripTitle = styled.h3`
   font-weight: 700;
   color: #fff;
   margin: 0 0 8px 0;
-  background: linear-gradient(135deg, #00bcd4 0%, #7c3aed 100%);
+  background: ${colors.gradients.primary};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -54,21 +55,21 @@ const TripDetails = styled.div`
 
 const DetailItem = styled.span`
   font-size: 0.875rem;
-  color: #e0e0e0;
+  color: ${colors.text.muted};
   display: flex;
   align-items: center;
   gap: 6px;
 
   &::before {
     content: "•";
-    color: #00bcd4;
+    color: ${colors.primary.cyan};
     font-weight: bold;
   }
 `;
 
 const TripSummary = styled.p`
   font-size: 0.875rem;
-  color: #ccc;
+  color: ${colors.text.mutedDark};
   line-height: 1.5;
   margin-bottom: 16px;
   display: -webkit-box;
@@ -89,7 +90,7 @@ const ActionButtons = styled.div`
 `;
 
 const ViewDetailsButton = styled.button`
-  background: linear-gradient(135deg, #00bcd4 0%, #7c3aed 100%);
+  background: ${colors.gradients.primary};
   color: white;
   border: none;
   border-radius: 8px;
@@ -100,13 +101,13 @@ const ViewDetailsButton = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background: linear-gradient(135deg, #0097a7 0%, #6b21a8 100%);
+    background: ${colors.gradients.cyanHover};
     transform: scale(1.05);
   }
 `;
 
 const DeleteButton = styled.button`
-  background: linear-gradient(135deg, #ff4d4f 0%, #d4380d 100%);
+  background: ${colors.state.errorGradient};
   color: white;
   border: none;
   border-radius: 50%;
@@ -117,17 +118,23 @@ const DeleteButton = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background: linear-gradient(135deg, #d4380d 0%, #b3300b 100%);
+    background: linear-gradient(
+      135deg,
+      ${colors.state.errorDark} 0%,
+      #b3300b 100%
+    );
     transform: scale(1.1);
   }
 `;
 
 const FavoriteButton = styled.button<FavoriteButtonProps>`
   background: ${(props) =>
-    props.isFavorite ? "#ffd700" : "rgba(255, 255, 255, 0.1)"};
-  color: ${(props) => (props.isFavorite ? "#333" : "#fff")};
+    props.isFavorite ? "${colors.state.warning}" : "${colors.alpha.white01}"};
+  color: ${(props) =>
+    props.isFavorite ? "${colors.text.contrast}" : "${colors.text.primary}"};
   border: 2px solid
-    ${(props) => (props.isFavorite ? "#ffd700" : "rgba(0, 188, 212, 0.3)")};
+    ${(props) =>
+      props.isFavorite ? "${colors.state.warning}" : "${colors.alpha.cyan03}"};
   border-radius: 50%;
   width: 30px;
   height: 30px;
@@ -138,8 +145,9 @@ const FavoriteButton = styled.button<FavoriteButtonProps>`
   &:hover {
     transform: scale(1.1);
     background: ${(props) =>
-      props.isFavorite ? "#ffd700" : "rgba(0, 188, 212, 0.2)"};
-    border-color: ${(props) => (props.isFavorite ? "#ffd700" : "#00bcd4")};
+      props.isFavorite ? "${colors.state.warning}" : "${colors.alpha.cyan02}"};
+    border-color: ${(props) =>
+      props.isFavorite ? "${colors.state.warning}" : "${colors.primary.cyan}"};
   }
 `;
 
@@ -149,7 +157,7 @@ const Modal = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(28, 28, 67, 0.8);
+  background: ${colors.background.overlay};
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -159,7 +167,7 @@ const Modal = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background-color: rgba(28, 28, 67, 0.95);
+  background-color: ${colors.background.primaryAlpha};
   backdrop-filter: blur(20px);
   border-radius: 16px;
   padding: 32px;
@@ -168,8 +176,8 @@ const ModalContent = styled.div`
   overflow-y: auto;
   width: 100%;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border: 1px solid ${colors.alpha.white01};
+  box-shadow: ${colors.shadow.modal};
   color: #fff;
 `;
 
@@ -178,7 +186,7 @@ const ModalHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid ${colors.alpha.white01};
   padding-bottom: 16px;
 `;
 
@@ -186,15 +194,15 @@ const ModalTitle = styled.h2`
   font-size: 1.5rem;
   font-weight: 700;
   margin: 0;
-  background: linear-gradient(135deg, #00bcd4 0%, #7c3aed 100%);
+  background: ${colors.gradients.primary};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 `;
 
 const CloseButton = styled.button`
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(0, 188, 212, 0.3);
+  background: ${colors.alpha.white01};
+  border: 2px solid ${colors.alpha.cyan03};
   color: #fff;
   padding: 0;
   width: 32px;
@@ -209,9 +217,9 @@ const CloseButton = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(0, 188, 212, 0.2);
-    border-color: #00bcd4;
-    color: #00bcd4;
+    background: ${colors.alpha.cyan02};
+    border-color: ${colors.primary.cyan};
+    color: ${colors.primary.cyan};
     transform: scale(1.1);
   }
 `;
@@ -224,11 +232,11 @@ const PlanContent = styled.p`
   white-space: pre-wrap;
   word-wrap: break-word;
   line-height: 1.6;
-  color: #e0e0e0;
-  background: rgba(255, 255, 255, 0.05);
+  color: ${colors.text.muted};
+  background: ${colors.background.glassSoft};
   padding: 16px;
   border-radius: 8px;
-  border-left: 4px solid #00bcd4;
+  border-left: 4px solid ${colors.primary.cyan};
 `;
 
 const ExportButtons = styled.div`
