@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   PageContainer,
@@ -39,6 +39,11 @@ interface IFormData {
 
 export function PlanningFormPage() {
   const [step, setStep] = useState(0); // 0: Tela inicial, 1-4: Passos, 5: Tela final
+
+  // Debug: monitorar mudanças de step
+  useEffect(() => {
+    console.log("Step changed to:", step);
+  }, [step]);
   const [formData, setFormData] = useState<IFormData>({
     motivo: "",
     destino: "",
@@ -52,14 +57,20 @@ export function PlanningFormPage() {
   const [generatedPlan, setGeneratedPlan] = useState<TripData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const loadingSteps = [
-    'Analisando suas preferências...',
-    'Personalizando roteiro...',
-    'Calculando melhores opções...',
-    'Finalizando planejamento...'
+    "Analisando suas preferências...",
+    "Personalizando roteiro...",
+    "Calculando melhores opções...",
+    "Finalizando planejamento...",
   ];
   const navigate = useNavigate();
 
-  const handleNextStep = () => setStep((prev) => prev + 1);
+  const handleNextStep = () => {
+    console.log("handleNextStep called, current step:", step);
+    setStep((prev) => {
+      console.log("Setting step from", prev, "to", prev + 1);
+      return prev + 1;
+    });
+  };
   const handlePrevStep = () => setStep((prev) => prev - 1);
   const handleSaveSuccess = () => {
     navigate("/minhas-viagens");
@@ -91,16 +102,16 @@ export function PlanningFormPage() {
     // Simular etapas de loading
     for (let i = 0; i < loadingSteps.length; i++) {
       setLoadingStep(i);
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
     }
 
     const prompt = buildPrompt(formData);
 
     try {
-      const response = await fetch('http://localhost:3000/planning', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/planning", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           // TODO: Adicionar token de autenticação se a rota for privada
           // 'Authorization': `Bearer ${token}`
         },
@@ -108,11 +119,11 @@ export function PlanningFormPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Falha ao enviar os dados do planejamento.');
+        throw new Error("Falha ao enviar os dados do planejamento.");
       }
 
       const result = await response.json();
-      console.log('Resposta do backend:', result);
+      console.log("Resposta do backend:", result);
 
       // Armazenar tudo para a próxima tela
       setGeneratedPlan({
@@ -121,9 +132,9 @@ export function PlanningFormPage() {
         plan_result: result.plan,
       });
 
-      handleNextStep();
+      setStep(5); // Ir direto para a tela final
     } catch (error) {
-      console.error('Erro no handleSubmit:', error);
+      console.error("Erro no handleSubmit:", error);
       // TODO: Mostrar um erro para o usuário na UI
     } finally {
       setIsLoading(false);
@@ -189,6 +200,7 @@ export function PlanningFormPage() {
     return (
       <PageContainer>
         <FormContainer>
+          <CloseButton onClick={handleClose}>&times;</CloseButton>
           <InitialScreenContainer>
             <h1>Partiu Viajar!</h1>
             <p>Descubra seu roteiro de viagem personalizado em poucos passos</p>
@@ -197,12 +209,16 @@ export function PlanningFormPage() {
               <div className="feature">
                 <span className="icon">🎯</span>
                 <div className="title">Personalizado</div>
-                <div className="description">Roteiro feito sob medida para você</div>
+                <div className="description">
+                  Roteiro feito sob medida para você
+                </div>
               </div>
               <div className="feature">
                 <span className="icon">⚡</span>
                 <div className="title">Rápido</div>
-                <div className="description">Planejamento completo em minutos</div>
+                <div className="description">
+                  Planejamento completo em minutos
+                </div>
               </div>
               <div className="feature">
                 <span className="icon">💎</span>
@@ -211,7 +227,14 @@ export function PlanningFormPage() {
               </div>
             </div>
 
-            <ContinueButton onClick={handleNextStep}>
+            <ContinueButton
+              onClick={(e) => {
+                console.log("Button clicked!");
+                e.stopPropagation();
+                setStep(1);
+              }}
+              style={{ zIndex: 999, position: "relative" }}
+            >
               Começar Minha Jornada ✨
             </ContinueButton>
           </InitialScreenContainer>
@@ -229,23 +252,44 @@ export function PlanningFormPage() {
             <div className="loading-spinner"></div>
             <div className="loading-title">Criando seu Roteiro dos Sonhos</div>
             <div className="loading-subtitle">
-              {loadingSteps[loadingStep] || 'Preparando tudo para você...'}
+              {loadingSteps[loadingStep] || "Preparando tudo para você..."}
             </div>
 
             <div className="loading-steps">
               {loadingSteps.map((step, index) => (
                 <div
                   key={index}
-                  className={`step ${index < loadingStep ? 'completed' : ''} ${index === loadingStep ? 'active' : ''}`}
+                  className={`step ${index < loadingStep ? "completed" : ""} ${
+                    index === loadingStep ? "active" : ""
+                  }`}
                 >
                   <span className="step-icon">
-                    {index < loadingStep ? '✅' : index === loadingStep ? '🔄' : '⏳'}
+                    {index < loadingStep
+                      ? "✅"
+                      : index === loadingStep
+                      ? "🔄"
+                      : "⏳"}
                   </span>
                   <span className="step-text">{step}</span>
                 </div>
               ))}
             </div>
           </LoadingContainer>
+        </FormContainer>
+      </PageContainer>
+    );
+  }
+
+  if (step === 5) {
+    return (
+      <PageContainer>
+        <FormContainer>
+          <CloseButton onClick={handleClose}>&times;</CloseButton>
+          <FinalStep
+            tripData={generatedPlan}
+            onSaveSuccess={handleSaveSuccess}
+            onClose={handleClose}
+          />
         </FormContainer>
       </PageContainer>
     );
@@ -261,12 +305,10 @@ export function PlanningFormPage() {
             {[1, 2, 3, 4].map((stepNumber, index) => (
               <React.Fragment key={stepNumber}>
                 <StepDot
-                  active={step === stepNumber}
-                  completed={step > stepNumber}
+                  $active={step === stepNumber}
+                  $completed={step > stepNumber}
                 />
-                {index < 3 && (
-                  <StepLine completed={step > stepNumber} />
-                )}
+                {index < 3 && <StepLine $completed={step > stepNumber} />}
               </React.Fragment>
             ))}
             <StepText>Passo {step} de 4</StepText>

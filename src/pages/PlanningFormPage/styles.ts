@@ -1,4 +1,5 @@
-import styled, { keyframes } from "styled-components";
+import styled, { keyframes, css } from "styled-components";
+import { colors } from "../../design-tokens/colors";
 
 // Animações
 const fadeInUp = keyframes`
@@ -78,9 +79,13 @@ export const LoadingContainer = styled.div`
   .loading-title {
     font-size: 28px;
     font-weight: 700;
-    color: #fff;
+    color: ${colors.text.primary};
     margin-bottom: 16px;
-    background: linear-gradient(135deg, #00bcd4 0%, #7c3aed 100%);
+    background: linear-gradient(
+      135deg,
+      ${colors.primary.cyan} 0%,
+      ${colors.primary.purple} 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -88,7 +93,7 @@ export const LoadingContainer = styled.div`
 
   .loading-subtitle {
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.8);
+    color: ${colors.text.primaryAlpha80};
     margin-bottom: 32px;
     line-height: 1.6;
   }
@@ -96,8 +101,8 @@ export const LoadingContainer = styled.div`
   .loading-spinner {
     width: 40px;
     height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    border-top: 3px solid #00bcd4;
+    border: 3px solid ${colors.alpha.white03};
+    border-top: 3px solid ${colors.primary.cyan};
     border-radius: 50%;
     animation: ${spin} 1s linear infinite;
     margin-bottom: 24px;
@@ -114,19 +119,19 @@ export const LoadingContainer = styled.div`
       align-items: center;
       gap: 12px;
       padding: 12px 16px;
-      background: rgba(255, 255, 255, 0.1);
+      background: ${colors.alpha.white01};
       border-radius: 12px;
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid ${colors.alpha.white02};
       animation: ${fadeInUp} 0.6s ease-out;
 
       &.completed {
-        background: rgba(0, 188, 212, 0.2);
-        border-color: #00bcd4;
+        background: ${colors.alpha.cyan02};
+        border-color: ${colors.primary.cyan};
 
         &::after {
-          content: '✓';
-          color: #00bcd4;
+          content: "✓";
+          color: ${colors.primary.cyan};
           font-weight: bold;
         }
       }
@@ -137,7 +142,7 @@ export const LoadingContainer = styled.div`
 
       .step-text {
         font-size: 14px;
-        color: rgba(255, 255, 255, 0.9);
+        color: ${colors.text.primaryAlpha90};
       }
     }
   }
@@ -145,32 +150,28 @@ export const LoadingContainer = styled.div`
 
 export const PageContainer = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  position: relative;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background:
-      radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-      radial-gradient(circle at 40% 40%, rgba(120, 219, 226, 0.3) 0%, transparent 50%);
     animation: ${float} 20s ease-in-out infinite;
   }
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: -50%;
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
     animation: ${shimmer} 8s linear infinite;
     pointer-events: none;
   }
@@ -179,24 +180,22 @@ export const PageContainer = styled.div`
 export const FormContainer = styled.div`
   position: relative;
   z-index: 2;
-  background: rgba(255, 255, 255, 0.95);
+  background: ${colors.background.primaryAlpha};
   backdrop-filter: blur(20px);
   border-radius: 24px;
   padding: 40px;
   width: 100%;
   max-width: 700px;
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: ${colors.shadow.modal}, 0 0 0 1px ${colors.alpha.cyan02};
+  border: 1px solid ${colors.alpha.cyan03};
   animation: ${fadeInUp} 0.8s ease-out;
   transition: all 0.3s ease;
+  color: ${colors.text.primary};
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow:
-      0 30px 80px rgba(0, 0, 0, 0.15),
-      0 0 0 1px rgba(255, 255, 255, 0.3);
+    box-shadow: ${colors.shadow.modalStrong},
+      0 0 0 1px ${colors.border.primaryHover};
   }
 `;
 
@@ -204,9 +203,9 @@ export const CloseButton = styled.button`
   position: absolute;
   top: 20px;
   right: 20px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 2px solid rgba(0, 188, 212, 0.3);
-  color: #333;
+  background: ${colors.alpha.white01};
+  border: 2px solid ${colors.alpha.cyan03};
+  color: ${colors.text.primary};
   font-size: 20px;
   width: 40px;
   height: 40px;
@@ -220,9 +219,9 @@ export const CloseButton = styled.button`
   z-index: 10;
 
   &:hover {
-    background: #00bcd4;
+    background: ${colors.primary.cyan};
     color: white;
-    border-color: #00bcd4;
+    border-color: ${colors.primary.cyan};
     transform: scale(1.1) rotate(90deg);
   }
 `;
@@ -235,35 +234,41 @@ export const StepIndicator = styled.div`
   gap: 8px;
 `;
 
-export const StepDot = styled.div<{ active?: boolean; completed?: boolean }>`
+export const StepDot = styled.div<{ $active?: boolean; $completed?: boolean }>`
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: ${props =>
-    props.completed ? '#00bcd4' :
-    props.active ? '#7c3aed' : 'rgba(255, 255, 255, 0.3)'};
+  background: ${(props) =>
+    props.$completed
+      ? "${colors.primary.cyan}"
+      : props.$active
+      ? "${colors.primary.purple}"
+      : "${colors.alpha.white03}"};
   transition: all 0.3s ease;
   position: relative;
 
-  ${props => props.active && `
-    animation: ${pulse} 2s infinite;
-    &::after {
-      content: '';
-      position: absolute;
-      top: -4px;
-      left: -4px;
-      right: -4px;
-      bottom: -4px;
-      border-radius: 50%;
-      background: rgba(124, 58, 237, 0.3);
+  ${(props) =>
+    props.$active &&
+    css`
       animation: ${pulse} 2s infinite;
-    }
-  `}
+      &::after {
+        content: "";
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        right: -4px;
+        bottom: -4px;
+        border-radius: 50%;
+        background: ${colors.alpha.purple03};
+        animation: ${pulse} 2s infinite;
+      }
+    `}
 `;
 
-export const StepLine = styled.div<{ completed?: boolean }>`
+export const StepLine = styled.div<{ $completed?: boolean }>`
   height: 2px;
-  background: ${props => props.completed ? '#00bcd4' : 'rgba(255, 255, 255, 0.3)'};
+  background: ${(props) =>
+    props.$completed ? "${colors.primary.cyan}" : "${colors.alpha.white03}"};
   transition: all 0.3s ease;
   flex: 1;
   max-width: 40px;
@@ -271,7 +276,7 @@ export const StepLine = styled.div<{ completed?: boolean }>`
 
 export const StepText = styled.span`
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${colors.text.primary};
   font-weight: 500;
   margin-left: 16px;
 `;
@@ -281,7 +286,7 @@ export const QuestionTitle = styled.h2`
   font-weight: 700;
   margin-bottom: 32px;
   text-align: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: ${colors.gradients.background};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -289,14 +294,18 @@ export const QuestionTitle = styled.h2`
   position: relative;
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
     width: 60px;
     height: 3px;
-    background: linear-gradient(90deg, #00bcd4, #7c3aed);
+    background: linear-gradient(
+      90deg,
+      ${colors.primary.cyan},
+      ${colors.primary.purple}
+    );
     border-radius: 2px;
   }
 `;
@@ -316,9 +325,13 @@ export const OptionLabel = styled.label`
   display: flex;
   align-items: center;
   padding: 20px 24px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%);
+  background: linear-gradient(
+    135deg,
+    ${colors.text.primaryAlpha90} 0%,
+    ${colors.text.primaryAlpha80} 100%
+  );
   border-radius: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid ${colors.alpha.white02};
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
@@ -326,20 +339,25 @@ export const OptionLabel = styled.label`
   backdrop-filter: blur(10px);
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 188, 212, 0.1), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      ${colors.alpha.cyan01},
+      transparent
+    );
     transition: left 0.5s ease;
   }
 
   &:hover {
     transform: translateY(-3px);
-    border-color: #00bcd4;
-    box-shadow: 0 10px 30px rgba(0, 188, 212, 0.2);
+    border-color: ${colors.primary.cyan};
+    box-shadow: ${colors.shadow.cyan};
 
     &::before {
       left: 100%;
@@ -347,14 +365,18 @@ export const OptionLabel = styled.label`
   }
 
   &.selected {
-    background: linear-gradient(135deg, #00bcd4 0%, #7c3aed 100%);
+    background: linear-gradient(
+      135deg,
+      ${colors.primary.cyan} 0%,
+      ${colors.primary.purple} 100%
+    );
     color: white;
-    border-color: #00bcd4;
+    border-color: ${colors.primary.cyan};
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 188, 212, 0.3);
+    box-shadow: ${colors.shadow.cyanStrong};
 
     &::after {
-      content: '✨';
+      content: "✨";
       position: absolute;
       right: 16px;
       top: 50%;
@@ -369,7 +391,7 @@ export const RadioInput = styled.input.attrs({ type: "radio" })`
   margin-right: 16px;
   width: 20px;
   height: 20px;
-  accent-color: #00bcd4;
+  accent-color: ${colors.primary.cyan};
   cursor: pointer;
 `;
 
@@ -377,7 +399,7 @@ export const CheckboxInput = styled.input.attrs({ type: "checkbox" })`
   margin-right: 16px;
   width: 20px;
   height: 20px;
-  accent-color: #7c3aed;
+  accent-color: ${colors.primary.purple};
   cursor: pointer;
 `;
 
@@ -401,13 +423,18 @@ const BaseButton = styled.button`
   overflow: hidden;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      ${colors.alpha.white02},
+      transparent
+    );
     transition: left 0.5s ease;
   }
 
@@ -417,29 +444,33 @@ const BaseButton = styled.button`
 `;
 
 export const BackButton = styled(BaseButton)`
-  background: rgba(255, 255, 255, 0.9);
+  background: ${colors.text.primaryAlpha90};
   color: #667eea;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid ${colors.alpha.white03};
 
   &:hover {
-    background: rgba(255, 255, 255, 1);
+    background: ${colors.neutral.white};
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: ${colors.shadow.md};
   }
 `;
 
 export const ContinueButton = styled(BaseButton)`
-  background: linear-gradient(135deg, #00bcd4 0%, #7c3aed 100%);
+  background: linear-gradient(
+    135deg,
+    ${colors.primary.cyan} 0%,
+    ${colors.primary.purple} 100%
+  );
   color: white;
   min-width: 140px;
 
   &:hover {
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 10px 30px rgba(0, 188, 212, 0.3);
+    box-shadow: ${colors.shadow.cyanStrong};
   }
 
   &:disabled {
-    background: rgba(255, 255, 255, 0.5);
+    background: ${colors.alpha.white02};
     cursor: not-allowed;
     transform: none;
 
@@ -456,7 +487,7 @@ export const InitialScreenContainer = styled.div`
   position: relative;
 
   &::before {
-    content: '✈️';
+    content: "✈️";
     position: absolute;
     top: -40px;
     left: 50%;
@@ -469,7 +500,11 @@ export const InitialScreenContainer = styled.div`
   h1 {
     font-size: 56px;
     margin-bottom: 20px;
-    background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
+    background: linear-gradient(
+      135deg,
+      ${colors.primary.cyan} 0%,
+      ${colors.primary.purple} 100%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -480,7 +515,7 @@ export const InitialScreenContainer = styled.div`
 
   p {
     font-size: 20px;
-    color: rgba(255, 255, 255, 0.9);
+    color: ${colors.text.primaryAlpha90};
     margin-bottom: 40px;
     line-height: 1.6;
     position: relative;
@@ -497,17 +532,17 @@ export const InitialScreenContainer = styled.div`
     margin-right: auto;
 
     .feature {
-      background: rgba(255, 255, 255, 0.1);
+      background: ${colors.alpha.white01};
       backdrop-filter: blur(10px);
       border-radius: 16px;
       padding: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid ${colors.alpha.white02};
       animation: ${fadeInUp} 0.8s ease-out;
       transition: all 0.3s ease;
 
       &:hover {
         transform: translateY(-5px);
-        background: rgba(255, 255, 255, 0.15);
+        background: ${colors.background.glassStrong};
       }
 
       .icon {
@@ -519,13 +554,13 @@ export const InitialScreenContainer = styled.div`
       .title {
         font-size: 16px;
         font-weight: 600;
-        color: #fff;
+        color: ${colors.text.primary};
         margin-bottom: 8px;
       }
 
       .description {
         font-size: 14px;
-        color: rgba(255, 255, 255, 0.8);
+        color: ${colors.text.primaryAlpha80};
         line-height: 1.4;
       }
     }

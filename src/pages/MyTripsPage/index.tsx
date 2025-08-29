@@ -2,18 +2,51 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { tripsService } from "../../services/tripsService";
 import TripCard from "../../components/TripCard";
+import { colors } from "../../design-tokens/colors";
 
 const TripsContainer = styled.div`
   padding: 40px;
   max-width: 1200px;
   margin: 0 auto;
   min-height: 80vh;
+  overflow: hidden;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        circle at 20% 80%,
+        ${colors.alpha.cyan02} 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 80% 20%,
+        ${colors.alpha.purple02} 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 40% 40%,
+        ${colors.alpha.cyan02} 0%,
+        transparent 50%
+      );
+    pointer-events: none;
+  }
 `;
 
 const Title = styled.h1`
   font-size: 2.5rem;
-  color: #e4e4e4;
+  color: #fff;
   margin-bottom: 24px;
+  background: linear-gradient(135deg, #00bcd4 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 2;
 `;
 
 const FilterContainer = styled.div`
@@ -21,21 +54,33 @@ const FilterContainer = styled.div`
   gap: 16px;
   margin-bottom: 24px;
   align-items: center;
+  position: relative;
+  z-index: 2;
 `;
 
 const FilterButton = styled.button<{ active?: boolean }>`
   padding: 8px 16px;
-  border: 2px solid ${(props) => (props.active ? "#00bcd4" : "#ddd")};
-  background: ${(props) => (props.active ? "#00bcd4" : "white")};
-  color: ${(props) => (props.active ? "white" : "#333")};
+  border: 2px solid
+    ${(props) =>
+      props.active ? "${colors.primary.cyan}" : "${colors.alpha.white03}"};
+  background: ${(props) =>
+    props.active ? "${colors.gradients.primary}" : "${colors.alpha.white01}"};
+  color: ${(props) => (props.active ? "white" : "#fff")};
   border-radius: 20px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 2;
 
   &:hover {
-    border-color: #00bcd4;
-    background: ${(props) => (props.active ? "#00bcd4" : "#f0f0f0")};
+    border-color: ${colors.primary.cyan};
+    background: ${(props) =>
+      props.active
+        ? "${colors.gradients.cyanHover}"
+        : "${colors.alpha.cyan02}"};
+    transform: translateY(-2px);
   }
 `;
 
@@ -43,6 +88,8 @@ const TripsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
+  position: relative;
+  z-index: 2;
 `;
 
 interface Trip {
@@ -112,7 +159,9 @@ const MyTripsPage: React.FC = () => {
   if (isLoading) {
     return (
       <TripsContainer>
-        <h1>Carregando suas viagens...</h1>
+        <Title style={{ zIndex: 2, position: "relative" }}>
+          Carregando suas viagens...
+        </Title>
       </TripsContainer>
     );
   }
@@ -120,7 +169,9 @@ const MyTripsPage: React.FC = () => {
   if (error) {
     return (
       <TripsContainer>
-        <h1>{error}</h1>
+        <Title style={{ zIndex: 2, position: "relative", color: "#ff4d4f" }}>
+          {error}
+        </Title>
       </TripsContainer>
     );
   }
@@ -145,7 +196,17 @@ const MyTripsPage: React.FC = () => {
       </FilterContainer>
 
       {trips.length === 0 ? (
-        <p>Você ainda não salvou nenhuma viagem.</p>
+        <p
+          style={{
+            color: "#fff",
+            fontSize: "1.2rem",
+            textAlign: "center",
+            position: "relative",
+            zIndex: 2,
+          }}
+        >
+          Você ainda não salvou nenhuma viagem.
+        </p>
       ) : (
         <TripsGrid>
           {trips.map((trip) => (

@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { User, Settings, Bell, LogOut, Shield } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { User as UserType } from '../../services/authService';
-import flyaLogo from '../../assets/flyalogo.svg';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { User, Bell, LogOut, Shield } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { User as UserType } from "../../services/authService";
+import flyaLogo from "../../assets/flyalogo.svg";
+import { colors } from "../../design-tokens/colors";
 
 const Container = styled.div`
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #1e293b;
+  background-color: ${colors.profile.background};
 `;
 
 const Header = styled.header`
-  background: #0f172a;
+  background: ${colors.profile.surface};
   padding: 1rem 0;
   position: sticky;
   top: 0;
@@ -64,12 +65,12 @@ const MainContent = styled.main`
 
 const Sidebar = styled.aside`
   width: 280px;
-  background: #0f172a;
+  background: ${colors.profile.surface};
   border-radius: 16px;
   padding: 1.5rem;
   height: fit-content;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  border: 1px solid #334155;
+  box-shadow: ${colors.shadow.card};
+  border: 1px solid ${colors.profile.border};
 
   @media (max-width: 768px) {
     width: 100%;
@@ -89,32 +90,26 @@ const SidebarItem = styled.button<{ active?: boolean }>`
   padding: 1rem;
   border: none;
   border-radius: 12px;
-  background: ${({ active }) => 
-    active ? '#3b82f6' : 'transparent'
-  };
-  color: ${({ active }) => 
-    active ? 'white' : '#e2e8f0'
-  };
-  font-weight: ${({ active }) => active ? '600' : '500'};
+  background: ${({ active }) => (active ? "#3b82f6" : "transparent")};
+  color: ${({ active }) => (active ? "white" : "#e2e8f0")};
+  font-weight: ${({ active }) => (active ? "600" : "500")};
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
   width: 100%;
 
   &:hover {
-    background: ${({ active }) => 
-      active ? '#3b82f6' : '#1e293b'
-    };
+    background: ${({ active }) => (active ? "#3b82f6" : "#1e293b")};
     transform: translateX(4px);
   }
 
   &.logout {
     margin-top: 1rem;
-    color: #ef4444;
-    
+    color: ${colors.state.error};
+
     &:hover {
-      background: rgba(239, 68, 68, 0.1);
-      color: #ef4444;
+      background: ${colors.alpha.error02};
+      color: ${colors.state.error};
     }
   }
 
@@ -125,17 +120,17 @@ const SidebarItem = styled.button<{ active?: boolean }>`
 
 const ContentArea = styled.div`
   flex: 1;
-  background: #0f172a;
+  background: ${colors.profile.surface};
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  border: 1px solid #334155;
+  box-shadow: ${colors.shadow.card};
+  border: 1px solid ${colors.profile.border};
   overflow: hidden;
 `;
 
 const ProfileHeader = styled.div`
   padding: 2rem;
-  border-bottom: 1px solid #334155;
-  background: #0f172a;
+  border-bottom: 1px solid ${colors.profile.border};
+  background: ${colors.profile.surface};
   color: white;
 
   h1 {
@@ -209,30 +204,21 @@ const PhotoActions = styled.div`
   max-width: 300px;
 `;
 
-const PhotoButton = styled.button<{ variant?: 'outline' }>`
+const PhotoButton = styled.button<{ variant?: "outline" }>`
   padding: 0.75rem 1.5rem;
-  border: ${({ variant }) => 
-    variant === 'outline' 
-      ? '1px solid #475569' 
-      : '1px solid #3b82f6'
-  };
+  border: ${({ variant }) =>
+    variant === "outline" ? "1px solid #475569" : "1px solid #3b82f6"};
   border-radius: 8px;
-  background: ${({ variant }) => 
-    variant === 'outline' ? 'transparent' : '#3b82f6'
-  };
-  color: ${({ variant }) => 
-    variant === 'outline' ? '#e2e8f0' : 'white'
-  };
+  background: ${({ variant }) =>
+    variant === "outline" ? "transparent" : "#3b82f6"};
+  color: ${({ variant }) => (variant === "outline" ? "#e2e8f0" : "white")};
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${({ variant }) => 
-      variant === 'outline' 
-        ? '#1e293b' 
-        : '#2563eb'
-    };
+    background: ${({ variant }) =>
+      variant === "outline" ? "#1e293b" : "#2563eb"};
     transform: translateY(-2px);
   }
 `;
@@ -271,12 +257,12 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: ${colors.profile.blue};
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
 
   &::placeholder {
-    color: #64748b;
+    color: ${colors.profile.textDimmed};
   }
 `;
 
@@ -293,14 +279,14 @@ const SaveButton = styled.button`
   align-self: flex-start;
 
   &:hover {
-    background: #1d4ed8;
+    background: ${colors.profile.blueDark};
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+    box-shadow: ${colors.shadow.purple};
   }
 `;
 
 const Footer = styled.footer`
-  background: #0f172a;
+  background: ${colors.profile.surface};
   color: white;
   padding: 2rem 1rem;
   margin-top: auto;
@@ -431,9 +417,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
 
   const handlePhotoUpload = () => {
     // Criar input file invisível
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
@@ -465,7 +451,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
       <Header>
         <HeaderContent>
           <Logo onClick={() => navigate("/")}>
-            <img src={flyaLogo} alt="Flya" style={{ width: "24px", height: "24px" }} />
+            <img
+              src={flyaLogo}
+              alt="Flya"
+              style={{ width: "24px", height: "24px" }}
+            />
             Flya
           </Logo>
         </HeaderContent>
@@ -603,7 +593,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
           )}
 
           {activeTab === "security" && (
-            <div style={{ padding: "2rem", textAlign: "center", color: "white" }}>
+            <div
+              style={{ padding: "2rem", textAlign: "center", color: "white" }}
+            >
               <h2>Configurações de Segurança</h2>
               <p>Funcionalidade em desenvolvimento</p>
               {/* TODO: Implementar mudança de senha, autenticação 2FA, etc. */}
@@ -611,7 +603,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
           )}
 
           {activeTab === "notifications" && (
-            <div style={{ padding: "2rem", textAlign: "center", color: "white" }}>
+            <div
+              style={{ padding: "2rem", textAlign: "center", color: "white" }}
+            >
               <h2>Configurações de Notificações</h2>
               <p>Funcionalidade em desenvolvimento</p>
               {/* TODO: Implementar configurações de notificações por email, push, etc. */}
@@ -624,60 +618,106 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
         <div className="footer-content">
           <div className="footer-brand">
             <div className="logo">
-              <img src={flyaLogo} alt="Flya" style={{ width: "24px", height: "24px", marginRight: "8px" }} />
+              <img
+                src={flyaLogo}
+                alt="Flya"
+                style={{ width: "24px", height: "24px", marginRight: "8px" }}
+              />
               Flya
             </div>
             <div className="tagline">Sua parceira para viagem da sua vida.</div>
           </div>
-          
+
           <div className="footer-sections">
             <div className="footer-section">
               <h3>Soluções</h3>
               <ul>
-                <li><a href="#">Planejamento inteligente</a></li>
-                <li><a href="#">Roteiros Personalizados</a></li>
-                <li><a href="#">Sugestões de Destinos</a></li>
-                <li><a href="#">Gestão de Orçamento</a></li>
-                <li><a href="#">Reservas Integradas</a></li>
+                <li>
+                  <a href="#">Planejamento inteligente</a>
+                </li>
+                <li>
+                  <a href="#">Roteiros Personalizados</a>
+                </li>
+                <li>
+                  <a href="#">Sugestões de Destinos</a>
+                </li>
+                <li>
+                  <a href="#">Gestão de Orçamento</a>
+                </li>
+                <li>
+                  <a href="#">Reservas Integradas</a>
+                </li>
               </ul>
             </div>
-            
+
             <div className="footer-section">
               <h3>Empresa</h3>
               <ul>
-                <li><a href="#">Sobre Nós</a></li>
-                <li><a href="#">Nossa Mídia</a></li>
-                <li><a href="#">Carreiras</a></li>
-                <li><a href="#">Blog</a></li>
-                <li><a href="#">Imprensa</a></li>
+                <li>
+                  <a href="#">Sobre Nós</a>
+                </li>
+                <li>
+                  <a href="#">Nossa Mídia</a>
+                </li>
+                <li>
+                  <a href="#">Carreiras</a>
+                </li>
+                <li>
+                  <a href="#">Blog</a>
+                </li>
+                <li>
+                  <a href="#">Imprensa</a>
+                </li>
               </ul>
             </div>
-            
+
             <div className="footer-section">
               <h3>Contato & Redes</h3>
               <ul>
-                <li><a href="mailto:contato@flya.com.br">contato@flya.com.br</a></li>
-                <li><a href="tel:(XX) XXXX-XXXX">(XX) XXXX-XXXX</a></li>
-                <li><a href="#">Belo Horizonte, MG, Brasil</a></li>
                 <li>
-                  <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
-                    <a href="#" style={{ fontSize: '1.2rem' }}>📘</a>
-                    <a href="#" style={{ fontSize: '1.2rem' }}>🐦</a>
-                    <a href="#" style={{ fontSize: '1.2rem' }}>📷</a>
-                    <a href="#" style={{ fontSize: '1.2rem' }}>💼</a>
+                  <a href="mailto:contato@flya.com.br">contato@flya.com.br</a>
+                </li>
+                <li>
+                  <a href="tel:(XX) XXXX-XXXX">(XX) XXXX-XXXX</a>
+                </li>
+                <li>
+                  <a href="#">Belo Horizonte, MG, Brasil</a>
+                </li>
+                <li>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      marginTop: "0.5rem",
+                    }}
+                  >
+                    <a href="#" style={{ fontSize: "1.2rem" }}>
+                      📘
+                    </a>
+                    <a href="#" style={{ fontSize: "1.2rem" }}>
+                      🐦
+                    </a>
+                    <a href="#" style={{ fontSize: "1.2rem" }}>
+                      📷
+                    </a>
+                    <a href="#" style={{ fontSize: "1.2rem" }}>
+                      💼
+                    </a>
                   </div>
                 </li>
               </ul>
             </div>
           </div>
         </div>
-        
+
         <div className="footer-bottom">
-          © 2020 Flya. Todos os direitos reservados. | <a href="/politica-de-privacidade">Política de Privacidade</a> | <a href="/termos-de-uso">Termos de Serviço</a>
+          © 2020 Flya. Todos os direitos reservados. |{" "}
+          <a href="/politica-de-privacidade">Política de Privacidade</a> |{" "}
+          <a href="/termos-de-uso">Termos de Serviço</a>
         </div>
       </Footer>
     </Container>
   );
 };
 
-export default ProfilePage; 
+export default ProfilePage;

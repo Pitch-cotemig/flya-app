@@ -265,11 +265,6 @@ export const DestinationCard = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(0, 188, 212, 0.1) 0%,
-      transparent 50%
-    );
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 1;
