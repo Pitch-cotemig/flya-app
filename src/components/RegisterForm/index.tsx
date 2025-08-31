@@ -267,6 +267,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           Faça login
         </LoginButton>
       </LoginLink>
+      <LoginButton type="button" onClick={handleGoToHome}>
+        Voltar
+      </LoginButton>
     </RegisterFormContainer>
   );
 };

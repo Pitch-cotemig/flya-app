@@ -71,7 +71,7 @@ function App() {
   }, []);
 
   const handleLoginSuccess = (user: User, token: string) => {
-    // console.log('Login success:', user);
+    console.log('Login success:', user);
     setCurrentUser(user);
     localStorage.setItem("authToken", token);
     setShowSuccessModal(true);
@@ -113,32 +113,15 @@ function App() {
             element={<PrivacyPolicyPage />}
           />
           <Route path="/sobre-nos" element={<AboutUsPage />} />
-          <Route
-            path="/auth"
-            element={<AuthPage onLoginSuccess={handleLoginSuccess} />}
-          />
-
-          <Route
-            path="/planejamento"
-            element={
-              currentUser ? (
-                <PlanningFormPage />
-              ) : (
-                <Navigate to="/auth" replace />
-              )
-            }
-          />
-          <Route
-            path="/minhas-viagens"
-            element={
-              currentUser ? <MyTripsPage /> : <Navigate to="/auth" replace />
-            }
-          />
-          <Route path="/mala" element={<BagPage />} />
         </Route>
 
-        {/* --- ROTA PRIVADA (só para usuários logados) --- */}
-
+        {/* --- ROTAS SEM LAYOUT --- */}
+        <Route
+          path="/auth"
+          element={<AuthPage onLoginSuccess={handleLoginSuccess} />}
+        />
+        
+        {/* --- ROTAS PRIVADAS (só para usuários logados) --- */}
         <Route
           path="/dashboard"
           element={
@@ -149,7 +132,28 @@ function App() {
             )
           }
         />
-
+        <Route
+          path="/planejamento"
+          element={
+            currentUser ? (
+              <PlanningFormPage />
+            ) : (
+              <Navigate to="/auth" replace />
+            )
+          }
+        />
+        <Route
+          path="/minhas-viagens"
+          element={
+            currentUser ? <MyTripsPage /> : <Navigate to="/auth" replace />
+          }
+        />
+        <Route
+          path="/mala"
+          element={
+            currentUser ? <BagPage /> : <Navigate to="/auth" replace />
+          }
+        />
         <Route
           path="/perfil"
           element={

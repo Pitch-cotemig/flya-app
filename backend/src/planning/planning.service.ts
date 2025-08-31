@@ -10,7 +10,7 @@ export class PlanningService {
     const prompt = this.buildPrompt(createPlanningDto);
     
     const generatedPlan = await this.aiService.generatePlan(prompt);
-      //Validar o plano gerado
+
     return {
       message: 'Plano de viagem gerado com sucesso!',
       plan: generatedPlan,
