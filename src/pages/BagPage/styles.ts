@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { colors } from "../../design-tokens/colors";
 
 export const BagContainer = styled.div`
   min-height: 100vh;
@@ -24,7 +25,7 @@ export const FloatingElements = styled.div`
     left: 15%;
     width: 5px;
     height: 5px;
-    background: rgba(0, 188, 212, 0.6);
+    background: ${colors.alpha.cyan03};
     border-radius: 50%;
     animation: float1 8s ease-in-out infinite;
   }
@@ -36,7 +37,7 @@ export const FloatingElements = styled.div`
     right: 20%;
     width: 4px;
     height: 4px;
-    background: rgba(0, 188, 212, 0.4);
+    background: ${colors.alpha.cyan02};
     border-radius: 50%;
     animation: float2 10s ease-in-out infinite;
   }
@@ -101,7 +102,7 @@ export const BagTitle = styled.h1`
 
 export const BagSubtitle = styled.p`
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: ${colors.text.primaryAlpha80};
   animation: slideInFromBottom 1s ease-out 0.3s both;
 
   @keyframes slideInFromBottom {
@@ -133,11 +134,11 @@ export const TripInfo = styled.div`
 `;
 
 export const TripDestination = styled.div`
-  background: rgba(255, 255, 255, 0.1);
+  background: ${colors.alpha.white01};
   padding: 1rem 2rem;
   border-radius: 12px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid ${colors.alpha.white02};
   font-size: 1.1rem;
   animation: fadeIn 1s ease-out 0.6s both;
 
@@ -154,11 +155,11 @@ export const TripDestination = styled.div`
 `;
 
 export const TripDuration = styled.div`
-  background: rgba(255, 255, 255, 0.1);
+  background: ${colors.alpha.white01};
   padding: 1rem 2rem;
   border-radius: 12px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid ${colors.alpha.white02};
   font-size: 1.1rem;
   animation: fadeIn 1s ease-out 0.8s both;
 `;
@@ -188,18 +189,18 @@ export const ProgressText = styled.div`
 export const ProgressBar = styled.div`
   width: 100%;
   height: 8px;
-  background: rgba(255, 255, 255, 0.2);
+  background: ${colors.alpha.white02};
   border-radius: 4px;
   overflow: hidden;
 `;
 
 export const ProgressFill = styled.div<{ progress: number }>`
   height: 100%;
-  background: linear-gradient(90deg, #00bcd4, #00acc1);
+  background: ${colors.gradients.cyan};
   border-radius: 4px;
   width: ${(props) => props.progress}%;
   transition: width 0.5s ease;
-  box-shadow: 0 0 10px rgba(0, 188, 212, 0.4);
+  box-shadow: ${colors.shadow.cyanStrong};
 `;
 
 export const AddItemSection = styled.div`
@@ -234,22 +235,22 @@ export const AddItemInput = styled.input`
   padding: 1rem 1.5rem;
   border: none;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.1);
+  background: ${colors.alpha.white01};
   color: white;
   font-size: 1rem;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid ${colors.alpha.white02};
   transition: all 0.3s ease;
 
   &:focus {
     outline: none;
-    border-color: #00bcd4;
-    box-shadow: 0 0 15px rgba(0, 188, 212, 0.3);
+    border-color: ${colors.primary.cyan};
+    box-shadow: ${colors.shadow.cyanStrong};
     transform: translateY(-2px);
   }
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: ${colors.text.primaryAlpha60};
   }
 `;
 
@@ -266,11 +267,11 @@ export const AddItemButton = styled.button`
   align-items: center;
   gap: 0.5rem;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+  box-shadow: ${colors.shadow.cyanStrong};
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 188, 212, 0.4);
+    box-shadow: ${colors.shadow.cyanStrong};
   }
 
   &:active {
@@ -284,7 +285,7 @@ export const CategoriesSection = styled.div`
   h3 {
     font-size: 1.2rem;
     margin-bottom: 1rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: ${colors.text.primaryAlpha90};
   }
 `;
 
@@ -301,8 +302,8 @@ export const CategoryTab = styled.button<{ active?: boolean; variant?: "add" }>`
   border-radius: 25px;
   background: ${(props) =>
     props.active
-      ? "linear-gradient(135deg, #00bcd4 0%, #00acc1 100%)"
-      : "rgba(255, 255, 255, 0.1)"};
+      ? "${colors.gradients.cyan}"
+      : "${colors.alpha.white01}"};
   color: white;
   font-size: 0.9rem;
   font-weight: 500;
@@ -314,15 +315,15 @@ export const CategoryTab = styled.button<{ active?: boolean; variant?: "add" }>`
   backdrop-filter: blur(10px);
   border: 1px solid
     ${(props) =>
-      props.active ? "rgba(0, 188, 212, 0.5)" : "rgba(255, 255, 255, 0.2)"};
+      props.active ? "${colors.alpha.cyan05}" : "${colors.alpha.white02}"};
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 188, 212, 0.2);
+    box-shadow: ${colors.shadow.cyan};
     background: ${(props) =>
       props.active
-        ? "linear-gradient(135deg, #00acc1 0%, #0097a7 100%)"
-        : "rgba(255, 255, 255, 0.15)"};
+        ? "${colors.gradients.cyanHover}"
+        : "${colors.background.glassStrong}"};
   }
 
   span {
@@ -352,16 +353,16 @@ export const ItemCard = styled.div<{ checked?: boolean }>`
   align-items: center;
   gap: 1rem;
   padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: ${colors.alpha.white01};
   border-radius: 12px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid ${colors.alpha.white02};
   transition: all 0.3s ease;
   opacity: ${(props) => (props.checked ? 0.7 : 1)};
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 188, 212, 0.2);
+    box-shadow: ${colors.shadow.cyan};
     border-color: rgba(0, 188, 212, 0.3);
   }
 `;
