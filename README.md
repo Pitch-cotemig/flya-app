@@ -37,4 +37,33 @@ Gustavo Albuquerque - 22302093
 Izabela Ferreira - 22300376  
 Lucas Diniz - 22301526  
 
+## 🚀 Como Rodar o Projeto
+
+### Pré-requisitos
+- Node.js (versão 18 ou superior)
+- npm
+
+### Configuração do Ambiente
+
+Antes de iniciar, é necessário configurar as variáveis de ambiente para o backend.
+
+1.  Navegue até a pasta `backend`.
+2.  Crie uma cópia do arquivo `.env.example` e renomeie para `.env`.
+3.  Preencha as chaves de API necessárias no arquivo `.env`.
+
+### Instalação e Execução
+
+Para instalar as dependências e iniciar a aplicação (frontend e backend), execute o seguinte comando na raiz do projeto:
+
+```bash
+npm run start
+```
+
+Este comando irá instalar todas as dependências necessárias e iniciar os dois servidores.
+
+- **Frontend** estará disponível em: `http://localhost:5173`
+- **Backend** estará disponível em: `http://localhost:3000`
+
+---------------------
+
 Sua parceira para viagem da sua vida.
