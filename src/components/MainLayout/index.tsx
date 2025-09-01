@@ -4,7 +4,7 @@ import { Footer, Header } from "..";
 import { User } from "../../services/authService";
 import { ReactNode } from "react";
 
-const HEADER_HEIGHT = "6rem";
+const HEADER_HEIGHT = "1rem";
 
 const MainContent = styled.main`
   padding-top: ${HEADER_HEIGHT};

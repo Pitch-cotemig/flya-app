@@ -20,6 +20,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import ItemSuggestions from "../../components/ItemSuggestions";
 import { BagItem } from "../../store/types";
+import { User } from "../../services/authService";
 import {
   BagContainer,
   BagHeader,
@@ -65,7 +66,7 @@ const CATEGORIES = [
   { id: "other", name: "Outros", icon: "📋" },
 ];
 
-export function BagPage() {
+export function BagPage({ user }: { user: User | null }) {
   const dispatch = useAppDispatch();
   const [newItemName, setNewItemName] = useState("");
 
@@ -140,6 +141,7 @@ export function BagPage() {
 
   return (
     <>
+      <Header user={user} />
       <BagContainer>
         <FloatingElements />
 
@@ -270,6 +272,7 @@ export function BagPage() {
           </ItemsList>
         </BagContent>
       </BagContainer>
+      <Footer />
     </>
   );
 }

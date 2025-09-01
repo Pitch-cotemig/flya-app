@@ -3,6 +3,9 @@ import styled from "styled-components";
 import { tripsService } from "../../services/tripsService";
 import TripCard from "../../components/TripCard";
 import { colors } from "../../design-tokens/colors";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import { User } from "../../services/authService";
 
 const TripsContainer = styled.div`
   padding: 40px;
@@ -101,7 +104,7 @@ interface Trip {
   created_at?: string;
 }
 
-const MyTripsPage: React.FC = () => {
+const MyTripsPage: React.FC<{ user: User | null }> = ({ user }) => {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -158,68 +161,80 @@ const MyTripsPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <TripsContainer>
-        <Title style={{ zIndex: 2, position: "relative" }}>
-          Carregando suas viagens...
-        </Title>
-      </TripsContainer>
+      <>
+        <Header user={user} />
+        <TripsContainer>
+          <Title style={{ zIndex: 2, position: "relative" }}>
+            Carregando suas viagens...
+          </Title>
+        </TripsContainer>
+        <Footer />
+      </>
     );
   }
 
   if (error) {
     return (
-      <TripsContainer>
-        <Title style={{ zIndex: 2, position: "relative", color: "#ff4d4f" }}>
-          {error}
-        </Title>
-      </TripsContainer>
+      <>
+        <Header user={user} />
+        <TripsContainer>
+          <Title style={{ zIndex: 2, position: "relative", color: "#ff4d4f" }}>
+            {error}
+          </Title>
+        </TripsContainer>
+        <Footer />
+      </>
     );
   }
 
   return (
-    <TripsContainer>
-      <Title>Minhas Viagens</Title>
+    <>
+      <Header user={user} />
+      <TripsContainer>
+        <Title>Minhas Viagens</Title>
 
-      <FilterContainer>
-        <FilterButton
-          active={filter === "all"}
-          onClick={() => handleFilterChange("all")}
-        >
-          Todas as Viagens
-        </FilterButton>
-        <FilterButton
-          active={filter === "favorites"}
-          onClick={() => handleFilterChange("favorites")}
-        >
-          Apenas Favoritas
-        </FilterButton>
-      </FilterContainer>
+        <FilterContainer>
+          <FilterButton
+            active={filter === "all"}
+            onClick={() => handleFilterChange("all")}
+          >
+            Todas as Viagens
+          </FilterButton>
+          <FilterButton
+            active={filter === "favorites"}
+            onClick={() => handleFilterChange("favorites")}
+          >
+            Apenas Favoritas
+          </FilterButton>
+        </FilterContainer>
 
-      {trips.length === 0 ? (
-        <p
-          style={{
-            color: "#fff",
-            fontSize: "1.2rem",
-            textAlign: "center",
-            position: "relative",
-            zIndex: 2,
-          }}
-        >
-          Você ainda não salvou nenhuma viagem.
-        </p>
-      ) : (
-        <TripsGrid>
-          {trips.map((trip) => (
-            <TripCard
-              key={trip.id}
-              trip={trip}
-              onDelete={handleDelete}
-              onToggleFavorite={handleToggleFavorite}
-            />
-          ))}
-        </TripsGrid>
-      )}
-    </TripsContainer>
+        {trips.length === 0 ? (
+          <p
+            style={{
+              color: "#fff",
+              fontSize: "1.2rem",
+              textAlign: "center",
+              position: "relative",
+              zIndex: 2,
+            }}
+          >
+            Você ainda não salvou nenhuma viagem.
+          </p>
+        ) : (
+          <TripsGrid>
+            {trips.map((trip) => (
+              <TripCard
+                key={trip.id}
+                trip={trip}
+                onDelete={handleDelete}
+                onToggleFavorite={handleToggleFavorite}
+              />
+            ))}
+          </TripsGrid>
+        )}
+      </TripsContainer>
+      <Footer />
+    </>
   );
 };
 

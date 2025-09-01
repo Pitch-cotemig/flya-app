@@ -3,8 +3,6 @@ import { Link, NavLink } from "react-router-dom";
 import { User } from "lucide-react";
 
 export const HeaderContainer = styled.header`
-  position: absolute;
-  z-index: 50;
   width: 100%;
   padding: 1rem 1rem 0;
   animation: slideInFromTop 0.8s ease-out;

@@ -71,7 +71,7 @@ function App() {
   }, []);
 
   const handleLoginSuccess = (user: User, token: string) => {
-    console.log('Login success:', user);
+    console.log("Login success:", user);
     setCurrentUser(user);
     localStorage.setItem("authToken", token);
     setShowSuccessModal(true);
@@ -120,7 +120,7 @@ function App() {
           path="/auth"
           element={<AuthPage onLoginSuccess={handleLoginSuccess} />}
         />
-        
+
         {/* --- ROTAS PRIVADAS (só para usuários logados) --- */}
         <Route
           path="/dashboard"
@@ -135,23 +135,27 @@ function App() {
         <Route
           path="/planejamento"
           element={
+            currentUser ? <PlanningFormPage /> : <Navigate to="/auth" replace />
+          }
+        />
+        <Route
+          path="/minhas-viagens"
+          element={
             currentUser ? (
-              <PlanningFormPage />
+              <MyTripsPage user={currentUser} />
             ) : (
               <Navigate to="/auth" replace />
             )
           }
         />
         <Route
-          path="/minhas-viagens"
-          element={
-            currentUser ? <MyTripsPage /> : <Navigate to="/auth" replace />
-          }
-        />
-        <Route
           path="/mala"
           element={
-            currentUser ? <BagPage /> : <Navigate to="/auth" replace />
+            currentUser ? (
+              <BagPage user={currentUser} />
+            ) : (
+              <Navigate to="/auth" replace />
+            )
           }
         />
         <Route
