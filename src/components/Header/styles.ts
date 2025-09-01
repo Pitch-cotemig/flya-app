@@ -2,12 +2,15 @@ import styled from "styled-components";
 import { Link, NavLink } from "react-router-dom";
 import { User } from "lucide-react";
 
-export const HeaderContainer = styled.header`
-  position: absolute;
-  z-index: 50;
+export const HeaderContainer = styled.header<{ $isHomePage?: boolean }>`
+  position: fixed;
+  top: 0;
+  z-index: 100;
   width: 100%;
   padding: 1rem 1rem 0;
   animation: slideInFromTop 0.8s ease-out;
+  background: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
 
   @keyframes slideInFromTop {
     0% {
@@ -25,7 +28,7 @@ export const HeaderContainer = styled.header`
   }
 `;
 
-export const HeaderContent = styled.div`
+export const HeaderContent = styled.div<{ $isHomePage?: boolean }>`
   position: relative;
   margin: 0 auto;
   max-width: 1200px;
@@ -34,16 +37,19 @@ export const HeaderContent = styled.div`
   align-items: center;
   justify-content: space-between;
   border-radius: ${({ theme }) => theme.borderRadius.xl};
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background-color: rgba(28, 28, 67, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(15, 23, 42, 0.9);
   padding: 0 1.5rem;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(20px) saturate(180%);
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 
   &:hover {
-    border-color: rgba(0, 188, 212, 0.3);
-    box-shadow: 0 8px 25px rgba(0, 188, 212, 0.2);
+    border-color: rgba(0, 188, 212, 0.4);
+    box-shadow: 0 8px 30px rgba(0, 188, 212, 0.2), 0 4px 15px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    background-color: rgba(15, 23, 42, 0.95);
   }
 `;
 

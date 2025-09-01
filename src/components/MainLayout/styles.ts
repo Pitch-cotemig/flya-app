@@ -7,7 +7,7 @@ export const PageContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.custom.darkBlue};
 `;
 
-export const ContentWrap = styled.main`
+export const ContentWrap = styled.main<{ $isHomePage?: boolean }>`
   flex: 1;
-  padding-top: 7rem;
+  padding-top: ${({ $isHomePage }) => ($isHomePage ? "0" : "7rem")};
 `;

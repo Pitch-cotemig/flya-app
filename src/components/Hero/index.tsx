@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { User } from "../../services/authService";
 import {
   HeroContainer,
   HeroContent,
@@ -10,7 +11,11 @@ import {
   FloatingParticles,
 } from "./styles";
 
-const Hero: React.FC = () => {
+interface HeroProps {
+  user?: User | null;
+}
+
+const Hero: React.FC<HeroProps> = ({ user }) => {
   const [budget, setBudget] = useState("");
   const navigate = useNavigate();
 
@@ -18,11 +23,24 @@ const Hero: React.FC = () => {
     navigate("/planejamento");
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handlePlanClick();
+    }
+  };
+
+  const getTitle = () => {
+    if (user) {
+      return `Olá ${user.firstName}! Planeje sua viagem dos sonhos com IA`;
+    }
+    return "Sua viagem dos sonhos planejada com IA";
+  };
+
   return (
     <HeroContainer>
       <FloatingParticles />
       <HeroContent>
-        <HeroTitle>Sua viagem dos sonhos planejada com IA</HeroTitle>
+        <HeroTitle>{getTitle()}</HeroTitle>
       </HeroContent>
       <HeroForm>
         <HeroInput
@@ -30,6 +48,7 @@ const Hero: React.FC = () => {
           placeholder="Quanto você quer gastar?"
           value={budget}
           onChange={(e) => setBudget(e.target.value)}
+          onKeyPress={handleKeyPress}
         />
         <HeroButton onClick={handlePlanClick}>Planejar</HeroButton>
       </HeroForm>

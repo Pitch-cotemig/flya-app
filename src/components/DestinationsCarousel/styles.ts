@@ -1,8 +1,13 @@
 import styled from "styled-components";
 
 export const DestinationsSection = styled.section`
-  padding: 4rem 2rem;
-  background: rgb(28, 28, 67);
+  padding: 6rem 2rem;
+  background: linear-gradient(
+    135deg,
+    rgb(15, 23, 42) 0%,
+    rgb(28, 28, 67) 50%,
+    rgb(15, 23, 42) 100%
+  );
   color: white;
   position: relative;
   overflow: hidden;
@@ -14,17 +19,28 @@ export const DestinationsSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-
-    animation: backgroundPulse 8s ease-in-out infinite;
+    background: radial-gradient(
+        ellipse at top,
+        rgba(0, 188, 212, 0.08) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse at bottom,
+        rgba(0, 188, 212, 0.05) 0%,
+        transparent 60%
+      );
+    animation: backgroundShift 15s ease-in-out infinite;
   }
 
-  @keyframes backgroundPulse {
+  @keyframes backgroundShift {
     0%,
     100% {
-      opacity: 0.5;
+      opacity: 0.6;
+      transform: scale(1) rotate(0deg);
     }
     50% {
       opacity: 1;
+      transform: scale(1.05) rotate(1deg);
     }
   }
 `;
@@ -37,47 +53,93 @@ export const DestinationsContainer = styled.div`
 `;
 
 export const SectionTitle = styled.h2`
-  font-size: 2.5rem;
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
   font-weight: 700;
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
   color: white;
   position: relative;
   display: inline-block;
   width: 100%;
-  animation: slideInFromTop 1s ease-out;
+  animation: titleSlideIn 1.2s ease-out;
 
   &::after {
     content: "";
     position: absolute;
-    bottom: -10px;
+    bottom: -15px;
     left: 50%;
     transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background: linear-gradient(90deg, #00bcd4, #00acc1, #00bcd4);
-    border-radius: 2px;
-    animation: glowLine 2s ease-in-out infinite;
+    width: 120px;
+    height: 5px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      #00bcd4 25%,
+      #00acc1 50%,
+      #00bcd4 75%,
+      transparent 100%
+    );
+    border-radius: 3px;
+    animation: titleUnderline 1.5s ease-out 0.5s both,
+      shimmerLine 3s ease-in-out infinite 2s;
   }
 
-  @keyframes slideInFromTop {
-    from {
+  &::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 20%;
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 188, 212, 0.3) 50%,
+      transparent 100%
+    );
+    animation: titleTopLine 1.5s ease-out 0.8s both;
+  }
+
+  @keyframes titleSlideIn {
+    0% {
       opacity: 0;
-      transform: translateY(-30px);
+      transform: translateY(-40px) scale(0.9);
     }
-    to {
+    100% {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
     }
   }
 
-  @keyframes glowLine {
+  @keyframes titleUnderline {
+    0% {
+      width: 0;
+      opacity: 0;
+    }
+    100% {
+      width: 120px;
+      opacity: 1;
+    }
+  }
+
+  @keyframes titleTopLine {
+    0% {
+      width: 0;
+      opacity: 0;
+    }
+    100% {
+      width: 60%;
+      opacity: 1;
+    }
+  }
+
+  @keyframes shimmerLine {
     0%,
     100% {
-      box-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+      box-shadow: 0 0 8px rgba(0, 188, 212, 0.3);
     }
     50% {
-      box-shadow: 0 0 20px rgba(0, 188, 212, 1);
+      box-shadow: 0 0 20px rgba(0, 188, 212, 0.8);
     }
   }
 `;
@@ -107,27 +169,42 @@ export const CarouselButton = styled.button`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(0, 188, 212, 0.8);
+  background: rgba(0, 188, 212, 0.9);
   color: white;
   border: none;
-  padding: 1rem;
+  padding: 0;
   cursor: pointer;
-  font-size: 1.5rem;
   border-radius: 50%;
   z-index: 10;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  width: 50px;
-  height: 50px;
+  width: 55px;
+  height: 55px;
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 4px 20px rgba(0, 188, 212, 0.4), 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  svg {
+    width: 24px;
+    height: 24px;
+    stroke-width: 2.5;
+  }
 
   &:hover {
     background: rgba(0, 188, 212, 1);
-    transform: translateY(-50%) scale(1.2);
-    box-shadow: 0 8px 25px rgba(0, 188, 212, 0.5);
+    transform: translateY(-50%) scale(1.15);
+    box-shadow: 0 8px 30px rgba(0, 188, 212, 0.6), 0 4px 15px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+
+    svg {
+      stroke-width: 3;
+    }
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(1.05);
   }
 
   &.prev {
@@ -163,10 +240,13 @@ export const CarouselButton = styled.button`
   }
 
   @media (max-width: 768px) {
-    width: 40px;
-    height: 40px;
-    font-size: 1.2rem;
-    padding: 0.5rem;
+    width: 45px;
+    height: 45px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
 
     &.prev {
       left: 0.5rem;
@@ -181,29 +261,33 @@ export const CarouselButton = styled.button`
 export const DotsContainer = styled.div`
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
-  margin-top: 2rem;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 3rem;
+  padding: 1rem;
 `;
 
 export const Dot = styled.button`
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
   border: none;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.4);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   position: relative;
+  backdrop-filter: blur(5px);
 
   &.active {
-    background: #00bcd4;
-    transform: scale(1.4);
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.6);
+    background: linear-gradient(135deg, #00bcd4 0%, #00acc1 100%);
+    transform: scale(1.5);
+    box-shadow: 0 0 15px rgba(0, 188, 212, 0.8), 0 0 30px rgba(0, 188, 212, 0.4);
   }
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.8);
+  &:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.7);
     transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
   }
 
   &::after {
@@ -215,29 +299,36 @@ export const Dot = styled.button`
     width: 0;
     height: 0;
     border-radius: 50%;
-    background: rgba(0, 188, 212, 0.4);
+    background: rgba(0, 188, 212, 0.3);
     transition: all 0.3s ease;
   }
 
   &:hover::after {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
+    opacity: 0.2;
   }
 `;
 
 export const DestinationCard = styled.div`
   position: relative;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  height: 280px;
-  min-width: 280px;
+  height: 320px;
+  min-width: 300px;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   flex-shrink: 0;
   transform: translateY(0);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   opacity: 0;
   animation: slideInFromBottom 0.8s ease-out forwards;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 188, 212, 0.05) 0%,
+    rgba(28, 28, 67, 0.1) 100%
+  );
 
   &:nth-child(1) {
     animation-delay: 0.1s;
@@ -271,8 +362,10 @@ export const DestinationCard = styled.div`
   }
 
   &:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0, 188, 212, 0.3);
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(0, 188, 212, 0.3),
+      0 8px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    z-index: 10;
 
     &::before {
       opacity: 1;
@@ -282,7 +375,7 @@ export const DestinationCard = styled.div`
   @keyframes slideInFromBottom {
     from {
       opacity: 0;
-      transform: translateY(50px) scale(0.8);
+      transform: translateY(60px) scale(0.9);
     }
     to {
       opacity: 1;
@@ -291,13 +384,13 @@ export const DestinationCard = styled.div`
   }
 
   @media (max-width: 768px) {
-    min-width: 250px;
-    height: 250px;
+    min-width: 280px;
+    height: 280px;
   }
 
   @media (max-width: 480px) {
-    min-width: 220px;
-    height: 220px;
+    min-width: 260px;
+    height: 260px;
   }
 `;
 
@@ -317,84 +410,87 @@ export const DestinationOverlay = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
-  padding: 1.5rem 1rem 1rem;
+  background: linear-gradient(
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) 30%,
+    rgba(0, 0, 0, 0.7) 70%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+  padding: 2rem 1.5rem 1.5rem;
   color: white;
   z-index: 2;
-  transform: translateY(20px);
-  transition: transform 0.4s ease;
+  transform: translateY(35px);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  backdrop-filter: blur(2px);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(0, 188, 212, 0.5) 50%,
+      transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
 
   ${DestinationCard}:hover & {
     transform: translateY(0);
+    background: linear-gradient(
+      transparent 0%,
+      rgba(0, 0, 0, 0.4) 20%,
+      rgba(0, 0, 0, 0.9) 60%,
+      rgba(0, 0, 0, 0.98) 100%
+    );
+
+    &::before {
+      opacity: 1;
+    }
   }
 `;
 
 export const DestinationName = styled.h3`
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  transform: translateY(10px);
-  transition: transform 0.4s ease 0.1s;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.7rem;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s;
+  background: linear-gradient(135deg, #ffffff 0%, #e0f7ff 50%, #00bcd4 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
 
   ${DestinationCard}:hover & {
     transform: translateY(0);
+    opacity: 1;
+    background: linear-gradient(135deg, #ffffff 0%, #00bcd4 50%, #ffffff 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 `;
 
 export const DestinationDescription = styled.p`
-  font-size: 0.85rem;
-  opacity: 0.9;
-  line-height: 1.4;
-  transform: translateY(10px);
-  transition: transform 0.4s ease 0.2s;
+  font-size: 0.9rem;
+  opacity: 0;
+  line-height: 1.5;
+  transform: translateY(20px);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
 
   ${DestinationCard}:hover & {
     transform: translateY(0);
-  }
-`;
-export const HeroForm = styled.div`
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding: 2rem;
-  background: rgba(25, 25, 112, 0.9);
-  width: 100%;
-`;
-
-export const HeroInput = styled.input`
-  padding: 1rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  outline: none;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-
-  &::placeholder {
-    color: #666;
-  }
-`;
-
-export const HeroButton = styled.button`
-  background: #00bcd4;
-  color: white;
-  padding: 1rem 3rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
-
-  &:hover {
-    background: #00acc1;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 188, 212, 0.4);
+    opacity: 1;
+    color: rgba(255, 255, 255, 1);
   }
 `;
 
@@ -411,36 +507,46 @@ export const FloatingElements = styled.div`
   &::before {
     content: "";
     position: absolute;
-    top: 20%;
-    left: 10%;
-    width: 4px;
-    height: 4px;
-    background: rgba(0, 188, 212, 0.6);
+    top: 25%;
+    left: 8%;
+    width: 6px;
+    height: 6px;
+    background: rgba(0, 188, 212, 0.7);
     border-radius: 50%;
-    animation: float1 6s ease-in-out infinite;
+    animation: float1 10s ease-in-out infinite;
+    box-shadow: 0 0 15px rgba(0, 188, 212, 0.5);
   }
 
   &::after {
     content: "";
     position: absolute;
-    top: 60%;
-    right: 15%;
-    width: 3px;
-    height: 3px;
-    background: rgba(0, 188, 212, 0.4);
+    top: 70%;
+    right: 12%;
+    width: 4px;
+    height: 4px;
+    background: rgba(0, 188, 212, 0.6);
     border-radius: 50%;
-    animation: float2 8s ease-in-out infinite;
+    animation: float2 12s ease-in-out infinite;
+    box-shadow: 0 0 12px rgba(0, 188, 212, 0.4);
   }
 
   @keyframes float1 {
     0%,
     100% {
-      transform: translateY(0) scale(1);
-      opacity: 0.6;
+      transform: translateY(0) translateX(0) scale(1);
+      opacity: 0.7;
+    }
+    25% {
+      transform: translateY(-30px) translateX(15px) scale(1.3);
+      opacity: 1;
     }
     50% {
-      transform: translateY(-20px) scale(1.2);
-      opacity: 1;
+      transform: translateY(-15px) translateX(-10px) scale(0.8);
+      opacity: 0.5;
+    }
+    75% {
+      transform: translateY(-40px) translateX(5px) scale(1.1);
+      opacity: 0.9;
     }
   }
 
@@ -448,10 +554,14 @@ export const FloatingElements = styled.div`
     0%,
     100% {
       transform: translateY(0) translateX(0) scale(1);
-      opacity: 0.4;
+      opacity: 0.6;
     }
-    50% {
-      transform: translateY(-15px) translateX(10px) scale(1.5);
+    33% {
+      transform: translateY(-25px) translateX(-15px) scale(1.2);
+      opacity: 1;
+    }
+    66% {
+      transform: translateY(-35px) translateX(10px) scale(0.9);
       opacity: 0.8;
     }
   }

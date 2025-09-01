@@ -52,7 +52,7 @@ export function Footer() {
           {/* Coluna do Logo e Descrição */}
           <LogoSection>
             <LogoLink to="/">
-              <img src="/images/logo-placeholder.svg" alt="Flya Logo" />
+              <img src="/images/logo.png" alt="Flya Logo" />
               <span>Flya</span>
             </LogoLink>
             <LogoDescription>

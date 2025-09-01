@@ -71,7 +71,7 @@ function App() {
   }, []);
 
   const handleLoginSuccess = (user: User, token: string) => {
-    console.log('Login success:', user);
+    console.log("Login success:", user);
     setCurrentUser(user);
     localStorage.setItem("authToken", token);
     setShowSuccessModal(true);
@@ -104,15 +104,50 @@ function App() {
       )}
       {/* O BrowserRouter precisa envolver o App para o hook useNavigate funcionar */}
       <Routes>
-        {/* --- ROTAS PÚBLICAS COM LAYOUT (Header/Footer) --- */}
+        {/* --- TODAS AS ROTAS COM LAYOUT (Header/Footer) --- */}
         <Route element={<MainLayout user={currentUser} />}>
-          <Route path="/" element={<LandingPage />} />
+          {/* Rotas Públicas */}
+          <Route path="/" element={<LandingPage user={currentUser} />} />
           <Route path="/termos-de-uso" element={<TermsOfUsePage />} />
           <Route
             path="/politica-de-privacidade"
             element={<PrivacyPolicyPage />}
           />
           <Route path="/sobre-nos" element={<AboutUsPage />} />
+
+          {/* Rotas Privadas */}
+          <Route
+            path="/dashboard"
+            element={
+              currentUser ? (
+                <DashboardPage user={currentUser} onLogout={handleLogout} />
+              ) : (
+                <Navigate to="/auth" replace />
+              )
+            }
+          />
+          <Route
+            path="/planejamento"
+            element={
+              currentUser ? (
+                <PlanningFormPage />
+              ) : (
+                <Navigate to="/auth" replace />
+              )
+            }
+          />
+          <Route
+            path="/minhas-viagens"
+            element={
+              currentUser ? <MyTripsPage /> : <Navigate to="/auth" replace />
+            }
+          />
+          <Route
+            path="/mala"
+            element={
+              currentUser ? <BagPage /> : <Navigate to="/auth" replace />
+            }
+          />
         </Route>
 
         {/* --- ROTAS SEM LAYOUT --- */}
@@ -120,40 +155,7 @@ function App() {
           path="/auth"
           element={<AuthPage onLoginSuccess={handleLoginSuccess} />}
         />
-        
-        {/* --- ROTAS PRIVADAS (só para usuários logados) --- */}
-        <Route
-          path="/dashboard"
-          element={
-            currentUser ? (
-              <DashboardPage user={currentUser} onLogout={handleLogout} />
-            ) : (
-              <Navigate to="/auth" replace />
-            )
-          }
-        />
-        <Route
-          path="/planejamento"
-          element={
-            currentUser ? (
-              <PlanningFormPage />
-            ) : (
-              <Navigate to="/auth" replace />
-            )
-          }
-        />
-        <Route
-          path="/minhas-viagens"
-          element={
-            currentUser ? <MyTripsPage /> : <Navigate to="/auth" replace />
-          }
-        />
-        <Route
-          path="/mala"
-          element={
-            currentUser ? <BagPage /> : <Navigate to="/auth" replace />
-          }
-        />
+
         <Route
           path="/perfil"
           element={
