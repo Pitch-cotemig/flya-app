@@ -57,7 +57,7 @@ const DestinationsCarousel: React.FC = () => {
       name: "Paraíso Tropical",
       description:
         "Refúgio paradisíaco com águas cristalinas e areias douradas",
-      image: "/images/4k-praia 1.png",
+      image: "/images/praia.png",
     },
     {
       id: 7,
