@@ -76,7 +76,7 @@ export function PlanningFormPage() {
   };
   const handlePrevStep = () => setStep((prev) => prev - 1);
   const handleSaveSuccess = () => {
-    navigate("/minhas-viagens");
+    navigate("/Minhas-Viagens");
   };
   const handleClose = () => navigate("/"); // Volta para a Home ao fechar
 

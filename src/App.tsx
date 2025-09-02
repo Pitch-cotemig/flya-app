@@ -137,13 +137,13 @@ function App() {
             }
           />
           <Route
-            path="/minhas-viagens"
+            path="/Minhas-Viagens"
             element={
               currentUser ? <MyTripsPage /> : <Navigate to="/auth" replace />
             }
           />
           <Route
-            path="/mala"
+            path="/Minha-Mala"
             element={
               currentUser ? <BagPage /> : <Navigate to="/auth" replace />
             }
@@ -157,7 +157,7 @@ function App() {
         />
 
         <Route
-          path="/perfil"
+          path="/Perfil"
           element={
             currentUser ? (
               <ProfilePage user={currentUser} onLogout={handleLogout} />
