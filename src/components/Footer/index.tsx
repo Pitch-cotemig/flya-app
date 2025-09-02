@@ -53,7 +53,6 @@ export function Footer() {
           <LogoSection>
             <LogoLink to="/">
               <img src="/images/logo.png" alt="Flya Logo" />
-              <span>Flya</span>
             </LogoLink>
             <LogoDescription>
               Sua parceira para viagens da sua vida.

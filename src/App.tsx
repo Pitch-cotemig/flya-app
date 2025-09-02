@@ -27,15 +27,14 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicy/PrivacyPolicyPage";
 import AboutUsPage from "./pages/AboutUs/AboutUsPage";
 import { PlanningFormPage } from "./pages/PlanningFormPage/PlanningFormPage";
 import { BagPage } from "./pages/BagPage/BagPageRedux";
-import { MainLayout, SuccessModal } from "./components";
-// 5. Página de perfil
+import { MainLayout, SuccessModal, ScrollToTop } from "./components";
 import { ProfilePage } from "./pages";
 import MyTripsPage from "./pages/MyTripsPage";
 
 function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // Para o check inicial do token
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -103,73 +102,75 @@ function App() {
         />
       )}
       {/* O BrowserRouter precisa envolver o App para o hook useNavigate funcionar */}
-      <Routes>
-        {/* --- TODAS AS ROTAS COM LAYOUT (Header/Footer) --- */}
-        <Route element={<MainLayout user={currentUser} />}>
-          {/* Rotas Públicas */}
-          <Route path="/" element={<LandingPage user={currentUser} />} />
-          <Route path="/termos-de-uso" element={<TermsOfUsePage />} />
-          <Route
-            path="/politica-de-privacidade"
-            element={<PrivacyPolicyPage />}
-          />
-          <Route path="/sobre-nos" element={<AboutUsPage />} />
+      <ScrollToTop>
+        <Routes>
+          {/* --- TODAS AS ROTAS COM LAYOUT (Header/Footer) --- */}
+          <Route element={<MainLayout user={currentUser} />}>
+            {/* Rotas Públicas */}
+            <Route path="/" element={<LandingPage user={currentUser} />} />
+            <Route path="/termos-de-uso" element={<TermsOfUsePage />} />
+            <Route
+              path="/politica-de-privacidade"
+              element={<PrivacyPolicyPage />}
+            />
+            <Route path="/sobre-nos" element={<AboutUsPage />} />
 
-          {/* Rotas Privadas */}
+            {/* Rotas Privadas */}
+            <Route
+              path="/dashboard"
+              element={
+                currentUser ? (
+                  <DashboardPage user={currentUser} onLogout={handleLogout} />
+                ) : (
+                  <Navigate to="/auth" replace />
+                )
+              }
+            />
+            <Route
+              path="/planejamento"
+              element={
+                currentUser ? (
+                  <PlanningFormPage />
+                ) : (
+                  <Navigate to="/auth" replace />
+                )
+              }
+            />
+            <Route
+              path="/minhas-viagens"
+              element={
+                currentUser ? <MyTripsPage /> : <Navigate to="/auth" replace />
+              }
+            />
+            <Route
+              path="/mala"
+              element={
+                currentUser ? <BagPage /> : <Navigate to="/auth" replace />
+              }
+            />
+          </Route>
+
+          {/* --- ROTAS SEM LAYOUT --- */}
           <Route
-            path="/dashboard"
+            path="/auth"
+            element={<AuthPage onLoginSuccess={handleLoginSuccess} />}
+          />
+
+          <Route
+            path="/perfil"
             element={
               currentUser ? (
-                <DashboardPage user={currentUser} onLogout={handleLogout} />
+                <ProfilePage user={currentUser} onLogout={handleLogout} />
               ) : (
                 <Navigate to="/auth" replace />
               )
             }
           />
-          <Route
-            path="/planejamento"
-            element={
-              currentUser ? (
-                <PlanningFormPage />
-              ) : (
-                <Navigate to="/auth" replace />
-              )
-            }
-          />
-          <Route
-            path="/minhas-viagens"
-            element={
-              currentUser ? <MyTripsPage /> : <Navigate to="/auth" replace />
-            }
-          />
-          <Route
-            path="/mala"
-            element={
-              currentUser ? <BagPage /> : <Navigate to="/auth" replace />
-            }
-          />
-        </Route>
 
-        {/* --- ROTAS SEM LAYOUT --- */}
-        <Route
-          path="/auth"
-          element={<AuthPage onLoginSuccess={handleLoginSuccess} />}
-        />
-
-        <Route
-          path="/perfil"
-          element={
-            currentUser ? (
-              <ProfilePage user={currentUser} onLogout={handleLogout} />
-            ) : (
-              <Navigate to="/auth" replace />
-            )
-          }
-        />
-
-        {/* Se o usuário digitar qualquer outra URL, ele é redirecionado para a home. */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+          {/* Se o usuário digitar qualquer outra URL, ele é redirecionado para a home. */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </ScrollToTop>
     </ThemeProvider>
   );
 }

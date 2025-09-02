@@ -70,6 +70,8 @@ export const LogoLink = styled(Link)`
   text-decoration: none;
   color: inherit;
   transition: transform 0.3s ease;
+  max-width: 250px;
+  max-height: 80px;
 
   &:hover {
     transform: scale(1.05);
