@@ -27,7 +27,7 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicy/PrivacyPolicyPage";
 import AboutUsPage from "./pages/AboutUs/AboutUsPage";
 import { PlanningFormPage } from "./pages/PlanningFormPage/PlanningFormPage";
 import { BagPage } from "./pages/BagPage/BagPageRedux";
-import { MainLayout, SuccessModal } from "./components";
+import { FlyaLoading, MainLayout, SuccessModal } from "./components";
 // 5. Página de perfil
 import { ProfilePage } from "./pages";
 import MyTripsPage from "./pages/MyTripsPage";
@@ -90,7 +90,7 @@ function App() {
   };
 
   if (isLoading) {
-    return <div>Verificando autenticação...</div>; // Ou um componente de Spinner
+    return <FlyaLoading text="Carregando suas viagens..." size="medium" />;
   }
 
   return (
