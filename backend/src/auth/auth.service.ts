@@ -1,7 +1,12 @@
-import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  BadRequestException,
+} from '@nestjs/common';
 import { SupabaseService } from 'src/supabase/supabase.service';
 import { AuthDto } from './dto/auth.dto';
 import { LoginDto } from './dto/login.dto';
+import { randomInt } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +19,7 @@ export class AuthService {
     }
 
     const supabase = this.supabaseService.getClient();
-    
+
     // Criar usuário no Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: authDto.email,
@@ -30,17 +35,15 @@ export class AuthService {
     }
 
     // Criar perfil do usuário na tabela profiles
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .insert({
-        id: authData.user.id,
-        username: authDto.username,
-        first_name: authDto.firstName,
-        last_name: authDto.lastName,
-        email: authDto.email,
-        birth_date: authDto.birthDate,
-        full_name: `${authDto.firstName} ${authDto.lastName}`,
-      });
+    const { error: profileError } = await supabase.from('profiles').insert({
+      id: authData.user.id,
+      username: authDto.username,
+      first_name: authDto.firstName,
+      last_name: authDto.lastName,
+      email: authDto.email,
+      birth_date: authDto.birthDate,
+      full_name: `${authDto.firstName} ${authDto.lastName}`,
+    });
 
     if (profileError) {
       // Se der erro ao criar o perfil, deletar o usuário criado
@@ -74,7 +77,9 @@ export class AuthService {
     }
 
     if (!data.user || !data.session) {
-      throw new UnauthorizedException('User or session not found after sign in.');
+      throw new UnauthorizedException(
+        'User or session not found after sign in.',
+      );
     }
 
     // Buscar dados do perfil
@@ -104,7 +109,10 @@ export class AuthService {
 
   async validateToken(token: string) {
     const supabase = this.supabaseService.getClient();
-    const { data: { user }, error } = await supabase.auth.getUser(token);
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(token);
 
     if (error || !user) {
       throw new UnauthorizedException('Token inválido');
@@ -132,5 +140,26 @@ export class AuthService {
         birthDate: profile?.birth_date,
       },
     };
+  }
+  private twoFactorCodes = new Map<string, string>(); // armazenar códigos temporários
+
+  async send2FACode(email: string) {
+    const code = randomInt(100000, 999999).toString(); // 6 dígitos
+    this.twoFactorCodes.set(email, code);
+
+    // Aqui você pode enviar o código por e-mail ou SMS via Supabase
+    const supabase = this.supabaseService.getClient();
+    await supabase.from('emails').insert({ to: email, code }); // exemplo, adaptar para o seu envio real
+
+    return code;
+  }
+
+  async verify2FACode(email: string, code: string): Promise<boolean> {
+    const validCode = this.twoFactorCodes.get(email);
+    if (validCode && validCode === code) {
+      this.twoFactorCodes.delete(email); // remove após verificação
+      return true;
+    }
+    return false;
   }
 }
