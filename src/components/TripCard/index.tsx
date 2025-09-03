@@ -29,6 +29,53 @@ import {
   ConfirmButton,
 } from "./styles";
 
+// Função para formatar texto no preview (sem dias destacados)
+const formatTextPreview = (text: string) => {
+  return (
+    text
+      // Títulos com ###
+      .replace(
+        /### (.*?)(?=\n|$)/g,
+        '<h3 style="color: #00d4ff; font-size: 1.25rem; font-weight: 600; margin: 20px 0 12px 0;">$1</h3>'
+      )
+      // Negrito com **texto**
+      .replace(
+        /\*\*(.*?)\*\*/g,
+        '<strong style="color: #ffffff; font-weight: 600;">$1</strong>'
+      )
+      // Asteriscos simples viram bullets
+      .replace(/^\* (.*?)$/gm, "• $1")
+      // Hífens viram bullets
+      .replace(/^- (.*?)$/gm, "• $1")
+  );
+};
+
+// Função para formatar texto completo no modal (com dias destacados)
+const formatTextWithBold = (text: string) => {
+  return (
+    text
+      // Títulos com ###
+      .replace(
+        /### (.*?)(?=\n|$)/g,
+        '<h3 style="color: #00d4ff; font-size: 1.25rem; font-weight: 600; margin: 20px 0 12px 0;">$1</h3>'
+      )
+      // Dias como subtítulos (Dia X: ...)
+      .replace(
+        /^(Dia \d+:.*?)$/gm,
+        '<h4 style="color: #ffffff; font-size: 1.1rem; font-weight: 600; margin: 16px 0 8px 0;">$1</h4>'
+      )
+      // Negrito com **texto**
+      .replace(
+        /\*\*(.*?)\*\*/g,
+        '<strong style="color: #ffffff; font-weight: 600;">$1</strong>'
+      )
+      // Asteriscos simples viram bullets
+      .replace(/^\* (.*?)$/gm, "• $1")
+      // Hífens viram bullets
+      .replace(/^- (.*?)$/gm, "• $1")
+  );
+};
+
 interface TripCardProps {
   trip: {
     id: string;
@@ -135,7 +182,12 @@ const TripCard: React.FC<TripCardProps> = ({
           )}
         </TripDetails>
 
-        <TripSummary>{trip.plan_result.substring(0, 200)}...</TripSummary>
+        <TripSummary
+          dangerouslySetInnerHTML={{
+            __html:
+              formatTextPreview(trip.plan_result.substring(0, 200)) + "...",
+          }}
+        />
 
         <CardActions>
           <ViewDetailsButton
@@ -197,7 +249,14 @@ const TripCard: React.FC<TripCardProps> = ({
                 )}
               </TripDetails>
 
-              <PlanContent>{trip.plan_result}</PlanContent>
+              <PlanContent
+                dangerouslySetInnerHTML={{
+                  __html: formatTextWithBold(trip.plan_result).replace(
+                    /\n/g,
+                    "<br/>"
+                  ),
+                }}
+              />
             </ModalBody>
 
             {trip.prompt_data && trip.ai_prompt && (

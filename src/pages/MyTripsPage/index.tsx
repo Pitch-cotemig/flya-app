@@ -26,15 +26,6 @@ const subtleFloat = keyframes`
   }
 `;
 
-const pulse = keyframes`
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
-`;
-
 const TripsContainer = styled.div`
   background: radial-gradient(
       circle at 30% 20%,
