@@ -74,6 +74,20 @@ const HeaderSection = styled.div`
     color: rgba(255, 255, 255, 0.95);
     letter-spacing: -0.5px;
     line-height: 1.2;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+
+    &:hover {
+      color: ${colors.primary.cyan};
+      transform: translateY(-2px);
+    }
+
+    &:hover::after {
+      content: " ✏️";
+      font-size: 1.5rem;
+      opacity: 0.7;
+    }
 
     @media (max-width: 768px) {
       font-size: 2.2rem;
@@ -338,6 +352,137 @@ const ActionButton = styled.button`
   }
 `;
 
+// Modal de Edição
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  animation: ${fadeInUp} 0.3s ease-out;
+  overflow-y: auto;
+`;
+
+const ModalContainer = styled.div`
+  background: rgba(13, 16, 32, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 600px;
+  width: calc(100% - 4rem);
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  position: absolute;
+  animation: ${fadeInUp} 0.3s ease-out;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    margin: 1rem;
+    max-width: none;
+    max-height: 90vh;
+    width: calc(100% - 2rem);
+    left: 1rem !important;
+    top: 1rem !important;
+  }
+`;
+
+const ModalHeader = styled.div`
+  text-align: center;
+  margin-bottom: 2rem;
+
+  h3 {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 0.5rem 0;
+    font-weight: 400;
+  }
+
+  p {
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    font-size: 0.9rem;
+  }
+`;
+
+const EditTextarea = styled.textarea<{ isTitle?: boolean }>`
+  width: 100%;
+  min-height: ${(props) => (props.isTitle ? "80px" : "200px")};
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: ${(props) => (props.isTitle ? "1.2rem" : "1rem")};
+  font-family: inherit;
+  font-weight: ${(props) => (props.isTitle ? "500" : "400")};
+  line-height: 1.6;
+  resize: vertical;
+  margin-bottom: 2rem;
+  backdrop-filter: blur(10px);
+  text-align: ${(props) => (props.isTitle ? "center" : "left")};
+
+  &:focus {
+    outline: none;
+    border-color: ${colors.primary.cyan};
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2);
+  }
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+`;
+
+const ModalActions = styled.div`
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+
+  @media (max-width: 768px) {
+    flex-direction: column-reverse;
+  }
+`;
+
+const ModalButton = styled.button<{ variant?: "primary" | "secondary" }>`
+  padding: 0.75rem 1.5rem;
+  border: 1px solid
+    ${(props) =>
+      props.variant === "primary"
+        ? "rgba(0, 188, 212, 0.3)"
+        : "rgba(255, 255, 255, 0.2)"};
+  background: ${(props) =>
+    props.variant === "primary"
+      ? "rgba(0, 188, 212, 0.1)"
+      : "rgba(255, 255, 255, 0.05)"};
+  color: ${(props) =>
+    props.variant === "primary" ? "#00bcd4" : "rgba(255, 255, 255, 0.8)"};
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  min-width: 100px;
+
+  &:hover {
+    background: ${(props) =>
+      props.variant === "primary"
+        ? "rgba(0, 188, 212, 0.2)"
+        : "rgba(255, 255, 255, 0.1)"};
+    border-color: ${(props) =>
+      props.variant === "primary" ? "#00bcd4" : "rgba(255, 255, 255, 0.3)"};
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+`;
+
 const FooterActions = styled.div`
   display: flex;
   justify-content: center;
@@ -476,19 +621,153 @@ const FinalStep: React.FC<FinalStepProps> = ({
     summary: [],
   });
 
+  // Estados do modal de edição
+  const [editModal, setEditModal] = useState<{
+    isOpen: boolean;
+    text: string;
+    dia: string;
+    periodo: string;
+    index: number;
+    isTitle?: boolean;
+    clickPosition?: { x: number; y: number };
+  }>({
+    isOpen: false,
+    text: "",
+    dia: "",
+    periodo: "",
+    index: -1,
+    isTitle: false,
+    clickPosition: undefined,
+  });
+
   React.useEffect(() => {
     if (tripData?.plan_result) {
       setPlan(parsePlan(tripData.plan_result));
     }
   }, [tripData]);
 
-  const handleEditItem = (dia: string, periodo: string, index: number) => {
-    const novoTexto = prompt("Editar item:", plan.roteiro[dia][periodo][index]);
-    if (novoTexto !== null) {
-      const novoRoteiro = { ...plan.roteiro };
-      novoRoteiro[dia][periodo][index] = novoTexto;
-      setPlan((prevPlan) => ({ ...prevPlan, roteiro: novoRoteiro }));
+  const getModalPosition = () => {
+    if (!editModal.clickPosition)
+      return { top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
+
+    const { x, y } = editModal.clickPosition;
+    const modalWidth = 600;
+    const modalHeight = 400;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    // Calcular posição ideal
+    let left = Math.max(
+      32,
+      Math.min(x - modalWidth / 2, viewportWidth - modalWidth - 32)
+    );
+    let top = Math.max(32, y - scrollTop - 100); // 100px acima do clique, ajustado pelo scroll
+
+    // Ajustar se sair da viewport
+    if (top + modalHeight > viewportHeight - 32) {
+      top = Math.max(32, viewportHeight - modalHeight - 32);
     }
+
+    return {
+      top: `${top}px`,
+      left: `${left}px`,
+      transform: "none",
+    };
+  };
+  React.useEffect(() => {
+    if (editModal.isOpen) {
+      document.body.style.overflow = "hidden";
+
+      const handleKeyPress = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          handleCancelEdit();
+        }
+      };
+
+      document.addEventListener("keydown", handleKeyPress);
+
+      return () => {
+        document.body.style.overflow = "unset";
+        document.removeEventListener("keydown", handleKeyPress);
+      };
+    }
+  }, [editModal.isOpen]);
+
+  const handleEditTitle = (event: React.MouseEvent) => {
+    const rect = (event.target as HTMLElement).getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    setEditModal({
+      isOpen: true,
+      text: plan.title,
+      dia: "",
+      periodo: "",
+      index: -1,
+      isTitle: true,
+      clickPosition: {
+        x: rect.left + rect.width / 2,
+        y: rect.top + scrollTop,
+      },
+    });
+  };
+
+  const handleEditItem = (
+    dia: string,
+    periodo: string,
+    index: number,
+    event: React.MouseEvent
+  ) => {
+    const currentText = plan.roteiro[dia][periodo][index];
+    const rect = (event.target as HTMLElement).getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    setEditModal({
+      isOpen: true,
+      text: currentText,
+      dia,
+      periodo,
+      index,
+      isTitle: false,
+      clickPosition: {
+        x: rect.left + rect.width / 2,
+        y: rect.top + scrollTop,
+      },
+    });
+  };
+
+  const handleSaveEdit = () => {
+    const { dia, periodo, index, text, isTitle } = editModal;
+    if (text.trim()) {
+      if (isTitle) {
+        setPlan((prevPlan) => ({ ...prevPlan, title: text.trim() }));
+      } else {
+        const novoRoteiro = { ...plan.roteiro };
+        novoRoteiro[dia][periodo][index] = text.trim();
+        setPlan((prevPlan) => ({ ...prevPlan, roteiro: novoRoteiro }));
+      }
+    }
+    setEditModal({
+      isOpen: false,
+      text: "",
+      dia: "",
+      periodo: "",
+      index: -1,
+      isTitle: false,
+      clickPosition: undefined,
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditModal({
+      isOpen: false,
+      text: "",
+      dia: "",
+      periodo: "",
+      index: -1,
+      isTitle: false,
+      clickPosition: undefined,
+    });
   };
 
   const handleRemoveItem = (dia: string, periodo: string, index: number) => {
@@ -560,73 +839,138 @@ const FinalStep: React.FC<FinalStepProps> = ({
   };
 
   return (
-    <FinalScreenContainer>
-      <HeaderSection>
-        <h1>{plan.title || "Seu Roteiro está Pronto!"}</h1>
-        <p>Edite, remova ou adicione itens ao seu roteiro antes de salvar.</p>
-      </HeaderSection>
+    <>
+      <FinalScreenContainer>
+        <HeaderSection>
+          <h1 onClick={handleEditTitle}>
+            {plan.title || "Seu Roteiro está Pronto!"}
+          </h1>
+          <p>Edite, remova ou adicione itens ao seu roteiro antes de salvar.</p>
+        </HeaderSection>
 
-      <RoteiroContainer>
-        {Object.keys(plan.roteiro).length > 0 ? (
-          Object.keys(plan.roteiro).map((dia) => (
-            <DayBlock key={dia}>
-              <DayTitle>{dia}</DayTitle>
-              {Object.keys(plan.roteiro[dia]).map((periodo) => (
-                <PeriodSection key={periodo}>
-                  <PeriodTitle>{periodo}</PeriodTitle>
-                  {plan.roteiro[dia][periodo].map((item, index) => (
-                    <RoteiroItem key={index}>
-                      <ItemContent>
-                        {item.replace(/^(\*|-)\s*/, "").trim()}
-                      </ItemContent>
-                      <ItemActions>
-                        <ActionButton
-                          onClick={() => handleEditItem(dia, periodo, index)}
-                        >
-                          Editar
-                        </ActionButton>
-                        <ActionButton
-                          onClick={() => handleRemoveItem(dia, periodo, index)}
-                        >
-                          Excluir
-                        </ActionButton>
-                      </ItemActions>
-                    </RoteiroItem>
-                  ))}
-                </PeriodSection>
-              ))}
-            </DayBlock>
-          ))
-        ) : (
-          <p>Gerando seu roteiro, por favor aguarde...</p>
-        )}
+        <RoteiroContainer>
+          {Object.keys(plan.roteiro).length > 0 ? (
+            Object.keys(plan.roteiro).map((dia) => (
+              <DayBlock key={dia}>
+                <DayTitle>{dia}</DayTitle>
+                {Object.keys(plan.roteiro[dia]).map((periodo) => (
+                  <PeriodSection key={periodo}>
+                    <PeriodTitle>{periodo}</PeriodTitle>
+                    {plan.roteiro[dia][periodo].map((item, index) => (
+                      <RoteiroItem key={index}>
+                        <ItemContent>
+                          {item.replace(/^(\*|-)\s*/, "").trim()}
+                        </ItemContent>
+                        <ItemActions>
+                          <ActionButton
+                            onClick={(e) =>
+                              handleEditItem(dia, periodo, index, e)
+                            }
+                          >
+                            Editar
+                          </ActionButton>
+                          <ActionButton
+                            onClick={() =>
+                              handleRemoveItem(dia, periodo, index)
+                            }
+                          >
+                            Excluir
+                          </ActionButton>
+                        </ItemActions>
+                      </RoteiroItem>
+                    ))}
+                  </PeriodSection>
+                ))}
+              </DayBlock>
+            ))
+          ) : (
+            <p>Gerando seu roteiro, por favor aguarde...</p>
+          )}
 
-        {plan.summary.length > 0 && (
-          <SummaryBlock>
-            <h2>Resumo Geral da Viagem</h2>
-            <ul>
-              {plan.summary.map((item, index) => (
-                <li key={index}>{item.replace(/^\*/, "").trim()}</li>
-              ))}
-            </ul>
-          </SummaryBlock>
-        )}
-      </RoteiroContainer>
+          {plan.summary.length > 0 && (
+            <SummaryBlock>
+              <h2>Resumo Geral da Viagem</h2>
+              <ul>
+                {plan.summary.map((item, index) => (
+                  <li key={index}>{item.replace(/^\*/, "").trim()}</li>
+                ))}
+              </ul>
+            </SummaryBlock>
+          )}
+        </RoteiroContainer>
 
-      {saveMessage && <p>{saveMessage}</p>}
+        {saveMessage && <p>{saveMessage}</p>}
 
-      <FooterActions>
-        <ExportButton onClick={handleExportPDF}>Exportar PDF</ExportButton>
-        <ExportButton onClick={handleExportTXT}>Exportar TXT</ExportButton>
-        <BackButton onClick={onClose}>Fechar</BackButton>
-        <ContinueButton
-          onClick={handleSave}
-          disabled={isSaving || !!saveMessage}
+        <FooterActions>
+          <ExportButton onClick={handleExportPDF}>Exportar PDF</ExportButton>
+          <ExportButton onClick={handleExportTXT}>Exportar TXT</ExportButton>
+          <BackButton onClick={onClose}>Fechar</BackButton>
+          <ContinueButton
+            onClick={handleSave}
+            disabled={isSaving || !!saveMessage}
+          >
+            {isSaving ? "Salvando..." : "Salvar Viagem"}
+          </ContinueButton>
+        </FooterActions>
+      </FinalScreenContainer>
+
+      {/* Modal de Edição */}
+      {editModal.isOpen && (
+        <ModalOverlay
+          onClick={handleCancelEdit}
+          onScroll={(e) => e.preventDefault()}
         >
-          {isSaving ? "Salvando..." : "Salvar Viagem"}
-        </ContinueButton>
-      </FooterActions>
-    </FinalScreenContainer>
+          <ModalContainer
+            style={getModalPosition()}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ModalHeader>
+              <h3>
+                {editModal.isTitle ? "📝 Editar Título" : "✏️ Editar Item"}
+              </h3>
+              <p>
+                {editModal.isTitle
+                  ? "Defina um título marcante para sua viagem"
+                  : "Faça as alterações necessárias no texto abaixo"}
+              </p>
+            </ModalHeader>
+
+            <EditTextarea
+              isTitle={editModal.isTitle}
+              value={editModal.text}
+              onChange={(e) =>
+                setEditModal((prev) => ({ ...prev, text: e.target.value }))
+              }
+              placeholder={
+                editModal.isTitle
+                  ? "Ex: Aventura Épica pelo Brasil"
+                  : "Digite o texto do item aqui..."
+              }
+              ref={(textarea) => {
+                if (textarea && editModal.isOpen) {
+                  setTimeout(() => {
+                    textarea.focus();
+                    textarea.setSelectionRange(
+                      textarea.value.length,
+                      textarea.value.length
+                    );
+                  }, 100);
+                }
+              }}
+            />
+
+            <ModalActions>
+              <ModalButton variant="secondary" onClick={handleCancelEdit}>
+                Cancelar
+              </ModalButton>
+              <ModalButton variant="primary" onClick={handleSaveEdit}>
+                Salvar Alterações
+              </ModalButton>
+            </ModalActions>
+          </ModalContainer>
+        </ModalOverlay>
+      )}
+    </>
   );
 };
 
