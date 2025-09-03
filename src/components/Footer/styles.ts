@@ -70,13 +70,16 @@ export const LogoLink = styled(Link)`
   text-decoration: none;
   color: inherit;
   transition: transform 0.3s ease;
+  max-width: 250px;
+  max-height: 80px;
 
   &:hover {
     transform: scale(1.05);
   }
 
   img {
-    height: 1.75rem;
+    aspect-ratio: 1/1;
+    height: 5rem;
     width: auto;
     filter: drop-shadow(0 0 5px rgba(0, 188, 212, 0.3));
   }

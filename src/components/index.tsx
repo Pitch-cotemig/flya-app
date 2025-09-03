@@ -12,3 +12,4 @@ export { default as RegisterForm } from "./RegisterForm";
 export { default as ItemSuggestions } from "./ItemSuggestions";
 export { default as MainLayout } from "./MainLayout";
 export { default as SuccessModal } from "./SuccessModal";
+export { ScrollToTop } from "./ScrollToTop";

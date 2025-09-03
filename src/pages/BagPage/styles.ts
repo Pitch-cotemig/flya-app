@@ -302,8 +302,8 @@ export const CategoryTab = styled.button<{ active?: boolean; variant?: "add" }>`
   border-radius: 25px;
   background: ${(props) =>
     props.active
-      ? "${colors.gradients.cyan}"
-      : "${colors.alpha.white01}"};
+      ? "linear-gradient(135deg, #00bcd4 0%, #00acc1 100%)"
+      : "rgba(255, 255, 255, 0.1)"};
   color: white;
   font-size: 0.9rem;
   font-weight: 500;

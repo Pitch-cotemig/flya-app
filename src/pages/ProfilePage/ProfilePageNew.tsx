@@ -9,6 +9,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   background-color: ${colors.profile.background};
+  padding-top: 5rem;
 `;
 
 const MainContent = styled.main`
