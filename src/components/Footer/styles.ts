@@ -78,7 +78,8 @@ export const LogoLink = styled(Link)`
   }
 
   img {
-    height: 1.75rem;
+    aspect-ratio: 1/1;
+    height: 5rem;
     width: auto;
     filter: drop-shadow(0 0 5px rgba(0, 188, 212, 0.3));
   }

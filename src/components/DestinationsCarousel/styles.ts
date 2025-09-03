@@ -421,7 +421,6 @@ export const DestinationOverlay = styled.div`
   z-index: 2;
   transform: translateY(35px);
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  backdrop-filter: blur(2px);
 
   &::before {
     content: "";
@@ -448,6 +447,7 @@ export const DestinationOverlay = styled.div`
       rgba(0, 0, 0, 0.9) 60%,
       rgba(0, 0, 0, 0.98) 100%
     );
+    backdrop-filter: blur(2px);
 
     &::before {
       opacity: 1;
