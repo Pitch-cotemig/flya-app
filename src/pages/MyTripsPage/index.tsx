@@ -278,30 +278,32 @@ interface Trip {
 }
 
 const MyTripsPage: React.FC = () => {
-  const [trips, setTrips] = useState<Trip[]>([]);
+  const [allTrips, setAllTrips] = useState<Trip[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<"all" | "favorites">("all");
   const navigate = useNavigate();
 
-  const fetchTrips = async (favoriteFilter?: boolean) => {
+  const fetchTrips = async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const response = await tripsService.findAll(favoriteFilter);
+      const response = await tripsService.findAll();
       if (response.success && response.data) {
-        setTrips(response.data);
+        setAllTrips(response.data);
       } else {
-        // Verificar se é erro de JWT expirado
         if (
           response.message?.includes("JWT") ||
           response.message?.includes("token") ||
-          response.message?.includes("expired")
+          response.message?.includes("expired") ||
+          response.message?.includes("sessão expirou")
         ) {
-          setError(
-            "Sua sessão expirou. Faça login novamente para acessar suas viagens."
-          );
+          setError("Sua sessão expirou. Redirecionando para o login...");
+
+          setTimeout(() => {
+            navigate("/auth");
+          }, 2000);
         } else {
           setError(response.message || "Erro ao carregar viagens");
         }
@@ -320,14 +322,12 @@ const MyTripsPage: React.FC = () => {
 
   const handleFilterChange = (newFilter: "all" | "favorites") => {
     setFilter(newFilter);
-    const favoriteFilter = newFilter === "favorites" ? true : undefined;
-    fetchTrips(favoriteFilter);
   };
 
   const handleDelete = async (id: string) => {
     const response = await tripsService.remove(id);
     if (response.success) {
-      setTrips((prevTrips) => prevTrips.filter((trip) => trip.id !== id));
+      setAllTrips((prevTrips) => prevTrips.filter((trip) => trip.id !== id));
     } else {
       setError(response.message || "Erro ao excluir viagem");
     }
@@ -336,7 +336,7 @@ const MyTripsPage: React.FC = () => {
   const handleToggleFavorite = async (id: string) => {
     const response = await tripsService.toggleFavorite(id);
     if (response.success && response.data) {
-      setTrips((prevTrips) =>
+      setAllTrips((prevTrips) =>
         prevTrips.map((trip) =>
           trip.id === id
             ? { ...trip, is_favorite: response.data!.is_favorite }
@@ -356,8 +356,13 @@ const MyTripsPage: React.FC = () => {
     fetchTrips();
   };
 
-  const totalTrips = trips.length;
-  const favoriteTrips = trips.filter((trip) => trip.is_favorite).length;
+  const filteredTrips =
+    filter === "favorites"
+      ? allTrips.filter((trip) => trip.is_favorite)
+      : allTrips;
+
+  const totalTrips = allTrips.length;
+  const favoriteTrips = allTrips.filter((trip) => trip.is_favorite).length;
 
   if (isLoading) {
     return <FlyaLoading text="Carregando suas viagens..." size="medium" />;
@@ -437,7 +442,7 @@ const MyTripsPage: React.FC = () => {
           </FilterButton>
         </FilterContainer>
 
-        {trips.length === 0 ? (
+        {filteredTrips.length === 0 ? (
           <EmptyState>
             <span className="emoji">✈️</span>
             <h3>
@@ -453,7 +458,7 @@ const MyTripsPage: React.FC = () => {
           </EmptyState>
         ) : (
           <TripsGrid>
-            {trips.map((trip) => (
+            {filteredTrips.map((trip) => (
               <TripCard
                 key={trip.id}
                 trip={trip}
