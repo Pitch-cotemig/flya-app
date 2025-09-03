@@ -177,7 +177,7 @@ export const PageContainer = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
-  background: linear-gradient(135deg, rgb(15, 23, 42) 0%, rgb(28, 28, 67) 100%);
+  background: #1c1c43;
 `;
 
 export const FloatingElements = styled.div`

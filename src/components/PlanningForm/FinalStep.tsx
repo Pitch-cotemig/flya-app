@@ -614,7 +614,14 @@ const parsePlan = (text: string): ParsedPlan => {
 const formatTextWithBold = (text: string): string => {
   return text
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.*?)\*/g, "<strong>$1</strong>");
+    .replace(/\*(.*?)\*/g, "<strong>$1</strong>")
+    .replace(/^([^:]+)(:)/g, "<strong>$1</strong>$2");
+};
+
+const cleanTextForEditing = (text: string): string => {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, "$1") // Remove ** mantendo conteúdo
+    .replace(/\*(.*?)\*/g, "$1"); // Remove * mantendo conteúdo
 };
 
 const FinalStep: React.FC<FinalStepProps> = ({
@@ -645,6 +652,22 @@ const FinalStep: React.FC<FinalStepProps> = ({
     periodo: "",
     index: -1,
     isTitle: false,
+    clickPosition: undefined,
+  });
+
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    dia: string;
+    periodo: string;
+    index: number;
+    itemText: string;
+    clickPosition?: { x: number; y: number };
+  }>({
+    isOpen: false,
+    dia: "",
+    periodo: "",
+    index: -1,
+    itemText: "",
     clickPosition: undefined,
   });
 
@@ -688,13 +711,48 @@ const FinalStep: React.FC<FinalStepProps> = ({
     };
   };
 
+  const getDeleteModalPosition = () => {
+    if (!deleteModal.clickPosition)
+      return { top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
+
+    const modalWidth = 500;
+    const modalHeight = 350;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    const centerY = viewportHeight / 2;
+
+    let left = 225;
+    let top = Math.max(12, scrollTop + centerY - modalHeight / 2 - 100);
+
+    if (left + modalWidth > viewportWidth - 32) {
+      left = Math.max(32, viewportWidth - modalWidth - 32);
+    }
+
+    if (top + modalHeight > scrollTop + viewportHeight - 6) {
+      top = scrollTop + viewportHeight - modalHeight - 6;
+    }
+
+    if (top < scrollTop + 6) {
+      top = scrollTop + 6;
+    }
+
+    return {
+      top: `${top}px`,
+      left: `${left}px`,
+      transform: "none",
+    };
+  };
+
   const handleEditTitle = (event: React.MouseEvent) => {
+    const cleanTitle = cleanTextForEditing(plan.title);
     const rect = (event.target as HTMLElement).getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
     setEditModal({
       isOpen: true,
-      text: plan.title,
+      text: cleanTitle,
       dia: "",
       periodo: "",
       index: -1,
@@ -713,12 +771,13 @@ const FinalStep: React.FC<FinalStepProps> = ({
     event: React.MouseEvent
   ) => {
     const currentText = plan.roteiro[dia][periodo][index];
+    const cleanText = cleanTextForEditing(currentText);
     const rect = (event.target as HTMLElement).getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
     setEditModal({
       isOpen: true,
-      text: currentText,
+      text: cleanText,
       dia,
       periodo,
       index,
@@ -764,17 +823,59 @@ const FinalStep: React.FC<FinalStepProps> = ({
     });
   };
 
-  const handleRemoveItem = (dia: string, periodo: string, index: number) => {
-    if (window.confirm("Tem certeza que deseja remover este item?")) {
-      const novoRoteiro = { ...plan.roteiro };
-      novoRoteiro[dia][periodo] = novoRoteiro[dia][periodo].filter(
-        (_, i) => i !== index
-      );
-      if (novoRoteiro[dia][periodo].length === 0)
-        delete novoRoteiro[dia][periodo];
-      if (Object.keys(novoRoteiro[dia]).length === 0) delete novoRoteiro[dia];
-      setPlan((prevPlan) => ({ ...prevPlan, roteiro: novoRoteiro }));
-    }
+  const handleRemoveItem = (
+    dia: string,
+    periodo: string,
+    index: number,
+    event: React.MouseEvent
+  ) => {
+    const itemText = plan.roteiro[dia][periodo][index];
+    const rect = (event.target as HTMLElement).getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    setDeleteModal({
+      isOpen: true,
+      dia,
+      periodo,
+      index,
+      itemText: itemText.replace(/^(\*|-)\s*/, "").trim(),
+      clickPosition: {
+        x: rect.left + rect.width / 2,
+        y: rect.top + scrollTop,
+      },
+    });
+  };
+
+  const confirmRemoveItem = () => {
+    const { dia, periodo, index } = deleteModal;
+    const novoRoteiro = { ...plan.roteiro };
+    novoRoteiro[dia][periodo] = novoRoteiro[dia][periodo].filter(
+      (_, i) => i !== index
+    );
+    if (novoRoteiro[dia][periodo].length === 0)
+      delete novoRoteiro[dia][periodo];
+    if (Object.keys(novoRoteiro[dia]).length === 0) delete novoRoteiro[dia];
+    setPlan((prevPlan) => ({ ...prevPlan, roteiro: novoRoteiro }));
+
+    setDeleteModal({
+      isOpen: false,
+      dia: "",
+      periodo: "",
+      index: -1,
+      itemText: "",
+      clickPosition: undefined,
+    });
+  };
+
+  const cancelRemoveItem = () => {
+    setDeleteModal({
+      isOpen: false,
+      dia: "",
+      periodo: "",
+      index: -1,
+      itemText: "",
+      clickPosition: undefined,
+    });
   };
 
   const stringifyPlan = (planData: ParsedPlan): string => {
@@ -868,8 +969,8 @@ const FinalStep: React.FC<FinalStepProps> = ({
                             Editar
                           </ActionButton>
                           <ActionButton
-                            onClick={() =>
-                              handleRemoveItem(dia, periodo, index)
+                            onClick={(e) =>
+                              handleRemoveItem(dia, periodo, index, e)
                             }
                           >
                             Excluir
@@ -970,6 +1071,64 @@ const FinalStep: React.FC<FinalStepProps> = ({
               </ModalButton>
               <ModalButton variant="primary" onClick={handleSaveEdit}>
                 Salvar Alterações
+              </ModalButton>
+            </ModalActions>
+          </ModalContainer>
+        </ModalOverlay>
+      )}
+
+      {/* Modal de Confirmação de Exclusão */}
+      {deleteModal.isOpen && (
+        <ModalOverlay
+          onClick={cancelRemoveItem}
+          onScroll={(e) => e.preventDefault()}
+        >
+          <ModalContainer
+            style={getDeleteModalPosition()}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ModalHeader>
+              <h3>🗑️ Confirmar Exclusão</h3>
+              <p>Tem certeza que deseja remover este item do seu roteiro?</p>
+            </ModalHeader>
+
+            <div
+              style={{
+                background: "rgba(239, 68, 68, 0.1)",
+                border: "1px solid rgba(239, 68, 68, 0.2)",
+                borderRadius: "12px",
+                padding: "1.5rem",
+                marginBottom: "2rem",
+                color: "rgba(255, 255, 255, 0.9)",
+              }}
+            >
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "1rem",
+                  lineHeight: "1.6",
+                  wordBreak: "break-word",
+                }}
+                dangerouslySetInnerHTML={{
+                  __html: formatTextWithBold(deleteModal.itemText),
+                }}
+              />
+            </div>
+
+            <ModalActions>
+              <ModalButton variant="secondary" onClick={cancelRemoveItem}>
+                Cancelar
+              </ModalButton>
+              <ModalButton
+                variant="primary"
+                onClick={confirmRemoveItem}
+                style={{
+                  background: "rgba(239, 68, 68, 0.1)",
+                  borderColor: "rgba(239, 68, 68, 0.3)",
+                  color: "#ef4444",
+                }}
+              >
+                Excluir Item
               </ModalButton>
             </ModalActions>
           </ModalContainer>
