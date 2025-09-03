@@ -31,29 +31,6 @@ const spin = keyframes`
   }
 `;
 
-const bounce = keyframes`
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-10px);
-  }
-  60% {
-    transform: translateY(-5px);
-  }
-`;
-
-const magicSparkle = keyframes`
-  0%, 100% {
-    opacity: 0;
-    transform: scale(0) rotate(0deg);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1) rotate(180deg);
-  }
-`;
-
 const travelPath = keyframes`
   0% {
     transform: translateX(-100px);
@@ -71,26 +48,6 @@ const travelPath = keyframes`
   }
 `;
 
-const breathe = keyframes`
-  0%, 100% {
-    transform: scale(1);
-    filter: brightness(1);
-  }
-  50% {
-    transform: scale(1.05);
-    filter: brightness(1.2);
-  }
-`;
-
-const gradientShift = keyframes`
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-`;
-
 const pulse = keyframes`
   0%, 100% {
     opacity: 0.3;
@@ -99,27 +56,6 @@ const pulse = keyframes`
   50% {
     opacity: 0.6;
     transform: scale(1.1);
-  }
-`;
-
-const cardHover = keyframes`
-  0% {
-    transform: translateY(0) scale(1);
-  }
-  50% {
-    transform: translateY(-2px) scale(1.02);
-  }
-  100% {
-    transform: translateY(-4px) scale(1.03);
-  }
-`;
-
-const glowPulse = keyframes`
-  0%, 100% {
-    box-shadow: 0 4px 20px rgba(0, 188, 212, 0.1);
-  }
-  50% {
-    box-shadow: 0 8px 30px rgba(0, 188, 212, 0.3), 0 0 20px rgba(124, 58, 237, 0.2);
   }
 `;
 
@@ -143,15 +79,6 @@ const slideInLeft = keyframes`
   to {
     opacity: 1;
     transform: translateX(0) scale(1);
-  }
-`;
-
-const backgroundShine = keyframes`
-  0% {
-    background-position: -200px 0;
-  }
-  100% {
-    background-position: calc(200px + 100%) 0;
   }
 `;
 
@@ -304,6 +231,48 @@ export const CloseButton = styled.button`
     color: white;
     border-color: ${colors.primary.cyan};
     transform: scale(1.1) rotate(90deg);
+  }
+`;
+
+export const BackArrowButton = styled.button`
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: ${colors.alpha.white01};
+  border: 2px solid ${colors.alpha.cyan03};
+  color: ${colors.text.primary};
+  font-size: 18px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  z-index: 10;
+
+  &:hover {
+    background: ${colors.primary.cyan};
+    color: white;
+    border-color: ${colors.primary.cyan};
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 188, 212, 0.3);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+
+    &:hover {
+      background: ${colors.alpha.white01};
+      color: ${colors.text.primary};
+      border-color: ${colors.alpha.cyan03};
+      box-shadow: none;
+      transform: none;
+    }
   }
 `;
 
@@ -713,7 +682,7 @@ export const OptionContent = styled.div`
 
 export const NavigationButtons = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-top: 2.5rem;
   gap: 1.5rem;
@@ -913,7 +882,6 @@ export const InitialScreenContainer = styled.div`
   padding: 2rem;
 
   &::before {
-    content: "";
     position: absolute;
     top: -50%;
     left: -50%;

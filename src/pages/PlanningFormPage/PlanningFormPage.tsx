@@ -4,9 +4,9 @@ import {
   PageContainer,
   FormContainer,
   CloseButton,
+  BackArrowButton,
   InitialScreenContainer,
   ContinueButton,
-  BackButton,
   NavigationButtons,
   StepIndicator,
   StepDot,
@@ -352,6 +352,9 @@ export function PlanningFormPage() {
       </DecorativeElements>
       <FormContainer>
         <CloseButton onClick={handleClose}>&times;</CloseButton>
+        {step > 1 && step < 5 && (
+          <BackArrowButton onClick={handlePrevStep}>←</BackArrowButton>
+        )}
 
         {step > 0 && step < 5 && (
           <StepIndicator>
@@ -372,7 +375,6 @@ export function PlanningFormPage() {
 
         {step > 0 && step < 5 && (
           <NavigationButtons>
-            <BackButton onClick={handlePrevStep}>Voltar</BackButton>
             {step === 4 ? (
               <ContinueButton
                 onClick={handleSubmit}
