@@ -5,6 +5,13 @@ import {
   OptionLabel,
   RadioInput,
 } from "../../pages/PlanningFormPage/styles";
+import {
+  BudgetIcon,
+  PetIcon,
+  ContentContainer,
+  TextContainer,
+  SectionDivider,
+} from "./Step2/styles";
 
 interface Step2Props {
   formData: {
@@ -58,27 +65,20 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
               checked={formData.pet === opcao.value}
               onChange={handleChange}
             />
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                width: "100%",
-              }}
-            >
-              <span style={{ fontSize: "28px", transition: "all 0.3s ease" }}>
-                {opcao.icon}
-              </span>
-              <div style={{ flex: 1 }}>
+            <ContentContainer>
+              <PetIcon>{opcao.icon}</PetIcon>
+              <TextContainer>
                 <div className="option-title">{opcao.value}</div>
                 <div className="option-description">{opcao.description}</div>
-              </div>
-            </div>
+              </TextContainer>
+            </ContentContainer>
           </OptionLabel>
         ))}
       </OptionContainer>
 
-      <QuestionTitle style={{ marginTop: "40px" }}>
+      <SectionDivider />
+
+      <QuestionTitle>
         Qual sua faixa de orçamento para esta viagem?{" "}
         <span className="emoji">💸</span>
       </QuestionTitle>
@@ -94,28 +94,13 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
               checked={formData.orcamento === opcao.value}
               onChange={handleChange}
             />
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                width: "100%",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: "28px",
-                  color: opcao.color,
-                  transition: "all 0.3s ease",
-                }}
-              >
-                {opcao.icon}
-              </span>
-              <div style={{ flex: 1 }}>
+            <ContentContainer>
+              <BudgetIcon color={opcao.color}>{opcao.icon}</BudgetIcon>
+              <TextContainer>
                 <div className="option-title">{opcao.value}</div>
                 <div className="option-description">{opcao.description}</div>
-              </div>
-            </div>
+              </TextContainer>
+            </ContentContainer>
           </OptionLabel>
         ))}
       </OptionContainer>

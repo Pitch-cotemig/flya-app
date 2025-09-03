@@ -5,6 +5,12 @@ import {
   OptionLabel,
   CheckboxInput,
 } from "../../pages/PlanningFormPage/styles";
+import {
+  ClimateIcon,
+  ContentContainer,
+  TextContainer,
+  SubtitleText,
+} from "./Step4/styles";
 
 interface Step4Props {
   formData: {
@@ -47,16 +53,7 @@ const Step4: React.FC<Step4Props> = ({ formData, handleChange }) => {
         Qual(is) clima(s) você prefere em suas viagens?{" "}
         <span className="emoji">🌤️</span>
       </QuestionTitle>
-      <p
-        style={{
-          textAlign: "center",
-          color: "rgba(255, 255, 255, 0.7)",
-          fontSize: "14px",
-          marginBottom: "30px",
-        }}
-      >
-        Selecione quantas opções desejar ✨
-      </p>
+      <SubtitleText>Selecione quantas opções desejar ✨</SubtitleText>
       <OptionContainer>
         {climaOpcoes.map((opcao) => (
           <OptionLabel
@@ -69,22 +66,13 @@ const Step4: React.FC<Step4Props> = ({ formData, handleChange }) => {
               checked={formData.clima.includes(opcao.value)}
               onChange={handleChange}
             />
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                width: "100%",
-              }}
-            >
-              <span style={{ fontSize: "28px", transition: "all 0.3s ease" }}>
-                {opcao.icon}
-              </span>
-              <div style={{ flex: 1 }}>
+            <ContentContainer>
+              <ClimateIcon>{opcao.icon}</ClimateIcon>
+              <TextContainer>
                 <div className="option-title">{opcao.value}</div>
                 <div className="option-description">{opcao.description}</div>
-              </div>
-            </div>
+              </TextContainer>
+            </ContentContainer>
           </OptionLabel>
         ))}
       </OptionContainer>

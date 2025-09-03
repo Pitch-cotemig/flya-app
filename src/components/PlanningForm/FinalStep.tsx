@@ -33,7 +33,6 @@ const ExportButton = styled.button`
   }
 `;
 
-// Animations
 const fadeInUp = keyframes`
   from {
     opacity: 0;
@@ -53,7 +52,7 @@ const FinalScreenContainer = styled.div`
   color: ${colors.text.primary};
   padding: 0;
   margin: 0;
-  background: rgba(13, 16, 32, 0.95);
+  background: rgba(28, 28, 67, 0.95);
 `;
 
 const HeaderSection = styled.div`
@@ -177,6 +176,11 @@ const SummaryBlock = styled.div`
       margin-right: 10px;
       font-size: 0.9rem;
     }
+
+    strong {
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.95);
+    }
   }
 `;
 
@@ -289,6 +293,11 @@ const ItemContent = styled.p`
     margin-right: 12px;
     font-size: 1.2rem;
   }
+
+  strong {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+  }
 `;
 
 const ItemActions = styled.div`
@@ -352,7 +361,6 @@ const ActionButton = styled.button`
   }
 `;
 
-// Modal de Edição
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -551,17 +559,14 @@ const parsePlan = (text: string): ParsedPlan => {
   roteiroLines.forEach((line, index) => {
     console.log(`Processing line ${index}: "${line}"`);
 
-    // Tenta diferentes padrões para dias
     const dayMatch =
       line.match(/^\s*\*?\*?\s*(Dia\s*\d+[^*]*)\*?\*?/i) ||
       line.match(/^\s*(Dia\s*\d+[^:]*):?/i);
 
-    // Tenta diferentes padrões para períodos
     const periodMatch =
       line.match(/^\s*-?\s*\*?\*?\s*(Manhã|Tarde|Noite)[:\*]*/i) ||
       line.match(/^\s*(Manhã|Tarde|Noite)[:\*]*/i);
 
-    // Verifica atividades
     const activityMatch =
       line.trim().startsWith("*") ||
       line.trim().startsWith("-") ||
@@ -588,7 +593,6 @@ const parsePlan = (text: string): ParsedPlan => {
       roteiro[currentDay][currentPeriod].push(cleanActivity);
       console.log(`Added activity: "${cleanActivity}"`);
     } else if (line.trim() && currentDay && !periodMatch && !dayMatch) {
-      // Se não é período nem dia, pode ser descrição do dia
       if (!currentPeriod) {
         if (!roteiro[currentDay]["Descrição"]) {
           roteiro[currentDay]["Descrição"] = [];
@@ -596,7 +600,6 @@ const parsePlan = (text: string): ParsedPlan => {
         roteiro[currentDay]["Descrição"].push(line.trim());
         console.log(`Added day description: "${line.trim()}"`);
       } else if (roteiro[currentDay][currentPeriod]?.length > 0) {
-        // Adiciona à última atividade
         const lastIndex = roteiro[currentDay][currentPeriod].length - 1;
         roteiro[currentDay][currentPeriod][lastIndex] += ` ${line.trim()}`;
         console.log(`Extended last activity with: "${line.trim()}"`);
@@ -606,6 +609,12 @@ const parsePlan = (text: string): ParsedPlan => {
 
   console.log("Final roteiro structure:", roteiro);
   return { title, roteiro, summary: summaryLines };
+};
+
+const formatTextWithBold = (text: string): string => {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.*?)\*/g, "<strong>$1</strong>");
 };
 
 const FinalStep: React.FC<FinalStepProps> = ({
@@ -621,7 +630,6 @@ const FinalStep: React.FC<FinalStepProps> = ({
     summary: [],
   });
 
-  // Estados do modal de edição
   const [editModal, setEditModal] = useState<{
     isOpen: boolean;
     text: string;
@@ -650,23 +658,27 @@ const FinalStep: React.FC<FinalStepProps> = ({
     if (!editModal.clickPosition)
       return { top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
 
-    const { x, y } = editModal.clickPosition;
     const modalWidth = 600;
     const modalHeight = 400;
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-    // Calcular posição ideal
-    let left = Math.max(
-      32,
-      Math.min(x - modalWidth / 2, viewportWidth - modalWidth - 32)
-    );
-    let top = Math.max(32, y - scrollTop - 100); // 100px acima do clique, ajustado pelo scroll
+    const centerY = viewportHeight / 2;
 
-    // Ajustar se sair da viewport
-    if (top + modalHeight > viewportHeight - 32) {
-      top = Math.max(32, viewportHeight - modalHeight - 32);
+    let left = 225;
+    let top = Math.max(12, scrollTop + centerY - modalHeight / 2 - 100);
+
+    if (left + modalWidth > viewportWidth - 32) {
+      left = Math.max(32, viewportWidth - modalWidth - 32);
+    }
+
+    if (top + modalHeight > scrollTop + viewportHeight - 6) {
+      top = scrollTop + viewportHeight - modalHeight - 6;
+    }
+
+    if (top < scrollTop + 6) {
+      top = scrollTop + 6;
     }
 
     return {
@@ -675,24 +687,6 @@ const FinalStep: React.FC<FinalStepProps> = ({
       transform: "none",
     };
   };
-  React.useEffect(() => {
-    if (editModal.isOpen) {
-      document.body.style.overflow = "hidden";
-
-      const handleKeyPress = (e: KeyboardEvent) => {
-        if (e.key === "Escape") {
-          handleCancelEdit();
-        }
-      };
-
-      document.addEventListener("keydown", handleKeyPress);
-
-      return () => {
-        document.body.style.overflow = "unset";
-        document.removeEventListener("keydown", handleKeyPress);
-      };
-    }
-  }, [editModal.isOpen]);
 
   const handleEditTitle = (event: React.MouseEvent) => {
     const rect = (event.target as HTMLElement).getBoundingClientRect();
@@ -858,9 +852,13 @@ const FinalStep: React.FC<FinalStepProps> = ({
                     <PeriodTitle>{periodo}</PeriodTitle>
                     {plan.roteiro[dia][periodo].map((item, index) => (
                       <RoteiroItem key={index}>
-                        <ItemContent>
-                          {item.replace(/^(\*|-)\s*/, "").trim()}
-                        </ItemContent>
+                        <ItemContent
+                          dangerouslySetInnerHTML={{
+                            __html: formatTextWithBold(
+                              item.replace(/^(\*|-)\s*/, "").trim()
+                            ),
+                          }}
+                        />
                         <ItemActions>
                           <ActionButton
                             onClick={(e) =>
@@ -892,7 +890,14 @@ const FinalStep: React.FC<FinalStepProps> = ({
               <h2>Resumo Geral da Viagem</h2>
               <ul>
                 {plan.summary.map((item, index) => (
-                  <li key={index}>{item.replace(/^\*/, "").trim()}</li>
+                  <li
+                    key={index}
+                    dangerouslySetInnerHTML={{
+                      __html: formatTextWithBold(
+                        item.replace(/^\*/, "").trim()
+                      ),
+                    }}
+                  />
                 ))}
               </ul>
             </SummaryBlock>

@@ -5,6 +5,12 @@ import {
   OptionLabel,
   RadioInput,
 } from "../../pages/PlanningFormPage/styles";
+import {
+  TravelIcon,
+  ContentContainer,
+  TextContainer,
+  SectionDivider,
+} from "./Step1/styles";
 
 interface Step1Props {
   formData: {
@@ -68,27 +74,20 @@ const Step1: React.FC<Step1Props> = ({ formData, handleChange }) => {
               checked={formData.motivo === motivo.value}
               onChange={handleChange}
             />
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                width: "100%",
-              }}
-            >
-              <span style={{ fontSize: "28px", transition: "all 0.3s ease" }}>
-                {motivo.icon}
-              </span>
-              <div style={{ flex: 1 }}>
+            <ContentContainer>
+              <TravelIcon>{motivo.icon}</TravelIcon>
+              <TextContainer>
                 <div className="option-title">{motivo.value}</div>
                 <div className="option-description">{motivo.description}</div>
-              </div>
-            </div>
+              </TextContainer>
+            </ContentContainer>
           </OptionLabel>
         ))}
       </OptionContainer>
 
-      <QuestionTitle style={{ marginTop: "40px" }}>
+      <SectionDivider />
+
+      <QuestionTitle>
         E o destino, será nacional ou internacional?{" "}
         <span className="emoji">🌎</span>
       </QuestionTitle>
@@ -104,22 +103,13 @@ const Step1: React.FC<Step1Props> = ({ formData, handleChange }) => {
               checked={formData.destino === destino.value}
               onChange={handleChange}
             />
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                width: "100%",
-              }}
-            >
-              <span style={{ fontSize: "28px", transition: "all 0.3s ease" }}>
-                {destino.icon}
-              </span>
-              <div style={{ flex: 1 }}>
+            <ContentContainer>
+              <TravelIcon>{destino.icon}</TravelIcon>
+              <TextContainer>
                 <div className="option-title">{destino.value}</div>
                 <div className="option-description">{destino.description}</div>
-              </div>
-            </div>
+              </TextContainer>
+            </ContentContainer>
           </OptionLabel>
         ))}
       </OptionContainer>

@@ -5,6 +5,13 @@ import {
   OptionLabel,
   RadioInput,
 } from "../../pages/PlanningFormPage/styles";
+import {
+  CompanionIcon,
+  TransportIcon,
+  ContentContainer,
+  TextContainer,
+  SectionDivider,
+} from "./Step3/styles";
 
 interface Step3Props {
   formData: {
@@ -47,18 +54,9 @@ const Step3: React.FC<Step3Props> = ({ formData, handleChange }) => {
               checked={formData.acompanhantes === opcao.value}
               onChange={handleChange}
             />
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                width: "100%",
-              }}
-            >
-              <span style={{ fontSize: "28px", transition: "all 0.3s ease" }}>
-                {opcao.icon}
-              </span>
-              <div style={{ flex: 1 }}>
+            <ContentContainer>
+              <CompanionIcon>{opcao.icon}</CompanionIcon>
+              <TextContainer>
                 <div className="option-title">
                   {opcao.value === "0"
                     ? "Sozinho"
@@ -69,13 +67,15 @@ const Step3: React.FC<Step3Props> = ({ formData, handleChange }) => {
                     : "4+ acompanhantes"}
                 </div>
                 <div className="option-description">{opcao.description}</div>
-              </div>
-            </div>
+              </TextContainer>
+            </ContentContainer>
           </OptionLabel>
         ))}
       </OptionContainer>
 
-      <QuestionTitle style={{ marginTop: "40px" }}>
+      <SectionDivider />
+
+      <QuestionTitle>
         Alguma preferência por meio de transporte?{" "}
         <span className="emoji">🚗</span>
       </QuestionTitle>
@@ -91,22 +91,13 @@ const Step3: React.FC<Step3Props> = ({ formData, handleChange }) => {
               checked={formData.transporte === opcao.value}
               onChange={handleChange}
             />
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                width: "100%",
-              }}
-            >
-              <span style={{ fontSize: "28px", transition: "all 0.3s ease" }}>
-                {opcao.icon}
-              </span>
-              <div style={{ flex: 1 }}>
+            <ContentContainer>
+              <TransportIcon>{opcao.icon}</TransportIcon>
+              <TextContainer>
                 <div className="option-title">{opcao.value}</div>
                 <div className="option-description">{opcao.description}</div>
-              </div>
-            </div>
+              </TextContainer>
+            </ContentContainer>
           </OptionLabel>
         ))}
       </OptionContainer>
