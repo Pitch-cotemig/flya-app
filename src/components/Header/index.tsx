@@ -20,7 +20,7 @@ export function Header({ user }: HeaderProps) {
   // Dados dos links de navegação
   const navLinks = [
     { label: "Início", to: "/" },
-    { label: "Nova Viagem", to: "/planejamento" },
+    { label: "Nova Viagem", to: "/Planejamento" },
     { label: "Minha Mala", to: "/Minha-Mala" },
     { label: "Minhas Viagens", to: "/Minhas-Viagens" },
   ];

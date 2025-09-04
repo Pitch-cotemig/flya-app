@@ -101,7 +101,6 @@ export const HeroContent = styled.div`
 export const HeroTitle = styled.h1`
   font-size: clamp(2rem, 4vw, 3.5rem);
   font-weight: 700;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
   max-width: 900px;
   line-height: 1.2;
   animation: heroTitleAnimation 1.5s ease-out;

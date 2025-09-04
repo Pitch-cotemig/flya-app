@@ -46,7 +46,7 @@ const Hero: React.FC<HeroProps> = ({ user }) => {
   }, []);
 
   const handlePlanClick = () => {
-    navigate("/planejamento");
+    navigate("/Planejamento");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {

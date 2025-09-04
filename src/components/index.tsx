@@ -13,3 +13,4 @@ export { default as ItemSuggestions } from "./ItemSuggestions";
 export { default as MainLayout } from "./MainLayout";
 export { default as SuccessModal } from "./SuccessModal";
 export { FlyaLoading } from "./FlyaLoading";
+export { ScrollToTop } from "./ScrollToTop";
