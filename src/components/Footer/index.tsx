@@ -38,7 +38,7 @@ export function Footer() {
   ];
 
   const companyLinks = [
-    { label: "Sobre Nós", to: "/sobre-nos" },
+    { label: "Sobre Nós", to: "/Sobre-Nos" },
     { label: "Nossa Missão", to: "#" },
     { label: "Carreiras", to: "#" },
     { label: "Blog", to: "#" },
@@ -120,8 +120,8 @@ export function Footer() {
         <CopyrightSection>
           <p>© 2025 Flya. Todos os direitos reservados.</p>
           <CopyrightLinks>
-            <Link to="/politica-de-privacidade">Política de Privacidade</Link>|
-            <Link to="/termos-de-uso">Termos de Uso</Link>
+            <Link to="/Politica-De-Privacidade">Política de Privacidade</Link>|
+            <Link to="/Termos-de-Uso">Termos de Uso</Link>
           </CopyrightLinks>
         </CopyrightSection>
       </FooterContent>

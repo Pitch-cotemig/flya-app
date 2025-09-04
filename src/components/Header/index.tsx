@@ -19,10 +19,10 @@ interface HeaderProps {
 export function Header({ user }: HeaderProps) {
   // Dados dos links de navegação
   const navLinks = [
-    { label: "Home", to: "/" },
-    { label: "Nova Viagem", to: "/planejamento" },
-    { label: "Minha Mala", to: "/mala" },
-    { label: "Minhas Viagens", to: "/minhas-viagens" },
+    { label: "Início", to: "/" },
+    { label: "Nova Viagem", to: "/Planejamento" },
+    { label: "Minha Mala", to: "/Minha-Mala" },
+    { label: "Minhas Viagens", to: "/Minhas-Viagens" },
   ];
 
   return (
@@ -49,7 +49,7 @@ export function Header({ user }: HeaderProps) {
         {/* Login na Direita */}
         <LoginSection>
           {user ? (
-            <Link to="/perfil">
+            <Link to="/Perfil">
               <LoginButton>
                 <UserIcon />
                 Perfil

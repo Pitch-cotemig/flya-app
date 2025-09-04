@@ -1,6 +1,10 @@
 import styled from "styled-components";
 
-export const HeroContainer = styled.section`
+interface HeroContainerProps {
+  imageLoaded?: boolean;
+}
+
+export const HeroContainer = styled.section<HeroContainerProps>`
   position: relative;
   height: 100vh;
   display: flex;
@@ -14,13 +18,24 @@ export const HeroContainer = styled.section`
       rgba(0, 0, 0, 0.5) 70%,
       rgba(28, 28, 67, 0.8) 100%
     ),
-    url("/images/mungyu-kim-Ex57cKpwdnE-unsplash.jpg");
+    ${(props) =>
+      props.imageLoaded
+        ? `url("/images/mungyu-kim-Ex57cKpwdnE-unsplash.jpg")`
+        : "linear-gradient(135deg, #0f172a 0%, #00bcd4 100%)"};
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+  background-repeat: no-repeat;
   color: white;
   text-align: center;
   overflow: hidden;
+
+  /* Transição suave quando a imagem carrega */
+  transition: background-image 0.8s ease-in-out;
+  will-change: background-image;
+
+  /* Fallback enquanto carrega */
+  background-color: #0f172a;
 
   &::before {
     content: "";
@@ -56,6 +71,18 @@ export const HeroContainer = styled.section`
 
   @media (max-width: 768px) {
     background-attachment: scroll;
+  }
+
+  /* Preload hint para a imagem */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    background-image: url("/images/mungyu-kim-Ex57cKpwdnE-unsplash.jpg");
+    opacity: 0;
   }
 `;
 
