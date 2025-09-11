@@ -53,11 +53,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.15) 0%,
-    rgba(255, 255, 255, 0.1) 100%
-  );
+
   backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 3rem 2.5rem;
@@ -91,11 +87,7 @@ const ModalContent = styled.div`
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(
-      circle,
-      rgba(0, 188, 212, 0.1) 0%,
-      transparent 50%
-    );
+
     animation: ${shimmer} 4s ease-in-out infinite;
     pointer-events: none;
   }

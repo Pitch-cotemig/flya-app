@@ -27,17 +27,6 @@ const subtleFloat = keyframes`
 `;
 
 const TripsContainer = styled.div`
-  background: radial-gradient(
-      circle at 30% 20%,
-      ${colors.alpha.cyan01} 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 80% 80%,
-      ${colors.alpha.purple01} 0%,
-      transparent 50%
-    ),
-    linear-gradient(to bottom, ${colors.background.primary} 0%, #0f1419 100%);
   min-height: 100vh;
   padding: 140px 32px 100px;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,

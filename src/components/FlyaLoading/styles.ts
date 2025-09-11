@@ -26,11 +26,6 @@ const containerPulse = keyframes`
     background: ${colors.background.primary};
   }
   50% {
-    background: radial-gradient(
-      circle at 50% 50%,
-      ${colors.alpha.cyan01} 0%,
-      ${colors.background.primary} 40%
-    );
   }
 `;
 

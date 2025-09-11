@@ -2,12 +2,6 @@ import styled from "styled-components";
 
 export const TestimonialsSection = styled.section`
   padding: 6rem 2rem;
-  background: linear-gradient(
-    135deg,
-    rgb(15, 23, 42) 0%,
-    rgb(28, 28, 67) 50%,
-    rgb(15, 23, 42) 100%
-  );
   color: white;
   position: relative;
   overflow: hidden;
@@ -19,16 +13,6 @@ export const TestimonialsSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-        ellipse at center,
-        rgba(0, 188, 212, 0.08) 0%,
-        transparent 60%
-      ),
-      radial-gradient(
-        ellipse at 80% 20%,
-        rgba(0, 188, 212, 0.05) 0%,
-        transparent 60%
-      );
     animation: floatingBg 20s ease-in-out infinite;
   }
 
