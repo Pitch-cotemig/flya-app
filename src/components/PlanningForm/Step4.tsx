@@ -45,7 +45,6 @@ const Step4: React.FC<Step4Props> = ({ formData, handleChange }) => {
     <>
       <QuestionTitle>
         Qual(is) clima(s) você prefere em suas viagens?{" "}
-        <span className="emoji">🌤️</span>
       </QuestionTitle>
       <p
         style={{
@@ -55,7 +54,7 @@ const Step4: React.FC<Step4Props> = ({ formData, handleChange }) => {
           marginBottom: "30px",
         }}
       >
-        Selecione quantas opções desejar ✨
+        Selecione quantas opções desejar 
       </p>
       <OptionContainer>
         {climaOpcoes.map((opcao) => (

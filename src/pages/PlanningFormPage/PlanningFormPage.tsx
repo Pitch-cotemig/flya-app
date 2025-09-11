@@ -60,10 +60,10 @@ export function PlanningFormPage() {
   const [generatedPlan, setGeneratedPlan] = useState<TripData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const loadingSteps = [
-    "🔍 Analisando suas preferências...",
-    "🎨 Personalizando roteiro...",
-    "💎 Calculando melhores opções...",
-    "✨ Finalizando planejamento mágico...",
+    " Analisando suas preferências...",
+    " Personalizando roteiro...",
+    " Calculando melhores opções...",
+    " Finalizando planejamento mágico...",
   ];
   const navigate = useNavigate();
 
@@ -261,7 +261,7 @@ export function PlanningFormPage() {
               }}
               style={{ zIndex: 999, position: "relative" }}
             >
-              🚀 Começar Minha Jornada
+              Começar Minha Jornada
             </ContinueButton>
           </InitialScreenContainer>
         </FormContainer>

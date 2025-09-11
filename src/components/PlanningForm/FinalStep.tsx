@@ -194,7 +194,7 @@ const DayTitle = styled.h2`
   text-align: center;
 
   &::before {
-    content: "📅";
+
     display: block;
     font-size: 2.2rem;
     margin-bottom: 0.5rem;

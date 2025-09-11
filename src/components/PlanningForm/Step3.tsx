@@ -32,8 +32,7 @@ const Step3: React.FC<Step3Props> = ({ formData, handleChange }) => {
   return (
     <>
       <QuestionTitle>
-        Com quantos acompanhantes você viajará?{" "}
-        <span className="emoji">👥</span>
+        Com quantos acompanhantes você viajará?
       </QuestionTitle>
       <OptionContainer>
         {acompanhantesOpcoes.map((opcao) => (
@@ -76,8 +75,7 @@ const Step3: React.FC<Step3Props> = ({ formData, handleChange }) => {
       </OptionContainer>
 
       <QuestionTitle style={{ marginTop: "40px" }}>
-        Alguma preferência por meio de transporte?{" "}
-        <span className="emoji">🚗</span>
+        Alguma preferência por meio de transporte?
       </QuestionTitle>
       <OptionContainer>
         {transporteOpcoes.map((opcao) => (

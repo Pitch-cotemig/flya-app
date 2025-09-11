@@ -44,7 +44,7 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
   return (
     <>
       <QuestionTitle>
-        Você levará seu pet na viagem? <span className="emoji">🐾</span>
+        Você levará seu pet na viagem? 
       </QuestionTitle>
       <OptionContainer>
         {petOpcoes.map((opcao) => (
@@ -80,7 +80,7 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
 
       <QuestionTitle style={{ marginTop: "40px" }}>
         Qual sua faixa de orçamento para esta viagem?{" "}
-        <span className="emoji">💸</span>
+        
       </QuestionTitle>
       <OptionContainer>
         {orcamentoOpcoes.map((opcao) => (

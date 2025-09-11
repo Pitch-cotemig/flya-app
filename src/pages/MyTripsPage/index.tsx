@@ -429,6 +429,7 @@ const MyTripsPage: React.FC = () => {
             active={filter === "favorites"}
             onClick={() => handleFilterChange("favorites")}
           >
+            {/* TODO: REMOVER EMOJI */}
             ⭐ Favoritas
           </FilterButton>
         </FilterContainer>

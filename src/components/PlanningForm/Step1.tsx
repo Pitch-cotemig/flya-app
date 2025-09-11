@@ -54,7 +54,7 @@ const Step1: React.FC<Step1Props> = ({ formData, handleChange }) => {
   return (
     <>
       <QuestionTitle>
-        Qual o principal motivo da sua viagem? <span className="emoji">🗺️</span>
+        Qual o principal motivo da sua viagem? 
       </QuestionTitle>
       <OptionContainer>
         {motivos.map((motivo) => (
@@ -90,7 +90,7 @@ const Step1: React.FC<Step1Props> = ({ formData, handleChange }) => {
 
       <QuestionTitle style={{ marginTop: "40px" }}>
         E o destino, será nacional ou internacional?{" "}
-        <span className="emoji">🌎</span>
+        
       </QuestionTitle>
       <OptionContainer>
         {destinos.map((destino) => (
