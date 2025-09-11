@@ -16,9 +16,8 @@ import {
   selectTripData,
 } from "../../store/selectors";
 import { useBagPersistence } from "../../hooks/useBagPersistence";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
 import ItemSuggestions from "../../components/ItemSuggestions";
+import { FlyaLoading } from "../../components/FlyaLoading";
 import { BagItem } from "../../store/types";
 import {
   BagContainer,
@@ -68,6 +67,7 @@ const CATEGORIES = [
 export function BagPage() {
   const dispatch = useAppDispatch();
   const [newItemName, setNewItemName] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   // Redux selectors
   const filteredItems = useAppSelector(selectFilteredItems);
@@ -81,15 +81,28 @@ export function BagPage() {
 
   // Initialize trip data if not set
   useEffect(() => {
-    if (!tripData) {
-      // TODO: Buscar dados da viagem do backend baseado no usuário logado
-      dispatch(
-        setTripData({
-          destination: "Paris",
-          duration: 7,
-        })
-      );
-    }
+    const initializePage = async () => {
+      try {
+        if (!tripData) {
+          // TODO: Buscar dados da viagem do backend baseado no usuário logado
+          dispatch(
+            setTripData({
+              destination: "Paris",
+              duration: 7,
+            })
+          );
+        }
+
+        // Simular carregamento inicial
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Erro ao inicializar página da mala:", error);
+        setIsLoading(false);
+      }
+    };
+
+    initializePage();
   }, [dispatch, tripData]);
 
   const handleAddItem = (e: React.FormEvent) => {
@@ -138,6 +151,11 @@ export function BagPage() {
     dispatch(setActiveCategory(categoryId));
   };
 
+  // Loading state
+  if (isLoading) {
+    return <FlyaLoading text="Organizando sua mala..." size="medium" />;
+  }
+
   return (
     <>
       <BagContainer>
@@ -173,7 +191,7 @@ export function BagPage() {
             </ProgressBar>
           </ProgressSection>
 
-          {tripData && (
+          {tripData && !isLoading && (
             <ItemSuggestions
               destination={tripData.destination}
               duration={tripData.duration}

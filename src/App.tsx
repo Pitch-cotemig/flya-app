@@ -15,7 +15,7 @@ import { User, authService } from "./services/authService";
 
 // --- Importação das Páginas ---
 
-// 1. A HomePage original (seu dashboard), que fica em 'pages/home'
+// 1. A HomePage original (seu Dashboard), que fica em 'pages/home'
 import DashboardPage from "./pages/home";
 // 2. A página de autenticação, que fica em 'pages/auth'
 import AuthPage from "./pages/auth";
@@ -27,7 +27,12 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicy/PrivacyPolicyPage";
 import AboutUsPage from "./pages/AboutUs/AboutUsPage";
 import { PlanningFormPage } from "./pages/PlanningFormPage/PlanningFormPage";
 import { BagPage } from "./pages/BagPage/BagPageRedux";
-import { MainLayout, SuccessModal, ScrollToTop } from "./components";
+import {
+  MainLayout,
+  SuccessModal,
+  ScrollToTop,
+  FlyaLoading,
+} from "./components";
 import { ProfilePage } from "./pages";
 import MyTripsPage from "./pages/MyTripsPage";
 
@@ -89,7 +94,7 @@ function App() {
   };
 
   if (isLoading) {
-    return <div>Verificando autenticação...</div>; // Ou um componente de Spinner
+    return <FlyaLoading text="Carregando suas viagens..." size="medium" />;
   }
 
   return (
@@ -108,16 +113,16 @@ function App() {
           <Route element={<MainLayout user={currentUser} />}>
             {/* Rotas Públicas */}
             <Route path="/" element={<LandingPage user={currentUser} />} />
-            <Route path="/termos-de-uso" element={<TermsOfUsePage />} />
+            <Route path="/Termos-de-Uso" element={<TermsOfUsePage />} />
             <Route
-              path="/politica-de-privacidade"
+              path="/Politica-De-Privacidade"
               element={<PrivacyPolicyPage />}
             />
-            <Route path="/sobre-nos" element={<AboutUsPage />} />
+            <Route path="/Sobre-Nos" element={<AboutUsPage />} />
 
             {/* Rotas Privadas */}
             <Route
-              path="/dashboard"
+              path="/Dashboard"
               element={
                 currentUser ? (
                   <DashboardPage user={currentUser} onLogout={handleLogout} />
@@ -127,7 +132,7 @@ function App() {
               }
             />
             <Route
-              path="/planejamento"
+              path="/Planejamento"
               element={
                 currentUser ? (
                   <PlanningFormPage />
@@ -137,13 +142,13 @@ function App() {
               }
             />
             <Route
-              path="/minhas-viagens"
+              path="/Minhas-Viagens"
               element={
                 currentUser ? <MyTripsPage /> : <Navigate to="/auth" replace />
               }
             />
             <Route
-              path="/mala"
+              path="/Minha-Mala"
               element={
                 currentUser ? <BagPage /> : <Navigate to="/auth" replace />
               }
@@ -157,7 +162,7 @@ function App() {
           />
 
           <Route
-            path="/perfil"
+            path="/Perfil"
             element={
               currentUser ? (
                 <ProfilePage user={currentUser} onLogout={handleLogout} />
