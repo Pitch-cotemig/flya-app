@@ -18,7 +18,19 @@ import {
 import { useBagPersistence } from "../../hooks/useBagPersistence";
 import ItemSuggestions from "../../components/ItemSuggestions";
 import { FlyaLoading } from "../../components/FlyaLoading";
-import { BagItem } from "../../store/types";
+import {
+  Package,
+  Shirt,
+  Briefcase,
+  Droplets,
+  FileText,
+  Pill,
+  Backpack,
+  FileCheck,
+  Plus,
+  Trash2,
+  CheckCircle2,
+} from "lucide-react";
 import {
   BagContainer,
   BagHeader,
@@ -51,18 +63,43 @@ import {
   EmptyIcon,
   EmptyText,
 } from "./styles";
-import { Plus, Trash2, Package, CheckCircle2 } from "lucide-react";
 
 const CATEGORIES = [
-  { id: "all", name: "Todos", icon: "📦" },
-  { id: "clothes", name: "Roupas", icon: "👕" },
-  { id: "electronics", name: "Eletrônicos", icon: "📱" },
-  { id: "toiletries", name: "Higiene", icon: "🧴" },
-  { id: "documents", name: "Documentos", icon: "📄" },
-  { id: "medicine", name: "Remédios", icon: "💊" },
-  { id: "accessories", name: "Acessórios", icon: "🎒" },
-  { id: "other", name: "Outros", icon: "📋" },
+  { id: "all", name: "Todos" },
+  { id: "clothes", name: "Roupas" },
+  { id: "electronics", name: "Eletrônicos" },
+  { id: "toiletries", name: "Higiene" },
+  { id: "documents", name: "Documentos" },
+  { id: "medicine", name: "Remédios" },
+  { id: "accessories", name: "Acessórios" },
+  { id: "other", name: "Outros" },
 ];
+
+// Função para renderizar ícones de forma consistente
+const getCategoryIcon = (categoryId: string, size: number = 16) => {
+  const iconProps = { size, className: "category-icon" };
+
+  switch (categoryId) {
+    case "all":
+      return <Package {...iconProps} />;
+    case "clothes":
+      return <Shirt {...iconProps} />;
+    case "electronics":
+      return <Briefcase {...iconProps} />;
+    case "toiletries":
+      return <Droplets {...iconProps} />;
+    case "documents":
+      return <FileText {...iconProps} />;
+    case "medicine":
+      return <Pill {...iconProps} />;
+    case "accessories":
+      return <Backpack {...iconProps} />;
+    case "other":
+      return <FileCheck {...iconProps} />;
+    default:
+      return <Package {...iconProps} />;
+  }
+};
 
 export function BagPage() {
   const dispatch = useAppDispatch();
@@ -226,7 +263,7 @@ export function BagPage() {
                   onClick={() => handleActiveCategoryChange(category.id)}
                   variant="add"
                 >
-                  <span>{category.icon}</span>
+                  {getCategoryIcon(category.id)}
                   {category.name}
                 </CategoryTab>
               ))}
@@ -241,7 +278,7 @@ export function BagPage() {
                   active={selectedCategory === category.id}
                   onClick={() => handleCategoryChange(category.id)}
                 >
-                  <span>{category.icon}</span>
+                  {getCategoryIcon(category.id)}
                   {category.name}
                 </CategoryTab>
               ))}
@@ -272,7 +309,7 @@ export function BagPage() {
                   <div>
                     <ItemName checked={item.checked}>{item.name}</ItemName>
                     <ItemCategory>
-                      {CATEGORIES.find((c) => c.id === item.category)?.icon}{" "}
+                      {getCategoryIcon(item.category, 14)}{" "}
                       {CATEGORIES.find((c) => c.id === item.category)?.name}
                     </ItemCategory>
                   </div>

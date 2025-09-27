@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import { exportToPDF, exportToText } from "../../utils/pdfExport";
 import {
+  MapPin,
+  Clock,
+  Calendar,
+  Star,
+  X,
+  FileText,
+  Download,
+  AlertTriangle,
+} from "lucide-react";
+import {
   Card,
   CardHeader,
   TripTitle,
@@ -167,16 +177,16 @@ const TripCard: React.FC<TripCardProps> = ({
 
         <TripDetails>
           <DetailItem>
-            <span className="icon">📍</span>
+            <MapPin size={16} className="icon" />
             {tripInfo.destination}
           </DetailItem>
           <DetailItem>
-            <span className="icon">⏳</span>
+            <Clock size={16} className="icon" />
             {tripInfo.dates}
           </DetailItem>
           {trip.created_at && (
             <DetailItem>
-              <span className="icon">🗓️</span>
+              <Calendar size={16} className="icon" />
               Criada em {new Date(trip.created_at).toLocaleDateString("pt-BR")}
             </DetailItem>
           )}
@@ -207,7 +217,10 @@ const TripCard: React.FC<TripCardProps> = ({
                 onToggleFavorite(trip.id);
               }}
             >
-              {trip.is_favorite ? "⭐" : "☆"}
+              <Star
+                size={16}
+                fill={trip.is_favorite ? "currentColor" : "none"}
+              />
             </FavoriteButton>
             <IconButton
               variant="danger"
@@ -216,7 +229,7 @@ const TripCard: React.FC<TripCardProps> = ({
                 handleDeleteClick();
               }}
             >
-              ×
+              <X size={16} />
             </IconButton>
           </ActionButtons>
         </CardActions>
@@ -227,22 +240,24 @@ const TripCard: React.FC<TripCardProps> = ({
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalHeader>
               <ModalTitle>{tripInfo.title}</ModalTitle>
-              <CloseButton onClick={() => setShowModal(false)}>×</CloseButton>
+              <CloseButton onClick={() => setShowModal(false)}>
+                <X size={20} />
+              </CloseButton>
             </ModalHeader>
 
             <ModalBody>
               <TripDetails>
                 <DetailItem>
-                  <span className="icon">📍</span>
+                  <MapPin size={16} className="icon" />
                   {tripInfo.destination}
                 </DetailItem>
                 <DetailItem>
-                  <span className="icon">📅</span>
+                  <Clock size={16} className="icon" />
                   {tripInfo.dates}
                 </DetailItem>
                 {trip.created_at && (
                   <DetailItem>
-                    <span className="icon">🗓️</span>
+                    <Calendar size={16} className="icon" />
                     Criada em{" "}
                     {new Date(trip.created_at).toLocaleDateString("pt-BR")}
                   </DetailItem>
@@ -262,10 +277,12 @@ const TripCard: React.FC<TripCardProps> = ({
             {trip.prompt_data && trip.ai_prompt && (
               <ExportButtons>
                 <ExportButton onClick={handleExportPDF}>
-                  📄 Exportar PDF
+                  <Download size={16} />
+                  Exportar PDF
                 </ExportButton>
                 <ExportButton onClick={handleExportTXT}>
-                  📝 Exportar TXT
+                  <FileText size={16} />
+                  Exportar TXT
                 </ExportButton>
               </ExportButtons>
             )}
@@ -276,7 +293,10 @@ const TripCard: React.FC<TripCardProps> = ({
       {showDeleteConfirm && (
         <ConfirmModal onClick={handleCancelDelete}>
           <ConfirmContent onClick={(e) => e.stopPropagation()}>
-            <ConfirmTitle>⚠️ Confirmar Exclusão</ConfirmTitle>
+            <ConfirmTitle>
+              <AlertTriangle size={20} />
+              Confirmar Exclusão
+            </ConfirmTitle>
             <ConfirmMessage>
               Tem certeza que deseja excluir este roteiro de viagem?
               <br />

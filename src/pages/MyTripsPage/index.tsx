@@ -5,6 +5,7 @@ import { tripsService } from "../../services/tripsService";
 import TripCard from "../../components/TripCard";
 import { FlyaLoading } from "../../components/FlyaLoading";
 import { colors } from "../../design-tokens/colors";
+import { Lock, AlertTriangle, Star, Plane } from "lucide-react";
 
 const fadeInUp = keyframes`
   from {
@@ -362,7 +363,9 @@ const MyTripsPage: React.FC = () => {
         </Header>
         <ContentWrapper>
           <ErrorContainer>
-            <span className="error-icon">{isJWTError ? "🔒" : "⚠️"}</span>
+            <span className="error-icon">
+              {isJWTError ? <Lock size={48} /> : <AlertTriangle size={48} />}
+            </span>
             <h3>{isJWTError ? "Sessão Expirada" : "Oops! Algo deu errado"}</h3>
             <p>{error}</p>
             {isJWTError ? (
@@ -418,14 +421,14 @@ const MyTripsPage: React.FC = () => {
             active={filter === "favorites"}
             onClick={() => handleFilterChange("favorites")}
           >
-            {/* TODO: REMOVER EMOJI */}
-            ⭐ Favoritas
+            <Star size={16} />
+            Favoritas
           </FilterButton>
         </FilterContainer>
 
         {filteredTrips.length === 0 ? (
           <EmptyState>
-            <span className="emoji">✈️</span>
+            <Plane size={48} className="emoji" />
             <h3>
               {filter === "favorites"
                 ? "Nenhuma viagem favorita ainda"

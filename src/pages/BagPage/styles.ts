@@ -326,6 +326,11 @@ export const CategoryTab = styled.button<{ active?: boolean; variant?: "add" }>`
         : "${colors.background.glassStrong}"};
   }
 
+  .category-icon {
+    flex-shrink: 0;
+    opacity: 0.9;
+  }
+
   span {
     font-size: 1.1rem;
   }
@@ -385,6 +390,13 @@ export const ItemCategory = styled.div`
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  .category-icon {
+    opacity: 0.7;
+  }
 `;
 
 export const ItemActions = styled.div`

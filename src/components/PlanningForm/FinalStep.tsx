@@ -127,7 +127,7 @@ const SummaryBlock = styled.div`
     text-align: center;
 
     &::before {
-      content: "📋";
+      content: "";
       display: block;
       font-size: 2rem;
       margin-bottom: 1rem;
@@ -159,7 +159,7 @@ const SummaryBlock = styled.div`
     }
 
     &::before {
-      content: "✨";
+      content: "";
       margin-right: 10px;
       font-size: 0.9rem;
     }
@@ -194,7 +194,6 @@ const DayTitle = styled.h2`
   text-align: center;
 
   &::before {
-
     display: block;
     font-size: 2.2rem;
     margin-bottom: 0.5rem;

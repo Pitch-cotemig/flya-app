@@ -5,6 +5,7 @@ import {
   OptionLabel,
   CheckboxInput,
 } from "../../pages/PlanningFormPage/styles";
+import { CloudSnow, CloudRain, Sun, Cloud } from "lucide-react";
 
 interface Step4Props {
   formData: {
@@ -17,25 +18,25 @@ const Step4: React.FC<Step4Props> = ({ formData, handleChange }) => {
   const climaOpcoes = [
     {
       value: "Neve",
-      icon: "❄️",
+      icon: <CloudSnow size={28} />,
       description: "Clima frio e nevado",
       color: "#E3F2FD",
     },
     {
       value: "Chuva",
-      icon: "🌧️",
+      icon: <CloudRain size={28} />,
       description: "Clima chuvoso e úmido",
       color: "#BBDEFB",
     },
     {
       value: "Ensolarado",
-      icon: "☀️",
+      icon: <Sun size={28} />,
       description: "Clima quente e ensolarado",
       color: "#FFF3E0",
     },
     {
       value: "Nublado",
-      icon: "☁️",
+      icon: <Cloud size={28} />,
       description: "Clima nublado e ameno",
       color: "#F3E5F5",
     },
@@ -54,7 +55,7 @@ const Step4: React.FC<Step4Props> = ({ formData, handleChange }) => {
           marginBottom: "30px",
         }}
       >
-        Selecione quantas opções desejar 
+        Selecione quantas opções desejar
       </p>
       <OptionContainer>
         {climaOpcoes.map((opcao) => (
@@ -76,9 +77,9 @@ const Step4: React.FC<Step4Props> = ({ formData, handleChange }) => {
                 width: "100%",
               }}
             >
-              <span style={{ fontSize: "28px", transition: "all 0.3s ease" }}>
+              <div style={{ fontSize: "28px", transition: "all 0.3s ease" }}>
                 {opcao.icon}
-              </span>
+              </div>
               <div style={{ flex: 1 }}>
                 <div className="option-title">{opcao.value}</div>
                 <div className="option-description">{opcao.description}</div>

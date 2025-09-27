@@ -9,5 +9,5 @@ export const PageContainer = styled.div`
 
 export const ContentWrap = styled.main<{ $isHomePage?: boolean }>`
   flex: 1;
-  padding-top: ${({ $isHomePage }) => ($isHomePage ? "0" : "7rem")};
+  padding-top: ${({ $isHomePage }) => ($isHomePage ? "0" : "4.5rem")};
 `;
