@@ -5,6 +5,14 @@ import {
   OptionLabel,
   RadioInput,
 } from "../../pages/PlanningFormPage/styles";
+import {
+  Users,
+  Briefcase,
+  Globe,
+  PartyPopper,
+  MapPin,
+  Plane,
+} from "lucide-react";
 
 interface Step1Props {
   formData: {
@@ -18,22 +26,22 @@ const Step1: React.FC<Step1Props> = ({ formData, handleChange }) => {
   const motivos = [
     {
       value: "Passear com a família",
-      icon: "👨‍👩‍👧‍👦",
+      icon: <Users size={24} />,
       description: "Momentos especiais em família",
     },
     {
       value: "Viajar a negócios",
-      icon: "💼",
+      icon: <Briefcase size={24} />,
       description: "Viagens corporativas e profissionais",
     },
     {
       value: "Conhecer novos lugares",
-      icon: "🌍",
+      icon: <Globe size={24} />,
       description: "Explorar e descobrir o mundo",
     },
     {
       value: "Ir a eventos",
-      icon: "🎉",
+      icon: <PartyPopper size={24} />,
       description: "Shows, festivais e celebrações",
     },
   ];
@@ -41,21 +49,19 @@ const Step1: React.FC<Step1Props> = ({ formData, handleChange }) => {
   const destinos = [
     {
       value: "Para alguma cidade Brasileira",
-      icon: "🇧🇷",
+      icon: <MapPin size={24} />,
       description: "Descobrir as belezas do Brasil",
     },
     {
       value: "Para o exterior",
-      icon: "✈️",
+      icon: <Plane size={24} />,
       description: "Aventura internacional",
     },
   ];
 
   return (
     <>
-      <QuestionTitle>
-        Qual o principal motivo da sua viagem? <span className="emoji">🗺️</span>
-      </QuestionTitle>
+      <QuestionTitle>Qual o principal motivo da sua viagem?</QuestionTitle>
       <OptionContainer>
         {motivos.map((motivo) => (
           <OptionLabel
@@ -90,7 +96,6 @@ const Step1: React.FC<Step1Props> = ({ formData, handleChange }) => {
 
       <QuestionTitle style={{ marginTop: "40px" }}>
         E o destino, será nacional ou internacional?{" "}
-        <span className="emoji">🌎</span>
       </QuestionTitle>
       <OptionContainer>
         {destinos.map((destino) => (

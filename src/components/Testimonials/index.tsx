@@ -1,4 +1,5 @@
 import React from "react";
+import { Star as StarIcon } from "lucide-react";
 import {
   TestimonialsSection,
   TestimonialsContainer,
@@ -48,7 +49,13 @@ const Testimonials: React.FC = () => {
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, index) => (
-      <Star key={index}>{index < rating ? "★" : "☆"}</Star>
+      <Star key={index}>
+        <StarIcon
+          size={16}
+          fill={index < rating ? "#FFD700" : "none"}
+          color={index < rating ? "#FFD700" : "#ddd"}
+        />
+      </Star>
     ));
   };
 

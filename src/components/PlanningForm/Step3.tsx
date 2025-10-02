@@ -5,6 +5,16 @@ import {
   OptionLabel,
   RadioInput,
 } from "../../pages/PlanningFormPage/styles";
+import {
+  User,
+  Users,
+  UserCheck,
+  Users2,
+  Car,
+  Bus,
+  Train,
+  Plane,
+} from "lucide-react";
 
 interface Step3Props {
   formData: {
@@ -16,25 +26,34 @@ interface Step3Props {
 
 const Step3: React.FC<Step3Props> = ({ formData, handleChange }) => {
   const acompanhantesOpcoes = [
-    { value: "0", icon: "👤", description: "Viagem solo" },
-    { value: "1", icon: "👥", description: "A dois" },
-    { value: "2/3", icon: "👨‍👩‍👧", description: "Em família" },
-    { value: "4+", icon: "👨‍👩‍👧‍👦", description: "Grande grupo" },
+    { value: "0", icon: <User size={24} />, description: "Viagem solo" },
+    { value: "1", icon: <Users size={24} />, description: "A dois" },
+    { value: "2/3", icon: <UserCheck size={24} />, description: "Em família" },
+    { value: "4+", icon: <Users2 size={24} />, description: "Grande grupo" },
   ];
 
   const transporteOpcoes = [
-    { value: "Não", icon: "🚗", description: "Carro próprio" },
-    { value: "Sim, ônibus", icon: "🚌", description: "Transporte rodoviário" },
-    { value: "Sim, trem", icon: "🚂", description: "Transporte ferroviário" },
-    { value: "Sim, avião", icon: "✈️", description: "Transporte aéreo" },
+    { value: "Não", icon: <Car size={24} />, description: "Carro próprio" },
+    {
+      value: "Sim, ônibus",
+      icon: <Bus size={24} />,
+      description: "Transporte rodoviário",
+    },
+    {
+      value: "Sim, trem",
+      icon: <Train size={24} />,
+      description: "Transporte ferroviário",
+    },
+    {
+      value: "Sim, avião",
+      icon: <Plane size={24} />,
+      description: "Transporte aéreo",
+    },
   ];
 
   return (
     <>
-      <QuestionTitle>
-        Com quantos acompanhantes você viajará?{" "}
-        <span className="emoji">👥</span>
-      </QuestionTitle>
+      <QuestionTitle>Com quantos acompanhantes você viajará?</QuestionTitle>
       <OptionContainer>
         {acompanhantesOpcoes.map((opcao) => (
           <OptionLabel
@@ -76,8 +95,7 @@ const Step3: React.FC<Step3Props> = ({ formData, handleChange }) => {
       </OptionContainer>
 
       <QuestionTitle style={{ marginTop: "40px" }}>
-        Alguma preferência por meio de transporte?{" "}
-        <span className="emoji">🚗</span>
+        Alguma preferência por meio de transporte?
       </QuestionTitle>
       <OptionContainer>
         {transporteOpcoes.map((opcao) => (

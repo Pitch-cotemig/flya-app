@@ -31,28 +31,7 @@ const spin = keyframes`
   }
 `;
 
-const bounce = keyframes`
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-10px);
-  }
-  60% {
-    transform: translateY(-5px);
-  }
-`;
 
-const magicSparkle = keyframes`
-  0%, 100% {
-    opacity: 0;
-    transform: scale(0) rotate(0deg);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1) rotate(180deg);
-  }
-`;
 
 const travelPath = keyframes`
   0% {
@@ -71,25 +50,7 @@ const travelPath = keyframes`
   }
 `;
 
-const breathe = keyframes`
-  0%, 100% {
-    transform: scale(1);
-    filter: brightness(1);
-  }
-  50% {
-    transform: scale(1.05);
-    filter: brightness(1.2);
-  }
-`;
 
-const gradientShift = keyframes`
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-`;
 
 const pulse = keyframes`
   0%, 100% {
@@ -102,26 +63,7 @@ const pulse = keyframes`
   }
 `;
 
-const cardHover = keyframes`
-  0% {
-    transform: translateY(0) scale(1);
-  }
-  50% {
-    transform: translateY(-2px) scale(1.02);
-  }
-  100% {
-    transform: translateY(-4px) scale(1.03);
-  }
-`;
 
-const glowPulse = keyframes`
-  0%, 100% {
-    box-shadow: 0 4px 20px rgba(0, 188, 212, 0.1);
-  }
-  50% {
-    box-shadow: 0 8px 30px rgba(0, 188, 212, 0.3), 0 0 20px rgba(124, 58, 237, 0.2);
-  }
-`;
 
 const iconBounce = keyframes`
   0%, 100% {
@@ -146,14 +88,6 @@ const slideInLeft = keyframes`
   }
 `;
 
-const backgroundShine = keyframes`
-  0% {
-    background-position: -200px 0;
-  }
-  100% {
-    background-position: calc(200px + 100%) 0;
-  }
-`;
 
 const float = keyframes`
   0%, 100% {
@@ -250,7 +184,6 @@ export const PageContainer = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
-  background: linear-gradient(135deg, rgb(15, 23, 42) 0%, rgb(28, 28, 67) 100%);
 `;
 
 export const FloatingElements = styled.div`
@@ -919,11 +852,7 @@ export const InitialScreenContainer = styled.div`
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(
-      circle,
-      rgba(0, 188, 212, 0.15) 0%,
-      transparent 50%
-    );
+
     animation: ${float} 8s ease-in-out infinite;
     z-index: -1;
   }

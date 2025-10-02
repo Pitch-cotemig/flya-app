@@ -5,6 +5,7 @@ import { tripsService } from "../../services/tripsService";
 import TripCard from "../../components/TripCard";
 import { FlyaLoading } from "../../components/FlyaLoading";
 import { colors } from "../../design-tokens/colors";
+import { Lock, AlertTriangle, Star, Plane } from "lucide-react";
 
 const fadeInUp = keyframes`
   from {
@@ -27,17 +28,6 @@ const subtleFloat = keyframes`
 `;
 
 const TripsContainer = styled.div`
-  background: radial-gradient(
-      circle at 30% 20%,
-      ${colors.alpha.cyan01} 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 80% 80%,
-      ${colors.alpha.purple01} 0%,
-      transparent 50%
-    ),
-    linear-gradient(to bottom, ${colors.background.primary} 0%, #0f1419 100%);
   min-height: 100vh;
   padding: 140px 32px 100px;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -373,7 +363,9 @@ const MyTripsPage: React.FC = () => {
         </Header>
         <ContentWrapper>
           <ErrorContainer>
-            <span className="error-icon">{isJWTError ? "🔒" : "⚠️"}</span>
+            <span className="error-icon">
+              {isJWTError ? <Lock size={48} /> : <AlertTriangle size={48} />}
+            </span>
             <h3>{isJWTError ? "Sessão Expirada" : "Oops! Algo deu errado"}</h3>
             <p>{error}</p>
             {isJWTError ? (
@@ -429,13 +421,14 @@ const MyTripsPage: React.FC = () => {
             active={filter === "favorites"}
             onClick={() => handleFilterChange("favorites")}
           >
-            ⭐ Favoritas
+            <Star size={16} />
+            Favoritas
           </FilterButton>
         </FilterContainer>
 
         {filteredTrips.length === 0 ? (
           <EmptyState>
-            <span className="emoji">✈️</span>
+            <Plane size={48} className="emoji" />
             <h3>
               {filter === "favorites"
                 ? "Nenhuma viagem favorita ainda"

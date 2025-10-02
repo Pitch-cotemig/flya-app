@@ -21,6 +21,17 @@ import Step1 from "../../components/PlanningForm/Step1";
 import Step2 from "../../components/PlanningForm/Step2";
 import Step3 from "../../components/PlanningForm/Step3";
 import Step4 from "../../components/PlanningForm/Step4";
+import {
+  Plane,
+  Clock,
+  Target,
+  Zap,
+  Sparkles,
+  Lightbulb,
+  CheckCircle,
+  Loader,
+  Wand2,
+} from "lucide-react";
 import FinalStep from "../../components/PlanningForm/FinalStep";
 
 interface TripData {
@@ -60,10 +71,10 @@ export function PlanningFormPage() {
   const [generatedPlan, setGeneratedPlan] = useState<TripData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const loadingSteps = [
-    "🔍 Analisando suas preferências...",
-    "🎨 Personalizando roteiro...",
-    "💎 Calculando melhores opções...",
-    "✨ Finalizando planejamento mágico...",
+    " Analisando suas preferências...",
+    " Personalizando roteiro...",
+    " Calculando melhores opções...",
+    " Finalizando planejamento mágico...",
   ];
   const navigate = useNavigate();
 
@@ -221,7 +232,9 @@ export function PlanningFormPage() {
 
             <div className="features">
               <div className="feature">
-                <span className="icon">🎯</span>
+                <span className="icon">
+                  <Target size={20} />
+                </span>
                 <div className="title">100% Personalizado</div>
                 <div className="description">
                   Roteiro único criado especialmente para o seu perfil e
@@ -229,7 +242,9 @@ export function PlanningFormPage() {
                 </div>
               </div>
               <div className="feature">
-                <span className="icon">⚡</span>
+                <span className="icon">
+                  <Zap size={20} />
+                </span>
                 <div className="title">Super Rápido</div>
                 <div className="description">
                   Planejamento completo em menos de 5 minutos com tecnologia
@@ -237,7 +252,9 @@ export function PlanningFormPage() {
                 </div>
               </div>
               <div className="feature">
-                <span className="icon">✨</span>
+                <span className="icon">
+                  <Sparkles size={20} />
+                </span>
                 <div className="title">Experiência Premium</div>
                 <div className="description">
                   Sugestões exclusivas e insights únicos para uma viagem
@@ -245,7 +262,9 @@ export function PlanningFormPage() {
                 </div>
               </div>
               <div className="feature">
-                <span className="icon">💡</span>
+                <span className="icon">
+                  <Lightbulb size={20} />
+                </span>
                 <div className="title">Inteligência Avançada</div>
                 <div className="description">
                   IA especializada em turismo com conhecimento global atualizado
@@ -261,7 +280,7 @@ export function PlanningFormPage() {
               }}
               style={{ zIndex: 999, position: "relative" }}
             >
-              🚀 Começar Minha Jornada
+              Começar Minha Jornada
             </ContinueButton>
           </InitialScreenContainer>
         </FormContainer>
@@ -280,13 +299,18 @@ export function PlanningFormPage() {
         </DecorativeElements>
         <FormContainer>
           <LoadingContainer>
-            <div className="loading-icon">✈️</div>
+            <div className="loading-icon">
+              <Plane size={48} />
+            </div>
             <div className="loading-spinner"></div>
             <div className="loading-title">
-              ✨ Criando seu Roteiro dos Sonhos ✨
+              <Sparkles size={20} style={{ marginRight: "8px" }} /> Criando seu
+              Roteiro dos Sonhos{" "}
+              <Sparkles size={20} style={{ marginLeft: "8px" }} />
             </div>
             <div className="loading-subtitle">
-              {loadingSteps[loadingStep] || "🌟 Preparando tudo para você..."}
+              {loadingSteps[loadingStep] ||
+                "<Sparkles size={16} /> Preparando tudo para você..."}
             </div>
 
             <div className="loading-steps">
@@ -298,11 +322,13 @@ export function PlanningFormPage() {
                   }`}
                 >
                   <span className="step-icon">
-                    {index < loadingStep
-                      ? "✅"
-                      : index === loadingStep
-                      ? "�"
-                      : "⏳"}
+                    {index < loadingStep ? (
+                      <CheckCircle size={16} />
+                    ) : index === loadingStep ? (
+                      <Loader size={16} className="spinning" />
+                    ) : (
+                      <Clock size={16} />
+                    )}
                   </span>
                   <span className="step-text">
                     {step.replace(/^[🔍🎨💎✨]\s/, "")}
@@ -319,7 +345,8 @@ export function PlanningFormPage() {
                 fontStyle: "italic",
               }}
             >
-              🎭 Nossa IA está trabalhando sua magia...
+              <Wand2 size={16} style={{ marginRight: "8px" }} /> Nossa IA está
+              trabalhando sua magia...
             </div>
           </LoadingContainer>
         </FormContainer>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { FlyaLoading } from "../../components/FlyaLoading";
+import { Plane } from "lucide-react";
 import { colors } from "../../design-tokens/colors";
 
 const TestContainer = styled.div`
@@ -100,7 +101,10 @@ const FlyaLoadingTest: React.FC = () => {
   return (
     <TestContainer>
       <TestHeader>
-        <h1>🚀 Teste do FlyaLoading</h1>
+        <h1>
+          <Plane size={24} style={{ marginRight: "8px" }} /> Teste do
+          FlyaLoading
+        </h1>
         <p>
           Clique nos botões para testar diferentes variações do loading
           espalhafatoso!
@@ -187,7 +191,7 @@ const FlyaLoadingTest: React.FC = () => {
           )}
           {activeTest === "custom" && (
             <FlyaLoading
-              text="Preparando sua jornada dos sonhos... ✈️🌟"
+              text="Preparando sua jornada dos sonhos..."
               size="medium"
             />
           )}

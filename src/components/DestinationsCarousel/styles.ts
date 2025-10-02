@@ -2,12 +2,6 @@ import styled from "styled-components";
 
 export const DestinationsSection = styled.section`
   padding: 6rem 2rem;
-  background: linear-gradient(
-    135deg,
-    rgb(15, 23, 42) 0%,
-    rgb(28, 28, 67) 50%,
-    rgb(15, 23, 42) 100%
-  );
   color: white;
   position: relative;
   overflow: hidden;
@@ -19,16 +13,6 @@ export const DestinationsSection = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-        ellipse at top,
-        rgba(0, 188, 212, 0.08) 0%,
-        transparent 60%
-      ),
-      radial-gradient(
-        ellipse at bottom,
-        rgba(0, 188, 212, 0.05) 0%,
-        transparent 60%
-      );
     animation: backgroundShift 15s ease-in-out infinite;
   }
 
@@ -363,8 +347,6 @@ export const DestinationCard = styled.div`
 
   &:hover {
     transform: translateY(-15px) scale(1.02);
-    box-shadow: 0 20px 60px rgba(0, 188, 212, 0.3),
-      0 8px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     z-index: 10;
 
     &::before {
@@ -410,12 +392,6 @@ export const DestinationOverlay = styled.div`
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(
-    transparent 0%,
-    rgba(0, 0, 0, 0.1) 30%,
-    rgba(0, 0, 0, 0.7) 70%,
-    rgba(0, 0, 0, 0.95) 100%
-  );
   padding: 2rem 1.5rem 1.5rem;
   color: white;
   z-index: 2;

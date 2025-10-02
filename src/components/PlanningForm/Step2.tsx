@@ -5,6 +5,7 @@ import {
   OptionLabel,
   RadioInput,
 } from "../../pages/PlanningFormPage/styles";
+import { Heart, Plane, DollarSign } from "lucide-react";
 
 interface Step2Props {
   formData: {
@@ -16,26 +17,34 @@ interface Step2Props {
 
 const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
   const petOpcoes = [
-    { value: "Sim", icon: "🐕", description: "Seu amigo peludo vai junto!" },
-    { value: "Não", icon: "✈️", description: "Viagem solo ou com humanos" },
+    {
+      value: "Sim",
+      icon: <Heart size={24} />,
+      description: "Seu amigo peludo vai junto!",
+    },
+    {
+      value: "Não",
+      icon: <Plane size={24} />,
+      description: "Viagem solo ou com humanos",
+    },
   ];
 
   const orcamentoOpcoes = [
     {
       value: "R$0 - R$4.000",
-      icon: "💰",
+      icon: <DollarSign size={24} />,
       description: "Viagem econômica",
       color: "#4CAF50",
     },
     {
       value: "R$4.001 - R$7.000",
-      icon: "💵",
+      icon: <DollarSign size={24} />,
       description: "Viagem confortável",
       color: "#FF9800",
     },
     {
       value: "R$7.001 - R$10.000+",
-      icon: "💎",
+      icon: <DollarSign size={24} />,
       description: "Viagem premium",
       color: "#9C27B0",
     },
@@ -43,9 +52,7 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
 
   return (
     <>
-      <QuestionTitle>
-        Você levará seu pet na viagem? <span className="emoji">🐾</span>
-      </QuestionTitle>
+      <QuestionTitle>Você levará seu pet na viagem?</QuestionTitle>
       <OptionContainer>
         {petOpcoes.map((opcao) => (
           <OptionLabel
@@ -80,7 +87,6 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
 
       <QuestionTitle style={{ marginTop: "40px" }}>
         Qual sua faixa de orçamento para esta viagem?{" "}
-        <span className="emoji">💸</span>
       </QuestionTitle>
       <OptionContainer>
         {orcamentoOpcoes.map((opcao) => (
