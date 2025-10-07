@@ -32,7 +32,7 @@ export const SuggestionsTitle = styled.h3`
 
 export const SuggestionsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1rem;
 `;
 

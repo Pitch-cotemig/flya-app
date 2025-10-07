@@ -7,6 +7,7 @@ import {
 import { tripsService } from "../../services/tripsService";
 import { exportToPDF, exportToText } from "../../utils/pdfExport";
 import { colors } from "../../design-tokens/colors";
+import { Edit3, Trash2, X, AlertTriangle } from "lucide-react";
 
 const ExportButton = styled.button`
   padding: 12px 24px;
@@ -26,7 +27,6 @@ const ExportButton = styled.button`
   justify-content: center;
 
   &:hover {
-    background: rgba(0, 188, 212, 0.1);
     color: #00bcd4;
     border-color: rgba(0, 188, 212, 0.3);
     transform: translateY(-2px);
@@ -53,7 +53,6 @@ const FinalScreenContainer = styled.div`
   color: ${colors.text.primary};
   padding: 0;
   margin: 0;
-  background: rgba(13, 16, 32, 0.95);
 `;
 
 const HeaderSection = styled.div`
@@ -294,7 +293,7 @@ const ItemActions = styled.div`
   }
 `;
 
-const ActionButton = styled.button`
+const ActionButton = styled.button<{ variant?: "danger" }>`
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
@@ -306,6 +305,9 @@ const ActionButton = styled.button`
   font-size: 0.85rem;
   backdrop-filter: blur(10px);
   min-width: 50px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 
   &:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -314,7 +316,9 @@ const ActionButton = styled.button`
     transform: translateY(-1px);
   }
 
-  &:first-child {
+  ${({ variant }) =>
+    variant !== "danger" &&
+    `
     background: rgba(0, 188, 212, 0.1);
     border-color: rgba(0, 188, 212, 0.2);
     color: #00bcd4;
@@ -323,9 +327,11 @@ const ActionButton = styled.button`
       background: rgba(0, 188, 212, 0.2);
       border-color: #00bcd4;
     }
-  }
+  `}
 
-  &:last-child {
+  ${({ variant }) =>
+    variant === "danger" &&
+    `
     background: rgba(239, 68, 68, 0.1);
     border-color: rgba(239, 68, 68, 0.2);
     color: #ef4444;
@@ -334,6 +340,202 @@ const ActionButton = styled.button`
       background: rgba(239, 68, 68, 0.2);
       border-color: #ef4444;
     }
+  `}
+`;
+
+// Animações para o modal
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+`;
+
+const slideIn = keyframes`
+  from {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+`;
+
+// Modal Components
+const Modal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  backdrop-filter: blur(8px);
+  animation: ${fadeIn} 0.3s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ModalContent = styled.div`
+  position: relative;
+  background: ${colors.background.primaryAlpha};
+  border: 1px solid ${colors.alpha.white01};
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  backdrop-filter: blur(20px);
+  box-shadow: ${colors.shadow.modalStrong};
+  animation: ${slideIn} 0.3s ease-out;
+  
+  /* Garantir que o modal não saia da tela em dispositivos pequenos */
+  margin: 1rem;
+  
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    max-width: 95%;
+  }
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid ${colors.alpha.white01};
+`;
+
+const ModalTitle = styled.h2`
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  color: ${colors.text.primary};
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const CloseButton = styled.button`
+  background: ${colors.background.glass};
+  border: 1px solid ${colors.alpha.white01};
+  color: ${colors.text.muted};
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: ${colors.background.glassStrong};
+    color: ${colors.text.primary};
+    border-color: ${colors.alpha.cyan02};
+  }
+`;
+
+const ModalBody = styled.div`
+  margin-bottom: 1.5rem;
+`;
+
+const TextArea = styled.textarea`
+  width: 100%;
+  background: ${colors.background.glassSoft};
+  border: 1px solid ${colors.alpha.white01};
+  border-radius: 12px;
+  padding: 1rem;
+  color: ${colors.text.primary};
+  font-size: 0.875rem;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 100px;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: ${colors.primary.cyan};
+    box-shadow: 0 0 0 2px ${colors.alpha.cyan01};
+  }
+
+  &::placeholder {
+    color: ${colors.text.primaryAlpha60};
+  }
+`;
+
+const ModalActions = styled.div`
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+`;
+
+const ModalButton = styled.button<{ variant: "cancel" | "confirm" | "danger" }>`
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  ${({ variant }) => {
+    switch (variant) {
+      case "cancel":
+        return `
+          background: ${colors.background.glass};
+          color: ${colors.text.muted};
+          border: 1px solid ${colors.alpha.white01};
+          
+          &:hover {
+            background: ${colors.background.glassStrong};
+            color: ${colors.text.primary};
+          }
+        `;
+      case "confirm":
+        return `
+          background: ${colors.gradients.primary};
+          color: white;
+          
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: ${colors.shadow.cyan};
+          }
+        `;
+      case "danger":
+        return `
+          background: ${colors.state.errorGradient};
+          color: white;
+          
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: ${colors.shadow.error};
+          }
+        `;
+      default:
+        return "";
+    }
+  }}
+`;
+
+const ConfirmMessage = styled.p`
+  color: ${colors.text.muted};
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
+
+  strong {
+    color: ${colors.text.primary};
   }
 `;
 
@@ -474,6 +676,20 @@ const FinalStep: React.FC<FinalStepProps> = ({
     roteiro: {},
     summary: [],
   });
+  const [editModal, setEditModal] = useState<{
+    isOpen: boolean;
+    dia: string;
+    periodo: string;
+    index: number;
+    currentText: string;
+  }>({ isOpen: false, dia: "", periodo: "", index: -1, currentText: "" });
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    dia: string;
+    periodo: string;
+    index: number;
+  }>({ isOpen: false, dia: "", periodo: "", index: -1 });
+  const [editText, setEditText] = useState("");
 
   React.useEffect(() => {
     if (tripData?.plan_result) {
@@ -481,26 +697,94 @@ const FinalStep: React.FC<FinalStepProps> = ({
     }
   }, [tripData]);
 
-  const handleEditItem = (dia: string, periodo: string, index: number) => {
-    const novoTexto = prompt("Editar item:", plan.roteiro[dia][periodo][index]);
-    if (novoTexto !== null) {
-      const novoRoteiro = { ...plan.roteiro };
-      novoRoteiro[dia][periodo][index] = novoTexto;
-      setPlan((prevPlan) => ({ ...prevPlan, roteiro: novoRoteiro }));
+  // Fechar modais com ESC
+  React.useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        if (editModal.isOpen) {
+          cancelEdit();
+        } else if (deleteModal.isOpen) {
+          cancelDelete();
+        }
+      }
+    };
+
+    if (editModal.isOpen || deleteModal.isOpen) {
+      document.addEventListener('keydown', handleEsc);
+      // Prevenir scroll da página quando modal estiver aberto
+      document.body.style.overflow = 'hidden';
     }
+
+    return () => {
+      document.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'unset';
+    };
+  }, [editModal.isOpen, deleteModal.isOpen]);
+
+  const handleEditItem = (dia: string, periodo: string, index: number) => {
+    const currentText = plan.roteiro[dia][periodo][index];
+    setEditText(currentText);
+    setEditModal({
+      isOpen: true,
+      dia,
+      periodo,
+      index,
+      currentText,
+    });
   };
 
   const handleRemoveItem = (dia: string, periodo: string, index: number) => {
-    if (window.confirm("Tem certeza que deseja remover este item?")) {
+    setDeleteModal({
+      isOpen: true,
+      dia,
+      periodo,
+      index,
+    });
+  };
+
+  const confirmEdit = () => {
+    if (editText.trim()) {
       const novoRoteiro = { ...plan.roteiro };
-      novoRoteiro[dia][periodo] = novoRoteiro[dia][periodo].filter(
-        (_, i) => i !== index
-      );
-      if (novoRoteiro[dia][periodo].length === 0)
-        delete novoRoteiro[dia][periodo];
-      if (Object.keys(novoRoteiro[dia]).length === 0) delete novoRoteiro[dia];
+      novoRoteiro[editModal.dia][editModal.periodo][editModal.index] =
+        editText.trim();
       setPlan((prevPlan) => ({ ...prevPlan, roteiro: novoRoteiro }));
     }
+    setEditModal({
+      isOpen: false,
+      dia: "",
+      periodo: "",
+      index: -1,
+      currentText: "",
+    });
+    setEditText("");
+  };
+
+  const confirmDelete = () => {
+    const novoRoteiro = { ...plan.roteiro };
+    novoRoteiro[deleteModal.dia][deleteModal.periodo] = novoRoteiro[
+      deleteModal.dia
+    ][deleteModal.periodo].filter((_, i) => i !== deleteModal.index);
+    if (novoRoteiro[deleteModal.dia][deleteModal.periodo].length === 0)
+      delete novoRoteiro[deleteModal.dia][deleteModal.periodo];
+    if (Object.keys(novoRoteiro[deleteModal.dia]).length === 0)
+      delete novoRoteiro[deleteModal.dia];
+    setPlan((prevPlan) => ({ ...prevPlan, roteiro: novoRoteiro }));
+    setDeleteModal({ isOpen: false, dia: "", periodo: "", index: -1 });
+  };
+
+  const cancelEdit = () => {
+    setEditModal({
+      isOpen: false,
+      dia: "",
+      periodo: "",
+      index: -1,
+      currentText: "",
+    });
+    setEditText("");
+  };
+
+  const cancelDelete = () => {
+    setDeleteModal({ isOpen: false, dia: "", periodo: "", index: -1 });
   };
 
   const stringifyPlan = (planData: ParsedPlan): string => {
@@ -582,11 +866,14 @@ const FinalStep: React.FC<FinalStepProps> = ({
                         <ActionButton
                           onClick={() => handleEditItem(dia, periodo, index)}
                         >
+                          <Edit3 size={14} />
                           Editar
                         </ActionButton>
                         <ActionButton
+                          variant="danger"
                           onClick={() => handleRemoveItem(dia, periodo, index)}
                         >
+                          <Trash2 size={14} />
                           Excluir
                         </ActionButton>
                       </ItemActions>
@@ -625,6 +912,71 @@ const FinalStep: React.FC<FinalStepProps> = ({
           {isSaving ? "Salvando..." : "Salvar Viagem"}
         </ContinueButton>
       </FooterActions>
+
+      {/* Modal de Edição */}
+      {editModal.isOpen && (
+        <Modal onClick={cancelEdit}>
+          <ModalContent onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+            <ModalHeader>
+              <ModalTitle>Editar Item do Roteiro</ModalTitle>
+              <CloseButton onClick={cancelEdit}>
+                <X size={20} />
+              </CloseButton>
+            </ModalHeader>
+            <ModalBody>
+              <TextArea
+                value={editText}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  setEditText(e.target.value)
+                }
+                placeholder="Digite o novo texto para este item..."
+                rows={4}
+                autoFocus
+              />
+            </ModalBody>
+            <ModalActions>
+              <ModalButton variant="cancel" onClick={cancelEdit}>
+                Cancelar
+              </ModalButton>
+              <ModalButton variant="confirm" onClick={confirmEdit}>
+                Salvar Alterações
+              </ModalButton>
+            </ModalActions>
+          </ModalContent>
+        </Modal>
+      )}
+
+      {/* Modal de Exclusão */}
+      {deleteModal.isOpen && (
+        <Modal onClick={cancelDelete}>
+          <ModalContent onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+            <ModalHeader>
+              <ModalTitle>
+                <AlertTriangle size={20} color="#ef4444" />
+                Confirmar Exclusão
+              </ModalTitle>
+              <CloseButton onClick={cancelDelete}>
+                <X size={20} />
+              </CloseButton>
+            </ModalHeader>
+            <ModalBody>
+              <ConfirmMessage>
+                Tem certeza que deseja remover este item do roteiro?
+                <br />
+                <strong>Esta ação não pode ser desfeita.</strong>
+              </ConfirmMessage>
+            </ModalBody>
+            <ModalActions>
+              <ModalButton variant="cancel" onClick={cancelDelete}>
+                Cancelar
+              </ModalButton>
+              <ModalButton variant="danger" onClick={confirmDelete}>
+                Excluir Item
+              </ModalButton>
+            </ModalActions>
+          </ModalContent>
+        </Modal>
+      )}
     </FinalScreenContainer>
   );
 };

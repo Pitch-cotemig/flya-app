@@ -1,21 +1,32 @@
 import styled from "styled-components";
+import { colors } from "../../design-tokens/colors";
 
 export const StyledButton = styled.button`
-  padding: 10px 20px;
-  font-size: 16px;
-  color: #fff;
-  background-color: #007bff;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: ${colors.text.primary};
+  background: ${colors.gradients.primary};
   border: none;
-  border-radius: 4px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: ${colors.shadow.cyan};
 
   &:hover {
-    background-color: #0056b3;
+    background: ${colors.gradients.cyanHover};
+    transform: translateY(-2px);
+    box-shadow: ${colors.shadow.cyanStrong};
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 
   &:disabled {
-    background-color: #cccccc;
+    background: ${colors.neutral.gray600};
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 `;
