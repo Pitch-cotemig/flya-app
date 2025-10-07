@@ -1,242 +1,46 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useState, useRef } from "react";
 import { User, Bell, LogOut, Shield } from "lucide-react";
 import { User as UserType } from "../../services/authService";
-import { colors } from "../../design-tokens/colors";
-
-const Container = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: ${colors.profile.background};
-`;
-
-const MainContent = styled.main`
-  flex: 1;
-  display: flex;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-  gap: 2rem;
-  width: 100%;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    padding: 1rem;
-    gap: 1rem;
-  }
-`;
-
-const Sidebar = styled.aside`
-  width: 280px;
-  background: ${colors.profile.surface};
-  border-radius: 16px;
-  padding: 1.5rem;
-  height: fit-content;
-  box-shadow: ${colors.shadow.card};
-  border: 1px solid ${colors.profile.border};
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
-`;
-
-const SidebarNav = styled.nav`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const SidebarItem = styled.button<{ active?: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
-  border: none;
-  border-radius: 12px;
-  background: ${({ active }) => (active ? "#3b82f6" : "transparent")};
-  color: ${({ active }) => (active ? "white" : "#e2e8f0")};
-  font-weight: ${({ active }) => (active ? "600" : "500")};
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: left;
-  width: 100%;
-
-  &:hover {
-    background: ${({ active }) => (active ? "#3b82f6" : "#374151")};
-  }
-
-  &.logout {
-    margin-top: 1rem;
-    color: #ef4444;
-
-    &:hover {
-      background: rgba(239, 68, 68, 0.1);
-    }
-  }
-`;
-
-const ContentArea = styled.div`
-  flex: 1;
-  background: ${colors.profile.surface};
-  border-radius: 16px;
-  padding: 0;
-  box-shadow: ${colors.shadow.card};
-  border: 1px solid ${colors.profile.border};
-  overflow: hidden;
-`;
-
-const ProfileHeader = styled.div`
-  padding: 2rem;
-  border-bottom: 1px solid ${colors.profile.border};
-
-  h1 {
-    color: white;
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 0;
-  }
-`;
-
-const ProfileForm = styled.form`
-  padding: 2rem;
-`;
-
-const FormSection = styled.div`
-  margin-bottom: 2rem;
-`;
-
-const PhotoSection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    text-align: center;
-    gap: 1rem;
-  }
-`;
-
-const PhotoPreview = styled.div`
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: ${colors.profile.border};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border: 3px solid ${colors.profile.border};
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  svg {
-    color: #9ca3af;
-  }
-`;
-
-const PhotoActions = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-
-  @media (max-width: 768px) {
-    align-items: center;
-  }
-`;
-
-const PhotoButton = styled.button<{ variant?: "outline" }>`
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  border: ${({ variant }) =>
-    variant === "outline" ? `1px solid ${colors.profile.border}` : "none"};
-  background: ${({ variant }) =>
-    variant === "outline" ? "transparent" : "#3b82f6"};
-  color: ${({ variant }) => (variant === "outline" ? "#9ca3af" : "white")};
-  font-size: 0.875rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: ${({ variant }) =>
-      variant === "outline" ? "#374151" : "#2563eb"};
-  }
-`;
-
-const FormRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const Label = styled.label`
-  color: white;
-  font-weight: 500;
-  font-size: 0.875rem;
-`;
-
-const Input = styled.input`
-  padding: 0.75rem;
-  border: 1px solid ${colors.profile.border};
-  border-radius: 8px;
-  background: ${colors.profile.background};
-  color: white;
-  font-size: 1rem;
-
-  &:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  }
-
-  &::placeholder {
-    color: #6b7280;
-  }
-`;
-
-const SaveButton = styled.button`
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem 2rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 1rem;
-
-  &:hover {
-    background: #2563eb;
-  }
-
-  &:disabled {
-    background: #6b7280;
-    cursor: not-allowed;
-  }
-`;
+import {
+  profileService,
+  ProfileUpdateData,
+} from "../../services/profileService";
+import { useApiState } from "../../hooks/useApiState";
+import { FeedbackMessage } from "../../components";
+import {
+  Container,
+  MainContent,
+  Sidebar,
+  SidebarNav,
+  SidebarItem,
+  ContentArea,
+  ProfileHeader,
+  ProfileForm,
+  FormSection,
+  PhotoSection,
+  PhotoPreview,
+  PhotoActions,
+  PhotoButton,
+  FormRow,
+  FormGroup,
+  Label,
+  Input,
+  SaveButton,
+} from "./styles";
+import SecurityPage from "./SecurityPage";
+import NotificationsPage from "./NotificationsPage";
 
 interface ProfilePageProps {
   user: UserType;
   onLogout: () => void;
+  onUserUpdate?: (user: UserType) => void;
 }
 
-const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
+const ProfilePage: React.FC<ProfilePageProps> = ({
+  user,
+  onLogout,
+  onUserUpdate,
+}) => {
   const [activeTab, setActiveTab] = useState("profile");
   const [formData, setFormData] = useState({
     username: user?.username || "",
@@ -247,31 +51,269 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
     avatar: user?.avatar || "",
   });
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const {
+    loading,
+    error,
+    success,
+    setLoading,
+    setError,
+    setSuccess,
+    clearMessages,
+  } = useApiState();
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+    clearMessages();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implementar envio dos dados para o backend
-    console.log("Dados do perfil:", formData);
+
+    if (
+      !formData.username.trim() ||
+      !formData.firstName.trim() ||
+      !formData.lastName.trim() ||
+      !formData.email.trim()
+    ) {
+      setError("Por favor, preencha todos os campos obrigatórios");
+      return;
+    }
+
+    setLoading(true);
+
+    const profileUpdateData: ProfileUpdateData = {
+      username: formData.username.trim(),
+      firstName: formData.firstName.trim(),
+      lastName: formData.lastName.trim(),
+      email: formData.email.trim(),
+      birthDate: formData.birthDate,
+      avatar: formData.avatar,
+    };
+
+    const response = await profileService.updateProfile(profileUpdateData);
+
+    if (response.success && response.data) {
+      setSuccess(response.message);
+      // Update the user context if callback is provided
+      if (onUserUpdate) {
+        onUserUpdate(response.data);
+      }
+    } else {
+      setError(response.message);
+    }
   };
 
   const handlePhotoUpload = () => {
-    // TODO: Implementar upload de foto
-    console.log("Upload de foto");
+    fileInputRef.current?.click();
   };
 
-  const handlePhotoRemove = () => {
-    setFormData((prev) => ({
-      ...prev,
-      avatar: "",
-    }));
-    // TODO: Implementar remoção da foto no backend
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      setError("Por favor, selecione apenas arquivos de imagem");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError("A imagem deve ter no máximo 5MB");
+      return;
+    }
+
+    setLoading(true);
+
+    const response = await profileService.uploadAvatar(file);
+
+    if (response.success && response.data) {
+      setSuccess(response.message);
+      setFormData((prev) => ({
+        ...prev,
+        avatar: response.data!.avatarUrl,
+      }));
+    } else {
+      setError(response.message);
+    }
+  };
+
+  const handlePhotoRemove = async () => {
+    if (!formData.avatar) return;
+
+    setLoading(true);
+
+    const response = await profileService.removeAvatar();
+
+    if (response.success) {
+      setSuccess(response.message);
+      setFormData((prev) => ({
+        ...prev,
+        avatar: "",
+      }));
+    } else {
+      setError(response.message);
+    }
+  };
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "profile":
+        return (
+          <>
+            <ProfileHeader>
+              <h1>Editar Perfil</h1>
+            </ProfileHeader>
+
+            <ProfileForm onSubmit={handleSubmit}>
+              <FormSection>
+                {/* Feedback Messages */}
+                {loading && (
+                  <FeedbackMessage
+                    type="loading"
+                    message="Salvando alterações..."
+                  />
+                )}
+                {error && (
+                  <FeedbackMessage
+                    type="error"
+                    message={error}
+                    onClose={clearMessages}
+                  />
+                )}
+                {success && (
+                  <FeedbackMessage
+                    type="success"
+                    message={success}
+                    onClose={clearMessages}
+                  />
+                )}
+
+                <PhotoSection>
+                  <PhotoPreview>
+                    {formData.avatar ? (
+                      <img src={formData.avatar} alt="Avatar" />
+                    ) : (
+                      <User size={60} />
+                    )}
+                  </PhotoPreview>
+                  <PhotoActions>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      style={{ display: "none" }}
+                    />
+                    <PhotoButton
+                      type="button"
+                      onClick={handlePhotoUpload}
+                      disabled={loading}
+                    >
+                      Carregar Nova Foto
+                    </PhotoButton>
+                    {formData.avatar && (
+                      <PhotoButton
+                        type="button"
+                        variant="outline"
+                        onClick={handlePhotoRemove}
+                        disabled={loading}
+                      >
+                        Remover Foto
+                      </PhotoButton>
+                    )}
+                  </PhotoActions>
+                </PhotoSection>
+
+                <FormRow>
+                  <FormGroup>
+                    <Label>Nome de Usuário *</Label>
+                    <Input
+                      type="text"
+                      name="username"
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      placeholder="Digite seu nome de usuário"
+                      required
+                      disabled={loading}
+                    />
+                  </FormGroup>
+                </FormRow>
+
+                <FormRow>
+                  <FormGroup>
+                    <Label>Nome *</Label>
+                    <Input
+                      type="text"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      placeholder="Digite seu nome"
+                      required
+                      disabled={loading}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <Label>Sobrenome *</Label>
+                    <Input
+                      type="text"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      placeholder="Digite seu sobrenome"
+                      required
+                      disabled={loading}
+                    />
+                  </FormGroup>
+                </FormRow>
+
+                <FormRow>
+                  <FormGroup>
+                    <Label>Email *</Label>
+                    <Input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      placeholder="Digite seu email"
+                      required
+                      disabled={loading}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <Label>Data de Nascimento</Label>
+                    <Input
+                      type="date"
+                      name="birthDate"
+                      value={formData.birthDate}
+                      onChange={handleInputChange}
+                      disabled={loading}
+                    />
+                  </FormGroup>
+                </FormRow>
+
+                <SaveButton type="submit" disabled={loading}>
+                  {loading ? "Salvando..." : "Salvar Alterações"}
+                </SaveButton>
+              </FormSection>
+            </ProfileForm>
+          </>
+        );
+
+      case "security":
+        return <SecurityPage />;
+
+      case "notifications":
+        return <NotificationsPage />;
+
+      default:
+        return null;
+    }
   };
 
   return (
@@ -307,123 +349,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
           </SidebarNav>
         </Sidebar>
 
-        <ContentArea>
-          {activeTab === "profile" && (
-            <>
-              <ProfileHeader>
-                <h1>Editar Perfil</h1>
-              </ProfileHeader>
-
-              <ProfileForm onSubmit={handleSubmit}>
-                <FormSection>
-                  <PhotoSection>
-                    <PhotoPreview>
-                      {formData.avatar ? (
-                        <img src={formData.avatar} alt="Avatar" />
-                      ) : (
-                        <User size={60} />
-                      )}
-                    </PhotoPreview>
-                    <PhotoActions>
-                      <PhotoButton type="button" onClick={handlePhotoUpload}>
-                        Carregar Nova Foto
-                      </PhotoButton>
-                      {formData.avatar && (
-                        <PhotoButton
-                          type="button"
-                          variant="outline"
-                          onClick={handlePhotoRemove}
-                        >
-                          Remover Foto
-                        </PhotoButton>
-                      )}
-                    </PhotoActions>
-                  </PhotoSection>
-
-                  <FormRow>
-                    <FormGroup>
-                      <Label>Nome de Usuário</Label>
-                      <Input
-                        type="text"
-                        name="username"
-                        value={formData.username}
-                        onChange={handleInputChange}
-                        placeholder="Digite seu nome de usuário"
-                      />
-                    </FormGroup>
-                  </FormRow>
-
-                  <FormRow>
-                    <FormGroup>
-                      <Label>Nome</Label>
-                      <Input
-                        type="text"
-                        name="firstName"
-                        value={formData.firstName}
-                        onChange={handleInputChange}
-                        placeholder="Digite seu nome"
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label>Sobrenome</Label>
-                      <Input
-                        type="text"
-                        name="lastName"
-                        value={formData.lastName}
-                        onChange={handleInputChange}
-                        placeholder="Digite seu sobrenome"
-                      />
-                    </FormGroup>
-                  </FormRow>
-
-                  <FormRow>
-                    <FormGroup>
-                      <Label>Email</Label>
-                      <Input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="Digite seu email"
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label>Data de Nascimento</Label>
-                      <Input
-                        type="date"
-                        name="birthDate"
-                        value={formData.birthDate}
-                        onChange={handleInputChange}
-                      />
-                    </FormGroup>
-                  </FormRow>
-
-                  <SaveButton type="submit">Salvar Alterações</SaveButton>
-                </FormSection>
-              </ProfileForm>
-            </>
-          )}
-
-          {activeTab === "security" && (
-            <div
-              style={{ padding: "2rem", textAlign: "center", color: "white" }}
-            >
-              <h2>Configurações de Segurança</h2>
-              <p>Funcionalidade em desenvolvimento</p>
-              {/* TODO: Implementar mudança de senha, autenticação 2FA, etc. */}
-            </div>
-          )}
-
-          {activeTab === "notifications" && (
-            <div
-              style={{ padding: "2rem", textAlign: "center", color: "white" }}
-            >
-              <h2>Configurações de Notificações</h2>
-              <p>Funcionalidade em desenvolvimento</p>
-              {/* TODO: Implementar configurações de notificações por email, push, etc. */}
-            </div>
-          )}
-        </ContentArea>
+        <ContentArea>{renderContent()}</ContentArea>
       </MainContent>
     </Container>
   );
