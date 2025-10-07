@@ -26,7 +26,7 @@ import TermsOfUsePage from "./pages/TermsOfUse/TermsOfUsePage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy/PrivacyPolicyPage";
 import AboutUsPage from "./pages/AboutUs/AboutUsPage";
 import { PlanningFormPage } from "./pages/PlanningFormPage/PlanningFormPage";
-import { BagPage } from "./pages/BagPage/BagPageRedux";
+import { BagPage } from "./pages/BagPage";
 import {
   MainLayout,
   SuccessModal,
@@ -93,6 +93,10 @@ function App() {
     navigate("/auth");
   };
 
+  const handleUserUpdate = (updatedUser: User) => {
+    setCurrentUser(updatedUser);
+  };
+
   if (isLoading) {
     return <FlyaLoading text="Carregando suas viagens..." size="medium" />;
   }
@@ -153,23 +157,26 @@ function App() {
                 currentUser ? <BagPage /> : <Navigate to="/auth" replace />
               }
             />
+            <Route
+              path="/Perfil"
+              element={
+                currentUser ? (
+                  <ProfilePage
+                    user={currentUser}
+                    onLogout={handleLogout}
+                    onUserUpdate={handleUserUpdate}
+                  />
+                ) : (
+                  <Navigate to="/auth" replace />
+                )
+              }
+            />
           </Route>
 
           {/* --- ROTAS SEM LAYOUT --- */}
           <Route
             path="/auth"
             element={<AuthPage onLoginSuccess={handleLoginSuccess} />}
-          />
-
-          <Route
-            path="/Perfil"
-            element={
-              currentUser ? (
-                <ProfilePage user={currentUser} onLogout={handleLogout} />
-              ) : (
-                <Navigate to="/auth" replace />
-              )
-            }
           />
 
           {/* Se o usuário digitar qualquer outra URL, ele é redirecionado para a home. */}
