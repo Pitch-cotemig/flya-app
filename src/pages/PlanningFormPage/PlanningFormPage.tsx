@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   PageContainer,
@@ -53,11 +53,6 @@ interface IFormData {
 
 export function PlanningFormPage() {
   const [step, setStep] = useState(0); // 0: Tela inicial, 1-4: Passos, 5: Tela final
-
-  // Debug: monitorar mudanças de step
-  useEffect(() => {
-    console.log("Step changed to:", step);
-  }, [step]);
   const [formData, setFormData] = useState<IFormData>({
     motivo: "",
     destino: "",
@@ -79,11 +74,7 @@ export function PlanningFormPage() {
   const navigate = useNavigate();
 
   const handleNextStep = () => {
-    console.log("handleNextStep called, current step:", step);
-    setStep((prev) => {
-      console.log("Setting step from", prev, "to", prev + 1);
-      return prev + 1;
-    });
+    setStep((prev) => prev + 1);
   };
   const handlePrevStep = () => setStep((prev) => prev - 1);
   const handleSaveSuccess = () => {
@@ -137,7 +128,6 @@ export function PlanningFormPage() {
       }
 
       const result = await response.json();
-      console.log("Resposta do backend:", result);
 
       // Armazenar tudo para a próxima tela
       setGeneratedPlan({
@@ -274,7 +264,6 @@ export function PlanningFormPage() {
 
             <ContinueButton
               onClick={(e) => {
-                console.log("Button clicked!");
                 e.stopPropagation();
                 setStep(1);
               }}

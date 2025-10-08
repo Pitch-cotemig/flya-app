@@ -3,8 +3,6 @@ export { default as Footer } from "./Footer";
 export { default as Hero } from "./Hero";
 export { default as DestinationsCarousel } from "./DestinationsCarousel";
 export { default as Testimonials } from "./Testimonials";
-export { default as Button } from "./Button";
-export { default as Calendar } from "./Calendar";
 export { default as Input } from "./Input";
 export { default as AuthCard } from "./AuthCard";
 export { default as LoginForm } from "./LoginForm";
