@@ -17,7 +17,7 @@ function HomePage({ user, onLogout }: HomePageProps) {
     <div style={homeStyles.container}>
       <div>
         <h1>Bem-vindo ao Flya!</h1>
-        <p>Olá, {user.name}</p>
+        <p>Olá, {user.username}</p>
         <p>E-mail: {user.email}</p>
         <button onClick={handleLogout} style={homeStyles.logoutButton}>
           Logout

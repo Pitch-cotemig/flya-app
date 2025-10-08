@@ -279,9 +279,9 @@ const TermsOfUsePage: React.FC = () => {
             Se você tiver dúvidas sobre estes termos, entre em contato conosco:
           </p>
           <p>
-            <strong>Email:</strong> legal@flya.com.br
+            <strong>Email:</strong> flya.corporation@gmail.com
             <br />
-            <strong>Telefone:</strong> (31) 99999-9999
+            <strong>Telefone:</strong> (31) 9197-9678
             <br />
             <strong>Endereço:</strong> Belo Horizonte, MG, Brasil
           </p>

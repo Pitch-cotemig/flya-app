@@ -89,13 +89,13 @@ export function Footer() {
             <ContactList>
               <ContactItem>
                 <Mail size={16} />
-                <ContactLink href="mailto:contato@flya.com.br">
-                  contato@flya.com.br
+                <ContactLink href="mailto:flya.corporation@gmail.com">
+                  flya.corporation@gmail.com
                 </ContactLink>
               </ContactItem>
               <ContactItem>
                 <Phone size={16} />
-                <span>(XX) XXXX-XXXX</span>
+                <span>(31) 9197-9678</span>
               </ContactItem>
               <ContactItem>
                 <MapPin size={16} />

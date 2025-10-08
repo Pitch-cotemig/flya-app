@@ -57,7 +57,7 @@ const Hero: React.FC<HeroProps> = ({ user }) => {
 
   const getTitle = () => {
     if (user) {
-      return `Olá ${user.firstName}! Planeje sua viagem dos sonhos com IA`;
+      return `Olá ${user.username}! Planeje sua viagem dos sonhos com IA`;
     }
     return "Sua viagem dos sonhos planejada com IA";
   };

@@ -54,50 +54,43 @@ const DestinationsCarousel: React.FC = () => {
     },
     {
       id: 6,
-      name: "Paraíso Tropical",
-      description:
-        "Refúgio paradisíaco com águas cristalinas e areias douradas",
-      image: "/images/praia.png",
-    },
-    {
-      id: 7,
       name: "Paris, França",
       description:
         "Cidade Luz com arte, cultura e monumentos icônicos mundialmente",
-      image: "/images/paris.jpg",
+      image: "/images/Paris.avif",
     },
     {
-      id: 8,
+      id: 7,
       name: "Santorini, Grécia",
       description:
         "Ilha paradisíaca com casas brancas e pores do sol inesquecíveis",
-      image: "/images/santorini.jpg",
+      image: "/images/Gracia.avif",
+    },
+    {
+      id: 8,
+      name: "Bali, Indonésia",
+      description: "Ilha tropical com templos sagrados e paisagens exuberantes",
+      image: "/images/indonesia.jpg",
     },
     {
       id: 9,
-      name: "Bali, Indonésia",
-      description: "Ilha tropical com templos sagrados e paisagens exuberantes",
-      image: "/images/bali.jpg",
-    },
-    {
-      id: 10,
       name: "Nova York, EUA",
       description:
         "A cidade que nunca dorme com arranha-céus e energia vibrante",
-      image: "/images/newyork.jpg",
+      image: "/images/New-York.jpg",
+    },
+    {
+      id: 10,
+      name: "Maldivas",
+      description: "Paraíso tropical com resorts overwater e águas cristalinas",
+      image: "/images/Maldivas.jpg",
     },
     {
       id: 11,
-      name: "Maldivas",
-      description: "Paraíso tropical com resorts overwater e águas cristalinas",
-      image: "/images/maldivas.jpg",
-    },
-    {
-      id: 12,
       name: "Dubai, Emirados Árabes",
       description:
         "Metrópole futurista com luxo, inovação e arquitetura impressionante",
-      image: "/images/dubai.jpg",
+      image: "/images/Dubas.jpg",
     },
   ];
 
