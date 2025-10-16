@@ -108,17 +108,24 @@ export class AuthService {
   }
 
   async validateToken(token: string) {
-    const supabase = this.supabaseService.getClient();
+    // Criar cliente com chave anon para validar tokens de usuário
+    const { createClient } = require('@supabase/supabase-js');
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+    
+    const supabaseAnon = createClient(supabaseUrl, supabaseAnonKey);
+    
     const {
       data: { user },
       error,
-    } = await supabase.auth.getUser(token);
+    } = await supabaseAnon.auth.getUser(token);
 
     if (error || !user) {
       throw new UnauthorizedException('Token inválido');
     }
 
-    // Buscar dados do perfil
+    // Usar cliente service para buscar dados do perfil
+    const supabase = this.supabaseService.getClient();
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('*')
@@ -141,25 +148,153 @@ export class AuthService {
       },
     };
   }
-  private twoFactorCodes = new Map<string, string>(); // armazenar códigos temporários
-
   async send2FACode(email: string) {
-    const code = randomInt(100000, 999999).toString(); // 6 dígitos
-    this.twoFactorCodes.set(email, code);
-
-    // Aqui você pode enviar o código por e-mail ou SMS via Supabase
+    const code = randomInt(100000, 999999).toString();
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutos
+    
     const supabase = this.supabaseService.getClient();
-    await supabase.from('emails').insert({ to: email, code }); // exemplo, adaptar para o seu envio real
-
-    return code;
+    
+    // Salvar código no banco
+    await supabase.from('two_factor_codes').upsert({
+      email,
+      code,
+      expires_at: expiresAt.toISOString()
+    });
+    
+    // Enviar email usando Nodemailer
+    try {
+      const nodemailer = require('nodemailer');
+      
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.GMAIL_USER,
+          pass: process.env.GMAIL_APP_PASSWORD
+        },
+        tls: {
+          rejectUnauthorized: false
+        }
+      });
+      
+      const info = await transporter.sendMail({
+        from: `"Flya" <${process.env.GMAIL_USER}>`,
+        to: email,
+        subject: 'Código 2FA - Flya',
+        text: `Seu código de verificação é: ${code}. Válido por 5 minutos.`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h2 style="color: #3b82f6; text-align: center;">Código de Verificação</h2>
+            <p>Seu código de verificação em duas etapas é:</p>
+            <div style="background: #f3f4f6; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 8px; margin: 20px 0; border-radius: 8px;">
+              ${code}
+            </div>
+            <p><strong>Este código é válido por 5 minutos.</strong></p>
+            <p>Se você não solicitou este código, ignore este email.</p>
+            <hr style="margin: 30px 0;">
+            <p style="color: #6b7280; font-size: 14px; text-align: center;">
+              Flya - Sua parceira para viagem da sua vida
+            </p>
+          </div>
+        `
+      });
+      
+      console.log(`Email 2FA enviado para ${email} - ID: ${info.messageId}`);
+      console.log(`Código: ${code}`);
+      
+    } catch (emailError) {
+      console.error('Erro ao enviar email:', emailError);
+      console.log(`FALLBACK - Código para ${email}: ${code}`);
+    }
+    
+    return { message: 'Código enviado para seu email' };
   }
 
   async verify2FACode(email: string, code: string): Promise<boolean> {
-    const validCode = this.twoFactorCodes.get(email);
-    if (validCode && validCode === code) {
-      this.twoFactorCodes.delete(email); // remove após verificação
-      return true;
+    const supabase = this.supabaseService.getClient();
+    
+    const { data, error } = await supabase
+      .from('two_factor_codes')
+      .select('*')
+      .eq('email', email)
+      .eq('code', code)
+      .gt('expires_at', new Date().toISOString())
+      .single();
+    
+    if (error || !data) {
+      return false;
     }
-    return false;
+    
+    // Remover código após uso
+    await supabase.from('two_factor_codes').delete().eq('email', email);
+    
+    return true;
+  }
+
+  async signInWith2FA(loginDto: LoginDto) {
+    // Primeiro, validar credenciais
+    const supabase = this.supabaseService.getClient();
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: loginDto.email,
+      password: loginDto.password,
+    });
+
+    if (error) {
+      throw new UnauthorizedException(error.message);
+    }
+
+    // Verificar se 2FA está habilitado
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('two_factor_enabled')
+      .eq('email', loginDto.email)
+      .single();
+
+    if (profile?.two_factor_enabled) {
+      // Salvar dados temporários para completar login depois
+      this.tempLoginData.set(loginDto.email, data);
+      // Enviar código 2FA
+      await this.send2FACode(loginDto.email);
+      return { requiresTwoFactor: true, message: 'Código 2FA enviado' };
+    }
+
+    // Login normal se 2FA não estiver habilitado
+    return this.completeLogin(data);
+  }
+
+  private tempLoginData = new Map<string, any>();
+
+  async complete2FALogin(email: string) {
+    const data = this.tempLoginData.get(email);
+    if (!data) {
+      throw new UnauthorizedException('Sessão expirada');
+    }
+    this.tempLoginData.delete(email);
+    return this.completeLogin(data);
+  }
+
+  private async completeLogin(data: any) {
+    const supabase = this.supabaseService.getClient();
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', data.user.id)
+      .single();
+
+    if (profileError) {
+      throw new UnauthorizedException('Erro ao buscar perfil do usuário');
+    }
+
+    return {
+      user: {
+        id: data.user.id,
+        email: data.user.email,
+        username: profile?.username,
+        firstName: profile?.first_name,
+        lastName: profile?.last_name,
+        fullName: profile?.full_name,
+        birthDate: profile?.birth_date,
+      },
+      token: data.session.access_token,
+    };
   }
 }

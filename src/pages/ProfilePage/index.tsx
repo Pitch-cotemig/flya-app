@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { User, Bell, LogOut, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { User as UserType } from "../../services/authService";
+import { SecuritySection } from "../../components";
 import flyaLogo from "../../assets/flyalogo.svg";
 import { colors } from "../../design-tokens/colors";
 
@@ -593,13 +594,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
           )}
 
           {activeTab === "security" && (
-            <div
-              style={{ padding: "2rem", textAlign: "center", color: "white" }}
-            >
-              <h2>Configurações de Segurança</h2>
-              <p>Funcionalidade em desenvolvimento</p>
-              {/* TODO: Implementar mudança de senha, autenticação 2FA, etc. */}
-            </div>
+            <SecuritySection />
           )}
 
           {activeTab === "notifications" && (

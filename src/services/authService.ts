@@ -41,6 +41,7 @@ export interface AuthResponse<T = any> {
 export interface LoginSuccessData {
   user: User;
   token: string;
+  requiresTwoFactor?: boolean;
 }
 
 export interface RegisterSuccessData {
@@ -129,6 +130,27 @@ class AuthService {
         return { success: false, message: data.message, data: null };
       }
       return { success: true, message: 'Token is valid', data };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An unknown error occurred';
+      return { success: false, message, data: null };
+    }
+  }
+
+  async verify2FA(email: string, code: string): Promise<AuthResponse<LoginSuccessData>> {
+    try {
+      const response = await fetch(`${API_URL}/auth/2fa/verify`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, code }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, message: data.message, data: null };
+      }
+      return { success: true, message: '2FA verified', data };
     } catch (error) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
       return { success: false, message, data: null };

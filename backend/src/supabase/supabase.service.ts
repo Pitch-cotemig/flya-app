@@ -10,13 +10,13 @@ export class SupabaseService implements OnModuleInit {
 
   onModuleInit() {
     const supabaseUrl = this.configService.get<string>('SUPABASE_URL');
-    const supabaseKey = this.configService.get<string>('SUPABASE_KEY');
+    const supabaseServiceKey = this.configService.get<string>('SUPABASE_SERVICE_KEY');
 
-    if (!supabaseUrl || !supabaseKey) {
-      throw new Error('SUPABASE_URL and SUPABASE_KEY must be defined.');
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error('SUPABASE_URL and SUPABASE_SERVICE_KEY must be defined.');
     }
 
-    this.supabase = createClient(supabaseUrl, supabaseKey);
+    this.supabase = createClient(supabaseUrl, supabaseServiceKey);
   }
 
   getClient() {
