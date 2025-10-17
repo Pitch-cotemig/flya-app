@@ -68,17 +68,17 @@ export const exportToPDF = (tripData: TripData) => {
     </head>
     <body>
       <div class="header">
-        <div class="logo">✈️ Flya</div>
+        <div class="logo">Flya</div>
         <div class="subtitle">Seu Roteiro de Viagem Personalizado</div>
       </div>
       
       <div class="section">
-        <div class="section-title">📋 Roteiro Detalhado</div>
+        <div class="section-title">Roteiro Detalhado</div>
         <div class="content">${tripData.plan_result}</div>
       </div>
       
       <div class="section">
-        <div class="section-title">📝 Informações do Planejamento</div>
+        <div class="section-title">Informações do Planejamento</div>
         <div class="content">
           <strong>Dados do Formulário:</strong>
           ${JSON.stringify(tripData.prompt_data, null, 2)}
@@ -89,7 +89,9 @@ export const exportToPDF = (tripData: TripData) => {
       </div>
       
       <div class="footer">
-        <p>Gerado em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}</p>
+        <p>Gerado em ${new Date().toLocaleDateString(
+          "pt-BR"
+        )} às ${new Date().toLocaleTimeString("pt-BR")}</p>
         <p>Flya - Planejamento de Viagens com IA</p>
       </div>
     </body>
@@ -97,17 +99,17 @@ export const exportToPDF = (tripData: TripData) => {
   `;
 
   // Criar blob e download
-  const blob = new Blob([content], { type: 'text/html' });
+  const blob = new Blob([content], { type: "text/html" });
   const url = URL.createObjectURL(blob);
-  
+
   // Abrir em nova aba para impressão
-  const printWindow = window.open(url, '_blank');
+  const printWindow = window.open(url, "_blank");
   if (printWindow) {
     printWindow.onload = () => {
       printWindow.print();
     };
   }
-  
+
   // Limpar URL após um tempo
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
@@ -127,19 +129,23 @@ ${JSON.stringify(tripData.prompt_data, null, 2)}
 Prompt Enviado para IA:
 ${tripData.ai_prompt}
 
-Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
+Gerado em: ${new Date().toLocaleDateString(
+    "pt-BR"
+  )} às ${new Date().toLocaleTimeString("pt-BR")}
 Flya - Planejamento de Viagens com IA
   `;
 
-  const blob = new Blob([content], { type: 'text/plain' });
+  const blob = new Blob([content], { type: "text/plain" });
   const url = URL.createObjectURL(blob);
-  
-  const link = document.createElement('a');
+
+  const link = document.createElement("a");
   link.href = url;
-  link.download = `roteiro-viagem-${new Date().toISOString().split('T')[0]}.txt`;
+  link.download = `roteiro-viagem-${
+    new Date().toISOString().split("T")[0]
+  }.txt`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  
+
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-}; 
+};

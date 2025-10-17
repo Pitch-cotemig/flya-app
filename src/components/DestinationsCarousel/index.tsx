@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   DestinationsSection,
   DestinationsContainer,
@@ -20,39 +21,76 @@ const DestinationsCarousel: React.FC = () => {
   const destinations = [
     {
       id: 1,
-      name: "Frankfurt - Alemanha",
-      description: "Cidade histórica com arquitetura medieval encantadora",
+      name: "Frankfurt, Alemanha",
+      description:
+        "Cidade cosmopolita com arquitetura moderna e rica cultura histórica",
       image: "/images/frankfurt.png",
     },
     {
       id: 2,
-      name: "Fort Lauderdale - Florida",
-      description: "Praias paradisíacas e vida noturna vibrante",
+      name: "Fort Lauderdale, Florida",
+      description:
+        "Praias paradisíacas e canais pitorescos na costa da Florida",
       image: "/images/fortlauderdale.png",
     },
     {
       id: 3,
-      name: "Atenas - Grécia",
-      description: "Berço da civilização ocidental com história milenar",
+      name: "Atenas, Grécia",
+      description:
+        "Berço da civilização ocidental com monumentos históricos únicos",
       image: "/images/atenasgrecia.png",
     },
     {
       id: 4,
-      name: "Canadá",
-      description: "Paisagens naturais deslumbrantes e aventuras ao ar livre",
+      name: "Vancouver, Canadá",
+      description: "Paisagens naturais deslumbrantes entre montanhas e oceano",
       image: "/images/dest-canada.png",
     },
     {
       id: 5,
-      name: "Tóquio - Japão",
-      description: "Cultura moderna e tradições milenares em perfeita harmonia",
+      name: "Tóquio, Japão",
+      description: "Metrópole vibrante onde tradição e inovação se encontram",
       image: "/images/dest-tokyo.jpeg",
     },
     {
       id: 6,
-      name: "Praia Paradisíaca",
-      description: "Águas cristalinas e areias douradas para relaxar",
-      image: "/images/4k-praia 1.png",
+      name: "Paris, França",
+      description:
+        "Cidade Luz com arte, cultura e monumentos icônicos mundialmente",
+      image: "/images/Paris.avif",
+    },
+    {
+      id: 7,
+      name: "Santorini, Grécia",
+      description:
+        "Ilha paradisíaca com casas brancas e pores do sol inesquecíveis",
+      image: "/images/Gracia.avif",
+    },
+    {
+      id: 8,
+      name: "Bali, Indonésia",
+      description: "Ilha tropical com templos sagrados e paisagens exuberantes",
+      image: "/images/indonesia.jpg",
+    },
+    {
+      id: 9,
+      name: "Nova York, EUA",
+      description:
+        "A cidade que nunca dorme com arranha-céus e energia vibrante",
+      image: "/images/New-York.jpg",
+    },
+    {
+      id: 10,
+      name: "Maldivas",
+      description: "Paraíso tropical com resorts overwater e águas cristalinas",
+      image: "/images/Maldivas.jpg",
+    },
+    {
+      id: 11,
+      name: "Dubai, Emirados Árabes",
+      description:
+        "Metrópole futurista com luxo, inovação e arquitetura impressionante",
+      image: "/images/Dubas.jpg",
     },
   ];
 
@@ -141,7 +179,7 @@ const DestinationsCarousel: React.FC = () => {
         <SectionTitle>Destinos populares</SectionTitle>
         <CarouselContainer>
           <CarouselButton className="prev" onClick={goToPrevious}>
-            ‹
+            <ChevronLeft size={24} />
           </CarouselButton>
           <CarouselTrack
             style={{
@@ -167,7 +205,7 @@ const DestinationsCarousel: React.FC = () => {
             ))}
           </CarouselTrack>
           <CarouselButton className="next" onClick={goToNext}>
-            ›
+            <ChevronRight size={24} />
           </CarouselButton>
         </CarouselContainer>
         <DotsContainer>

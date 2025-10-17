@@ -1,14 +1,8 @@
-import { Outlet } from "react-router-dom";
-import styled from "styled-components";
+import { Outlet, useLocation } from "react-router-dom";
 import { Footer, Header } from "..";
 import { User } from "../../services/authService";
 import { ReactNode } from "react";
-
-const HEADER_HEIGHT = "6rem";
-
-const MainContent = styled.main`
-  padding-top: ${HEADER_HEIGHT};
-`;
+import { PageContainer, ContentWrap } from "./styles";
 
 export interface MainLayoutProps {
   user: User | null;
@@ -16,15 +10,18 @@ export interface MainLayoutProps {
 }
 
 export function MainLayout({ user, children }: MainLayoutProps) {
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+
   return (
-    <>
+    <PageContainer>
       <Header user={user} />
-      <MainContent>
+      <ContentWrap $isHomePage={isHomePage}>
         <Outlet />
         {children}
-      </MainContent>
+      </ContentWrap>
       <Footer />
-    </>
+    </PageContainer>
   );
 }
 

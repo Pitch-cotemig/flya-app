@@ -14,16 +14,6 @@ export const FooterContainer = styled.footer`
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-        circle at 25% 25%,
-        rgba(0, 188, 212, 0.1) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 75% 75%,
-        rgba(0, 188, 212, 0.1) 0%,
-        transparent 50%
-      );
     animation: footerGlow 12s ease-in-out infinite;
   }
 
@@ -70,13 +60,16 @@ export const LogoLink = styled(Link)`
   text-decoration: none;
   color: inherit;
   transition: transform 0.3s ease;
+  max-width: 250px;
+  max-height: 80px;
 
   &:hover {
     transform: scale(1.05);
   }
 
   img {
-    height: 1.75rem;
+    aspect-ratio: 1/1;
+    height: 5rem;
     width: auto;
     filter: drop-shadow(0 0 5px rgba(0, 188, 212, 0.3));
   }

@@ -1,4 +1,5 @@
 import React from "react";
+import { Star as StarIcon } from "lucide-react";
 import {
   TestimonialsSection,
   TestimonialsContainer,
@@ -19,28 +20,28 @@ const Testimonials: React.FC = () => {
   const testimonials = [
     {
       id: 1,
-      name: "Aimer Ferreira",
-      title: "Viajante",
+      name: "Marina Silva",
+      title: "Executiva de Marketing",
       content:
-        "Foi a melhor viagem da minha vida com a Flya, com certeza vou usar sempre!",
+        "A Flya transformou completamente a maneira como planejo minhas viagens. A IA é incrível e os destinos sugeridos foram perfeitos!",
       rating: 5,
-      avatar: "A",
+      avatar: "M",
     },
     {
       id: 2,
-      name: "Aimer Ferreira",
-      title: "Viajante",
+      name: "Carlos Eduardo",
+      title: "Fotógrafo de Viagem",
       content:
-        "Foi a melhor viagem da minha vida com a Flya, com certeza vou usar sempre!",
+        "Como profissional que viaja constantemente, encontrei na Flya uma ferramenta essencial. O planejamento inteligente economiza horas do meu tempo.",
       rating: 5,
-      avatar: "A",
+      avatar: "C",
     },
     {
       id: 3,
-      name: "Aimer Ferreira",
-      title: "Viajante",
+      name: "Ana Beatriz",
+      title: "Estudante de Turismo",
       content:
-        "Foi a melhor viagem da minha vida com a Flya, com certeza vou usar sempre!",
+        "Realizei meu sonho de conhecer a Europa com ajuda da Flya. O roteiro personalizado foi perfeito para meu orçamento estudantil!",
       rating: 5,
       avatar: "A",
     },
@@ -48,7 +49,13 @@ const Testimonials: React.FC = () => {
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, index) => (
-      <Star key={index}>{index < rating ? "★" : "☆"}</Star>
+      <Star key={index}>
+        <StarIcon
+          size={16}
+          fill={index < rating ? "#FFD700" : "none"}
+          color={index < rating ? "#FFD700" : "#ddd"}
+        />
+      </Star>
     ));
   };
 

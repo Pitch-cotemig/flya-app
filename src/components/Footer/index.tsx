@@ -38,7 +38,7 @@ export function Footer() {
   ];
 
   const companyLinks = [
-    { label: "Sobre Nós", to: "/sobre-nos" },
+    { label: "Sobre Nós", to: "/Sobre-Nos" },
     { label: "Nossa Missão", to: "#" },
     { label: "Carreiras", to: "#" },
     { label: "Blog", to: "#" },
@@ -52,8 +52,7 @@ export function Footer() {
           {/* Coluna do Logo e Descrição */}
           <LogoSection>
             <LogoLink to="/">
-              <img src="/images/logo-placeholder.svg" alt="Flya Logo" />
-              <span>Flya</span>
+              <img src="/images/logo.png" alt="Flya Logo" />
             </LogoLink>
             <LogoDescription>
               Sua parceira para viagens da sua vida.
@@ -90,13 +89,13 @@ export function Footer() {
             <ContactList>
               <ContactItem>
                 <Mail size={16} />
-                <ContactLink href="mailto:contato@flya.com.br">
-                  contato@flya.com.br
+                <ContactLink href="mailto:flya.corporation@gmail.com">
+                  flya.corporation@gmail.com
                 </ContactLink>
               </ContactItem>
               <ContactItem>
                 <Phone size={16} />
-                <span>(XX) XXXX-XXXX</span>
+                <span>(31) 9197-9678</span>
               </ContactItem>
               <ContactItem>
                 <MapPin size={16} />
@@ -121,8 +120,8 @@ export function Footer() {
         <CopyrightSection>
           <p>© 2025 Flya. Todos os direitos reservados.</p>
           <CopyrightLinks>
-            <Link to="/politica-de-privacidade">Política de Privacidade</Link>|
-            <Link to="/termos-de-uso">Termos de Uso</Link>
+            <Link to="/Politica-De-Privacidade">Política de Privacidade</Link>|
+            <Link to="/Termos-de-Uso">Termos de Uso</Link>
           </CopyrightLinks>
         </CopyrightSection>
       </FooterContent>

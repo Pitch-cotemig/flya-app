@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   PageContainer,
@@ -13,11 +13,25 @@ import {
   StepLine,
   StepText,
   LoadingContainer,
+  FloatingElements,
+  DecorativeElements,
+  StepContainer,
 } from "./styles";
 import Step1 from "../../components/PlanningForm/Step1";
 import Step2 from "../../components/PlanningForm/Step2";
 import Step3 from "../../components/PlanningForm/Step3";
 import Step4 from "../../components/PlanningForm/Step4";
+import {
+  Plane,
+  Clock,
+  Target,
+  Zap,
+  Sparkles,
+  Lightbulb,
+  CheckCircle,
+  Loader,
+  Wand2,
+} from "lucide-react";
 import FinalStep from "../../components/PlanningForm/FinalStep";
 
 interface TripData {
@@ -39,11 +53,6 @@ interface IFormData {
 
 export function PlanningFormPage() {
   const [step, setStep] = useState(0); // 0: Tela inicial, 1-4: Passos, 5: Tela final
-
-  // Debug: monitorar mudanças de step
-  useEffect(() => {
-    console.log("Step changed to:", step);
-  }, [step]);
   const [formData, setFormData] = useState<IFormData>({
     motivo: "",
     destino: "",
@@ -57,23 +66,19 @@ export function PlanningFormPage() {
   const [generatedPlan, setGeneratedPlan] = useState<TripData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const loadingSteps = [
-    "Analisando suas preferências...",
-    "Personalizando roteiro...",
-    "Calculando melhores opções...",
-    "Finalizando planejamento...",
+    " Analisando suas preferências...",
+    " Personalizando roteiro...",
+    " Calculando melhores opções...",
+    " Finalizando planejamento mágico...",
   ];
   const navigate = useNavigate();
 
   const handleNextStep = () => {
-    console.log("handleNextStep called, current step:", step);
-    setStep((prev) => {
-      console.log("Setting step from", prev, "to", prev + 1);
-      return prev + 1;
-    });
+    setStep((prev) => prev + 1);
   };
   const handlePrevStep = () => setStep((prev) => prev - 1);
   const handleSaveSuccess = () => {
-    navigate("/minhas-viagens");
+    navigate("/Minhas-Viagens");
   };
   const handleClose = () => navigate("/"); // Volta para a Home ao fechar
 
@@ -123,7 +128,6 @@ export function PlanningFormPage() {
       }
 
       const result = await response.json();
-      console.log("Resposta do backend:", result);
 
       // Armazenar tudo para a próxima tela
       setGeneratedPlan({
@@ -167,18 +171,26 @@ export function PlanningFormPage() {
   };
 
   const renderStepContent = () => {
-    switch (step) {
-      case 1:
-        return <Step1 formData={formData} handleChange={handleChange} />;
-      case 2:
-        return <Step2 formData={formData} handleChange={handleChange} />;
-      case 3:
-        return <Step3 formData={formData} handleChange={handleChange} />;
-      case 4:
-        return <Step4 formData={formData} handleChange={handleChange} />;
-      default:
-        return null;
-    }
+    const content = (() => {
+      switch (step) {
+        case 1:
+          return <Step1 formData={formData} handleChange={handleChange} />;
+        case 2:
+          return <Step2 formData={formData} handleChange={handleChange} />;
+        case 3:
+          return <Step3 formData={formData} handleChange={handleChange} />;
+        case 4:
+          return <Step4 formData={formData} handleChange={handleChange} />;
+        default:
+          return null;
+      }
+    })();
+
+    return step >= 1 && step <= 4 ? (
+      <StepContainer>{content}</StepContainer>
+    ) : (
+      content
+    );
   };
 
   const isNextDisabled = () => {
@@ -203,39 +215,61 @@ export function PlanningFormPage() {
           <CloseButton onClick={handleClose}>&times;</CloseButton>
           <InitialScreenContainer>
             <h1>Partiu Viajar!</h1>
-            <p>Descubra seu roteiro de viagem personalizado em poucos passos</p>
+            <p>
+              Crie seu roteiro de viagem personalizado com inteligência
+              artificial em poucos minutos
+            </p>
 
             <div className="features">
               <div className="feature">
-                <span className="icon">🎯</span>
-                <div className="title">Personalizado</div>
+                <span className="icon">
+                  <Target size={20} />
+                </span>
+                <div className="title">100% Personalizado</div>
                 <div className="description">
-                  Roteiro feito sob medida para você
+                  Roteiro único criado especialmente para o seu perfil e
+                  preferências de viagem
                 </div>
               </div>
               <div className="feature">
-                <span className="icon">⚡</span>
-                <div className="title">Rápido</div>
+                <span className="icon">
+                  <Zap size={20} />
+                </span>
+                <div className="title">Super Rápido</div>
                 <div className="description">
-                  Planejamento completo em minutos
+                  Planejamento completo em menos de 5 minutos com tecnologia
+                  avançada de IA
                 </div>
               </div>
               <div className="feature">
-                <span className="icon">💎</span>
-                <div className="title">Premium</div>
-                <div className="description">Experiência única e memorável</div>
+                <span className="icon">
+                  <Sparkles size={20} />
+                </span>
+                <div className="title">Experiência Premium</div>
+                <div className="description">
+                  Sugestões exclusivas e insights únicos para uma viagem
+                  inesquecível
+                </div>
+              </div>
+              <div className="feature">
+                <span className="icon">
+                  <Lightbulb size={20} />
+                </span>
+                <div className="title">Inteligência Avançada</div>
+                <div className="description">
+                  IA especializada em turismo com conhecimento global atualizado
+                </div>
               </div>
             </div>
 
             <ContinueButton
               onClick={(e) => {
-                console.log("Button clicked!");
                 e.stopPropagation();
                 setStep(1);
               }}
               style={{ zIndex: 999, position: "relative" }}
             >
-              Começar Minha Jornada ✨
+              Começar Minha Jornada
             </ContinueButton>
           </InitialScreenContainer>
         </FormContainer>
@@ -246,13 +280,26 @@ export function PlanningFormPage() {
   if (isLoading) {
     return (
       <PageContainer>
+        <FloatingElements />
+        <DecorativeElements>
+          <div className="particle-1" />
+          <div className="particle-2" />
+          <div className="particle-3" />
+        </DecorativeElements>
         <FormContainer>
           <LoadingContainer>
-            <div className="loading-icon">✈️</div>
+            <div className="loading-icon">
+              <Plane size={48} />
+            </div>
             <div className="loading-spinner"></div>
-            <div className="loading-title">Criando seu Roteiro dos Sonhos</div>
+            <div className="loading-title">
+              <Sparkles size={20} style={{ marginRight: "8px" }} /> Criando seu
+              Roteiro dos Sonhos{" "}
+              <Sparkles size={20} style={{ marginLeft: "8px" }} />
+            </div>
             <div className="loading-subtitle">
-              {loadingSteps[loadingStep] || "Preparando tudo para você..."}
+              {loadingSteps[loadingStep] ||
+                "<Sparkles size={16} /> Preparando tudo para você..."}
             </div>
 
             <div className="loading-steps">
@@ -264,15 +311,31 @@ export function PlanningFormPage() {
                   }`}
                 >
                   <span className="step-icon">
-                    {index < loadingStep
-                      ? "✅"
-                      : index === loadingStep
-                      ? "🔄"
-                      : "⏳"}
+                    {index < loadingStep ? (
+                      <CheckCircle size={16} />
+                    ) : index === loadingStep ? (
+                      <Loader size={16} className="spinning" />
+                    ) : (
+                      <Clock size={16} />
+                    )}
                   </span>
-                  <span className="step-text">{step}</span>
+                  <span className="step-text">
+                    {step.replace(/^[🔍🎨💎✨]\s/, "")}
+                  </span>
                 </div>
               ))}
+            </div>
+
+            <div
+              style={{
+                marginTop: "2rem",
+                fontSize: "0.9rem",
+                color: "rgba(255, 255, 255, 0.7)",
+                fontStyle: "italic",
+              }}
+            >
+              <Wand2 size={16} style={{ marginRight: "8px" }} /> Nossa IA está
+              trabalhando sua magia...
             </div>
           </LoadingContainer>
         </FormContainer>
@@ -297,6 +360,12 @@ export function PlanningFormPage() {
 
   return (
     <PageContainer>
+      <FloatingElements />
+      <DecorativeElements>
+        <div className="particle-1" />
+        <div className="particle-2" />
+        <div className="particle-3" />
+      </DecorativeElements>
       <FormContainer>
         <CloseButton onClick={handleClose}>&times;</CloseButton>
 

@@ -7,56 +7,29 @@ import {
 import { tripsService } from "../../services/tripsService";
 import { exportToPDF, exportToText } from "../../utils/pdfExport";
 import { colors } from "../../design-tokens/colors";
+import { Edit3, Trash2, X, AlertTriangle } from "lucide-react";
 
 const ExportButton = styled.button`
-  padding: 16px 24px;
-  border: 2px solid ${colors.primary.cyan};
-  background: linear-gradient(
-    135deg,
-    ${colors.alpha.cyan01} 0%,
-    ${colors.alpha.cyan01} 100%
-  );
-  color: ${colors.primary.cyan};
-  border-radius: 16px;
+  padding: 12px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   gap: 8px;
   backdrop-filter: blur(10px);
-  position: relative;
-  overflow: hidden;
-  min-width: 140px;
+  min-width: 120px;
   justify-content: center;
 
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      ${colors.alpha.cyan02},
-      transparent
-    );
-    transition: left 0.5s ease;
-  }
-
   &:hover {
-    background: ${colors.gradients.primary};
-    color: ${colors.neutral.white};
-    border-color: ${colors.primary.cyan};
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: ${colors.shadow.cyanStrong};
-
-    &::before {
-      left: 100%;
-    }
+    color: #00bcd4;
+    border-color: rgba(0, 188, 212, 0.3);
+    transform: translateY(-2px);
   }
 `;
 
@@ -64,40 +37,11 @@ const ExportButton = styled.button`
 const fadeInUp = keyframes`
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-`;
-
-const shimmer = keyframes`
-  0% {
-    background-position: -200px 0;
-  }
-  100% {
-    background-position: calc(200px + 100%) 0;
-  }
-`;
-
-const slideIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-`;
-
-const float = keyframes`
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
   }
 `;
 
@@ -107,140 +51,85 @@ const FinalScreenContainer = styled.div`
   min-height: 100vh;
   width: 100%;
   color: ${colors.text.primary};
-  padding: 2rem;
-  box-sizing: border-box;
-  text-align: center;
-  position: relative;
-
-  @media (max-width: 768px) {
-    padding: 1rem;
-    min-height: 100vh;
-  }
-
-  @media (max-width: 480px) {
-    padding: 0.5rem;
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-
-    animation: ${shimmer} 8s linear infinite;
-    pointer-events: none;
-  }
-
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    background: ${colors.gradients.primary};
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: ${fadeInUp} 0.8s ease-out;
-    position: relative;
-    z-index: 2;
-  }
+  padding: 0;
+  margin: 0;
 `;
 
 const HeaderSection = styled.div`
-  margin-bottom: 2rem;
+  padding: 3rem 2rem 1rem 2rem;
+  text-align: center;
   animation: ${fadeInUp} 0.8s ease-out;
-  position: relative;
-  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 2rem 1.5rem 0.5rem 1.5rem;
+  }
+
+  h1 {
+    font-size: 2.8rem;
+    font-weight: 300;
+    margin: 0 0 1rem 0;
+    color: rgba(255, 255, 255, 0.95);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+
+    @media (max-width: 768px) {
+      font-size: 2.2rem;
+    }
+  }
 
   p {
     font-size: 1.1rem;
-    color: ${colors.text.primaryAlpha90};
-    margin-top: 0.5rem;
-    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    font-weight: 300;
+    line-height: 1.5;
+    max-width: 600px;
+    margin: 0 auto;
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+    }
   }
 `;
 
 const RoteiroContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  position: relative;
-  z-index: 2;
-  padding: 0 1rem;
-  max-width: 1000px;
-  margin: 0 auto 2rem auto;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
   width: 100%;
-  box-sizing: border-box;
 
   @media (max-width: 768px) {
-    gap: 1.5rem;
-    padding: 0 0.5rem;
-  }
-
-  @media (max-width: 480px) {
-    gap: 1rem;
-    padding: 0;
+    padding: 1rem;
   }
 `;
 
 const SummaryBlock = styled.div`
-  background: ${colors.background.primaryAlpha};
-  backdrop-filter: blur(20px);
-  border-radius: 24px;
-  padding: 2rem;
-  margin-top: 2rem;
-  text-align: left;
-  box-shadow: ${colors.shadow.modal}, 0 0 0 1px ${colors.alpha.purple02};
-  border: 1px solid ${colors.alpha.purple03};
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin: 3rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   animation: ${fadeInUp} 0.8s ease-out;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
 
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    border-radius: 24px 24px 0 0;
-  }
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: ${colors.shadow.modalStrong},
-      0 0 0 1px ${colors.border.secondaryHover};
+  @media (max-width: 768px) {
+    padding: 2rem;
+    margin: 2rem 0;
   }
 
   h2 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    background: ${colors.gradients.primary};
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin: 0 0 1.5rem 0;
-    border-bottom: 2px solid ${colors.alpha.purple03};
-    padding-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0 0 2rem 0;
+    text-align: center;
 
     &::before {
-      content: "📋";
-      font-size: 1.2rem;
-      animation: ${float} 3s ease-in-out infinite;
+      content: "";
+      display: block;
+      font-size: 2rem;
+      margin-bottom: 1rem;
     }
   }
 
@@ -248,237 +137,148 @@ const SummaryBlock = styled.div`
     list-style: none;
     padding: 0;
     margin: 0;
+    display: grid;
+    gap: 1rem;
   }
 
   li {
     font-size: 1rem;
-    line-height: 1.8;
-    color: ${colors.text.primaryAlpha90};
-    font-weight: 500;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid ${colors.alpha.white01};
-    animation: ${slideIn} 0.6s ease-out;
-    position: relative;
-    padding-left: 1.5rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 300;
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border-left: 3px solid ${colors.primary.cyan};
+    transition: all 0.3s ease;
 
-    &:last-child {
-      border-bottom: none;
+    &:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateX(5px);
     }
 
     &::before {
-      content: "✓";
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #7c3aed;
-      font-weight: bold;
+      content: "";
+      margin-right: 10px;
       font-size: 0.9rem;
-    }
-
-    & + li {
-      margin-top: 0;
     }
   }
 `;
 
 const DayBlock = styled.div`
-  background: ${colors.background.primaryAlpha};
-  backdrop-filter: blur(20px);
-  border-radius: 24px;
-  padding: 2rem;
-  text-align: left;
-  box-shadow: ${colors.shadow.modal}, 0 0 0 1px ${colors.alpha.cyan02};
-  border: 1px solid ${colors.border.primary};
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   animation: ${fadeInUp} 0.8s ease-out;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  word-wrap: break-word;
 
   @media (max-width: 768px) {
-    padding: 1.5rem;
-    border-radius: 16px;
-  }
-
-  @media (max-width: 480px) {
-    padding: 1rem;
-    border-radius: 12px;
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: ${colors.gradients.surface90};
-    border-radius: 24px 24px 0 0;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
   }
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: ${colors.shadow.modalStrong},
-      0 0 0 1px ${colors.border.primaryHover};
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.03);
   }
 `;
 
 const DayTitle = styled.h2`
   font-size: 1.8rem;
-  font-weight: 700;
-  background: ${colors.gradients.primary};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin: 0 0 1.5rem 0;
-  border-bottom: 2px solid ${colors.alpha.cyan03};
-  padding-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0 0 2rem 0;
+  text-align: center;
 
   &::before {
-    content: "📅";
-    font-size: 1.2rem;
-    animation: ${float} 3s ease-in-out infinite;
+    display: block;
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
   }
 `;
 
 const PeriodSection = styled.div`
-  animation: ${slideIn} 0.6s ease-out;
-  transition: all 0.3s ease;
+  margin-bottom: 2.5rem;
 
-  &:hover {
-    transform: translateX(4px);
-  }
-
-  & + & {
-    margin-top: 2rem;
+  &:last-child {
+    margin-bottom: 0;
   }
 `;
 
 const PeriodTitle = styled.h3`
-  font-size: 1.1rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #a9a1d4;
-  margin: 0 0 1rem 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 1.5rem 0;
+  padding-left: 1.5rem;
   position: relative;
 
   &::before {
     content: "";
-    width: 8px;
-    height: 8px;
-    background: linear-gradient(135deg, #00bcd4 0%, #7c3aed 100%);
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background: ${colors.primary.cyan};
     border-radius: 50%;
-    animation: ${float} 2s ease-in-out infinite;
-  }
-
-  &::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, ${colors.alpha.cyan03}, transparent);
-    margin-left: 12px;
   }
 `;
 
 const RoteiroItem = styled.div`
-  background: linear-gradient(
-    135deg,
-    ${colors.background.glassStrong} 0%,
-    ${colors.background.glassSoft} 100%
-  );
-  border-radius: 16px;
-  padding: 1.25rem 1.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  border: 1px solid ${colors.alpha.white01};
-  backdrop-filter: blur(10px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  animation: ${slideIn} 0.6s ease-out;
-  word-wrap: break-word;
   gap: 1rem;
 
   @media (max-width: 768px) {
-    padding: 1rem 1.25rem;
+    padding: 1.25rem;
     flex-direction: column;
     align-items: stretch;
     gap: 0.75rem;
   }
 
-  @media (max-width: 480px) {
-    padding: 0.75rem 1rem;
-    border-radius: 12px;
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      ${colors.alpha.cyan01},
-      transparent
-    );
-    transition: left 0.5s ease;
+  &:last-child {
+    margin-bottom: 0;
   }
 
   &:hover {
-    transform: translateY(-2px) translateX(4px);
-    background: linear-gradient(
-      135deg,
-      ${colors.alpha.cyan02} 0%,
-      ${colors.alpha.purple01} 100%
-    );
-    border-color: ${colors.alpha.cyan03};
-    box-shadow: ${colors.shadow.cyan};
-
-    &::before {
-      left: 100%;
-    }
-  }
-
-  & + & {
-    margin-top: 0.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateX(5px);
   }
 `;
 
 const ItemContent = styled.p`
   margin: 0;
   font-size: 1rem;
-  line-height: 1.6;
+  line-height: 1.7;
   flex: 1;
-  color: rgba(255, 255, 255, 0.95);
-  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 300;
   position: relative;
-  z-index: 2;
 
   &::before {
-    content: "🌟";
-    margin-right: 8px;
-    font-size: 0.8rem;
-    opacity: 0.7;
+    content: "•";
+    color: ${colors.primary.cyan};
+    font-weight: bold;
+    margin-right: 12px;
+    font-size: 1.2rem;
   }
 `;
 
 const ItemActions = styled.div`
   display: flex;
-  gap: 0.75rem;
-  margin-left: 1rem;
-  opacity: 0.7;
+  gap: 0.5rem;
+  opacity: 0.6;
   transition: opacity 0.3s ease;
   flex-shrink: 0;
 
@@ -487,68 +287,273 @@ const ItemActions = styled.div`
   }
 
   @media (max-width: 768px) {
-    margin-left: 0;
+    opacity: 1;
     justify-content: flex-end;
     width: 100%;
+  }
+`;
+
+const ActionButton = styled.button<{ variant?: "danger" }>`
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 400;
+  font-size: 0.85rem;
+  backdrop-filter: blur(10px);
+  min-width: 50px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 1);
+    transform: translateY(-1px);
+  }
+
+  ${({ variant }) =>
+    variant !== "danger" &&
+    `
+    background: rgba(0, 188, 212, 0.1);
+    border-color: rgba(0, 188, 212, 0.2);
+    color: #00bcd4;
+
+    &:hover {
+      background: rgba(0, 188, 212, 0.2);
+      border-color: #00bcd4;
+    }
+  `}
+
+  ${({ variant }) =>
+    variant === "danger" &&
+    `
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+    }
+  `}
+`;
+
+// Animações para o modal
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
     opacity: 1;
   }
 `;
 
-const ActionButton = styled.button`
-  background: ${colors.alpha.white03};
-  border: 1px solid ${colors.alpha.white02};
-  border-radius: 12px;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-weight: 500;
-  font-size: 0.85rem;
-  backdrop-filter: blur(10px);
+const slideIn = keyframes`
+  from {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+`;
+
+// Modal Components
+const Modal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  backdrop-filter: blur(8px);
+  animation: ${fadeIn} 0.3s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ModalContent = styled.div`
   position: relative;
-  z-index: 3;
-  min-width: 60px;
+  background: ${colors.background.primaryAlpha};
+  border: 1px solid ${colors.alpha.white01};
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  backdrop-filter: blur(20px);
+  box-shadow: ${colors.shadow.modalStrong};
+  animation: ${slideIn} 0.3s ease-out;
+  
+  /* Garantir que o modal não saia da tela em dispositivos pequenos */
+  margin: 1rem;
+  
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    max-width: 95%;
+  }
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid ${colors.alpha.white01};
+`;
+
+const ModalTitle = styled.h2`
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  color: ${colors.text.primary};
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const CloseButton = styled.button`
+  background: ${colors.background.glass};
+  border: 1px solid ${colors.alpha.white01};
+  color: ${colors.text.muted};
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: ${colors.alpha.cyan03};
+    background: ${colors.background.glassStrong};
+    color: ${colors.text.primary};
+    border-color: ${colors.alpha.cyan02};
+  }
+`;
+
+const ModalBody = styled.div`
+  margin-bottom: 1.5rem;
+`;
+
+const TextArea = styled.textarea`
+  width: 100%;
+  background: ${colors.background.glassSoft};
+  border: 1px solid ${colors.alpha.white01};
+  border-radius: 12px;
+  padding: 1rem;
+  color: ${colors.text.primary};
+  font-size: 0.875rem;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 100px;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
     border-color: ${colors.primary.cyan};
-    transform: translateY(-1px);
-    box-shadow: ${colors.shadow.cyanStrong};
+    box-shadow: 0 0 0 2px ${colors.alpha.cyan01};
   }
 
-  &:first-child {
-    background: ${colors.alpha.cyan02};
-
-    &:hover {
-      background: ${colors.alpha.cyan03};
-    }
+  &::placeholder {
+    color: ${colors.text.primaryAlpha60};
   }
+`;
 
-  &:last-child {
-    background: ${colors.alpha.error02};
+const ModalActions = styled.div`
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+`;
 
-    &:hover {
-      background: ${colors.alpha.error04};
-      border-color: ${colors.state.error};
-      box-shadow: ${colors.shadow.error};
+const ModalButton = styled.button<{ variant: "cancel" | "confirm" | "danger" }>`
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  ${({ variant }) => {
+    switch (variant) {
+      case "cancel":
+        return `
+          background: ${colors.background.glass};
+          color: ${colors.text.muted};
+          border: 1px solid ${colors.alpha.white01};
+          
+          &:hover {
+            background: ${colors.background.glassStrong};
+            color: ${colors.text.primary};
+          }
+        `;
+      case "confirm":
+        return `
+          background: ${colors.gradients.primary};
+          color: white;
+          
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: ${colors.shadow.cyan};
+          }
+        `;
+      case "danger":
+        return `
+          background: ${colors.state.errorGradient};
+          color: white;
+          
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: ${colors.shadow.error};
+          }
+        `;
+      default:
+        return "";
     }
+  }}
+`;
+
+const ConfirmMessage = styled.p`
+  color: ${colors.text.muted};
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
+
+  strong {
+    color: ${colors.text.primary};
   }
 `;
 
 const FooterActions = styled.div`
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 1rem;
   flex-wrap: wrap;
-  padding: 2rem 0;
+  padding: 3rem 2rem;
   animation: ${fadeInUp} 1s ease-out;
-  position: relative;
-  z-index: 2;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 2rem;
 
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    padding: 2rem 1rem;
+    gap: 0.75rem;
   }
 `;
 
@@ -671,6 +676,20 @@ const FinalStep: React.FC<FinalStepProps> = ({
     roteiro: {},
     summary: [],
   });
+  const [editModal, setEditModal] = useState<{
+    isOpen: boolean;
+    dia: string;
+    periodo: string;
+    index: number;
+    currentText: string;
+  }>({ isOpen: false, dia: "", periodo: "", index: -1, currentText: "" });
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    dia: string;
+    periodo: string;
+    index: number;
+  }>({ isOpen: false, dia: "", periodo: "", index: -1 });
+  const [editText, setEditText] = useState("");
 
   React.useEffect(() => {
     if (tripData?.plan_result) {
@@ -678,26 +697,94 @@ const FinalStep: React.FC<FinalStepProps> = ({
     }
   }, [tripData]);
 
-  const handleEditItem = (dia: string, periodo: string, index: number) => {
-    const novoTexto = prompt("Editar item:", plan.roteiro[dia][periodo][index]);
-    if (novoTexto !== null) {
-      const novoRoteiro = { ...plan.roteiro };
-      novoRoteiro[dia][periodo][index] = novoTexto;
-      setPlan((prevPlan) => ({ ...prevPlan, roteiro: novoRoteiro }));
+  // Fechar modais com ESC
+  React.useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        if (editModal.isOpen) {
+          cancelEdit();
+        } else if (deleteModal.isOpen) {
+          cancelDelete();
+        }
+      }
+    };
+
+    if (editModal.isOpen || deleteModal.isOpen) {
+      document.addEventListener('keydown', handleEsc);
+      // Prevenir scroll da página quando modal estiver aberto
+      document.body.style.overflow = 'hidden';
     }
+
+    return () => {
+      document.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'unset';
+    };
+  }, [editModal.isOpen, deleteModal.isOpen]);
+
+  const handleEditItem = (dia: string, periodo: string, index: number) => {
+    const currentText = plan.roteiro[dia][periodo][index];
+    setEditText(currentText);
+    setEditModal({
+      isOpen: true,
+      dia,
+      periodo,
+      index,
+      currentText,
+    });
   };
 
   const handleRemoveItem = (dia: string, periodo: string, index: number) => {
-    if (window.confirm("Tem certeza que deseja remover este item?")) {
+    setDeleteModal({
+      isOpen: true,
+      dia,
+      periodo,
+      index,
+    });
+  };
+
+  const confirmEdit = () => {
+    if (editText.trim()) {
       const novoRoteiro = { ...plan.roteiro };
-      novoRoteiro[dia][periodo] = novoRoteiro[dia][periodo].filter(
-        (_, i) => i !== index
-      );
-      if (novoRoteiro[dia][periodo].length === 0)
-        delete novoRoteiro[dia][periodo];
-      if (Object.keys(novoRoteiro[dia]).length === 0) delete novoRoteiro[dia];
+      novoRoteiro[editModal.dia][editModal.periodo][editModal.index] =
+        editText.trim();
       setPlan((prevPlan) => ({ ...prevPlan, roteiro: novoRoteiro }));
     }
+    setEditModal({
+      isOpen: false,
+      dia: "",
+      periodo: "",
+      index: -1,
+      currentText: "",
+    });
+    setEditText("");
+  };
+
+  const confirmDelete = () => {
+    const novoRoteiro = { ...plan.roteiro };
+    novoRoteiro[deleteModal.dia][deleteModal.periodo] = novoRoteiro[
+      deleteModal.dia
+    ][deleteModal.periodo].filter((_, i) => i !== deleteModal.index);
+    if (novoRoteiro[deleteModal.dia][deleteModal.periodo].length === 0)
+      delete novoRoteiro[deleteModal.dia][deleteModal.periodo];
+    if (Object.keys(novoRoteiro[deleteModal.dia]).length === 0)
+      delete novoRoteiro[deleteModal.dia];
+    setPlan((prevPlan) => ({ ...prevPlan, roteiro: novoRoteiro }));
+    setDeleteModal({ isOpen: false, dia: "", periodo: "", index: -1 });
+  };
+
+  const cancelEdit = () => {
+    setEditModal({
+      isOpen: false,
+      dia: "",
+      periodo: "",
+      index: -1,
+      currentText: "",
+    });
+    setEditText("");
+  };
+
+  const cancelDelete = () => {
+    setDeleteModal({ isOpen: false, dia: "", periodo: "", index: -1 });
   };
 
   const stringifyPlan = (planData: ParsedPlan): string => {
@@ -779,11 +866,14 @@ const FinalStep: React.FC<FinalStepProps> = ({
                         <ActionButton
                           onClick={() => handleEditItem(dia, periodo, index)}
                         >
+                          <Edit3 size={14} />
                           Editar
                         </ActionButton>
                         <ActionButton
+                          variant="danger"
                           onClick={() => handleRemoveItem(dia, periodo, index)}
                         >
+                          <Trash2 size={14} />
                           Excluir
                         </ActionButton>
                       </ItemActions>
@@ -822,6 +912,71 @@ const FinalStep: React.FC<FinalStepProps> = ({
           {isSaving ? "Salvando..." : "Salvar Viagem"}
         </ContinueButton>
       </FooterActions>
+
+      {/* Modal de Edição */}
+      {editModal.isOpen && (
+        <Modal onClick={cancelEdit}>
+          <ModalContent onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+            <ModalHeader>
+              <ModalTitle>Editar Item do Roteiro</ModalTitle>
+              <CloseButton onClick={cancelEdit}>
+                <X size={20} />
+              </CloseButton>
+            </ModalHeader>
+            <ModalBody>
+              <TextArea
+                value={editText}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  setEditText(e.target.value)
+                }
+                placeholder="Digite o novo texto para este item..."
+                rows={4}
+                autoFocus
+              />
+            </ModalBody>
+            <ModalActions>
+              <ModalButton variant="cancel" onClick={cancelEdit}>
+                Cancelar
+              </ModalButton>
+              <ModalButton variant="confirm" onClick={confirmEdit}>
+                Salvar Alterações
+              </ModalButton>
+            </ModalActions>
+          </ModalContent>
+        </Modal>
+      )}
+
+      {/* Modal de Exclusão */}
+      {deleteModal.isOpen && (
+        <Modal onClick={cancelDelete}>
+          <ModalContent onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+            <ModalHeader>
+              <ModalTitle>
+                <AlertTriangle size={20} color="#ef4444" />
+                Confirmar Exclusão
+              </ModalTitle>
+              <CloseButton onClick={cancelDelete}>
+                <X size={20} />
+              </CloseButton>
+            </ModalHeader>
+            <ModalBody>
+              <ConfirmMessage>
+                Tem certeza que deseja remover este item do roteiro?
+                <br />
+                <strong>Esta ação não pode ser desfeita.</strong>
+              </ConfirmMessage>
+            </ModalBody>
+            <ModalActions>
+              <ModalButton variant="cancel" onClick={cancelDelete}>
+                Cancelar
+              </ModalButton>
+              <ModalButton variant="danger" onClick={confirmDelete}>
+                Excluir Item
+              </ModalButton>
+            </ModalActions>
+          </ModalContent>
+        </Modal>
+      )}
     </FinalScreenContainer>
   );
 };

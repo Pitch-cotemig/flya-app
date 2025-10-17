@@ -1,10 +1,18 @@
-import React from 'react';
+import React from "react";
 import {
   QuestionTitle,
   OptionContainer,
   OptionLabel,
   RadioInput,
-} from '../../pages/PlanningFormPage/styles';
+} from "../../pages/PlanningFormPage/styles";
+import {
+  Users,
+  Briefcase,
+  Globe,
+  PartyPopper,
+  MapPin,
+  Plane,
+} from "lucide-react";
 
 interface Step1Props {
   formData: {
@@ -16,25 +24,49 @@ interface Step1Props {
 
 const Step1: React.FC<Step1Props> = ({ formData, handleChange }) => {
   const motivos = [
-    { value: 'Passear com a família', icon: '👨‍👩‍👧‍👦', description: 'Momentos especiais em família' },
-    { value: 'Viajar a negócios', icon: '💼', description: 'Viagens corporativas e profissionais' },
-    { value: 'Conhecer novos lugares', icon: '🌍', description: 'Explorar e descobrir o mundo' },
-    { value: 'Ir a eventos', icon: '🎉', description: 'Shows, festivais e celebrações' },
+    {
+      value: "Passear com a família",
+      icon: <Users size={24} />,
+      description: "Momentos especiais em família",
+    },
+    {
+      value: "Viajar a negócios",
+      icon: <Briefcase size={24} />,
+      description: "Viagens corporativas e profissionais",
+    },
+    {
+      value: "Conhecer novos lugares",
+      icon: <Globe size={24} />,
+      description: "Explorar e descobrir o mundo",
+    },
+    {
+      value: "Ir a eventos",
+      icon: <PartyPopper size={24} />,
+      description: "Shows, festivais e celebrações",
+    },
   ];
 
   const destinos = [
-    { value: 'Para alguma cidade Brasileira', icon: '🇧🇷', description: 'Descobrir as belezas do Brasil' },
-    { value: 'Para o exterior', icon: '✈️', description: 'Aventura internacional' },
+    {
+      value: "Para alguma cidade Brasileira",
+      icon: <MapPin size={24} />,
+      description: "Descobrir as belezas do Brasil",
+    },
+    {
+      value: "Para o exterior",
+      icon: <Plane size={24} />,
+      description: "Aventura internacional",
+    },
   ];
 
   return (
     <>
-      <QuestionTitle>Qual o principal motivo da sua viagem? 🗺️</QuestionTitle>
+      <QuestionTitle>Qual o principal motivo da sua viagem?</QuestionTitle>
       <OptionContainer>
         {motivos.map((motivo) => (
           <OptionLabel
             key={motivo.value}
-            className={formData.motivo === motivo.value ? 'selected' : ''}
+            className={formData.motivo === motivo.value ? "selected" : ""}
           >
             <RadioInput
               name="motivo"
@@ -42,23 +74,34 @@ const Step1: React.FC<Step1Props> = ({ formData, handleChange }) => {
               checked={formData.motivo === motivo.value}
               onChange={handleChange}
             />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
-              <span style={{ fontSize: '24px' }}>{motivo.icon}</span>
-              <div>
-                <div style={{ fontWeight: '600', marginBottom: '4px' }}>{motivo.value}</div>
-                <div style={{ fontSize: '12px', opacity: 0.8 }}>{motivo.description}</div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                width: "100%",
+              }}
+            >
+              <span style={{ fontSize: "28px", transition: "all 0.3s ease" }}>
+                {motivo.icon}
+              </span>
+              <div style={{ flex: 1 }}>
+                <div className="option-title">{motivo.value}</div>
+                <div className="option-description">{motivo.description}</div>
               </div>
             </div>
           </OptionLabel>
         ))}
       </OptionContainer>
 
-      <QuestionTitle style={{ marginTop: '40px' }}>E o destino, será nacional ou internacional? 🌎</QuestionTitle>
+      <QuestionTitle style={{ marginTop: "40px" }}>
+        E o destino, será nacional ou internacional?{" "}
+      </QuestionTitle>
       <OptionContainer>
         {destinos.map((destino) => (
           <OptionLabel
             key={destino.value}
-            className={formData.destino === destino.value ? 'selected' : ''}
+            className={formData.destino === destino.value ? "selected" : ""}
           >
             <RadioInput
               name="destino"
@@ -66,11 +109,20 @@ const Step1: React.FC<Step1Props> = ({ formData, handleChange }) => {
               checked={formData.destino === destino.value}
               onChange={handleChange}
             />
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
-              <span style={{ fontSize: '24px' }}>{destino.icon}</span>
-              <div>
-                <div style={{ fontWeight: '600', marginBottom: '4px' }}>{destino.value}</div>
-                <div style={{ fontSize: '12px', opacity: 0.8 }}>{destino.description}</div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                width: "100%",
+              }}
+            >
+              <span style={{ fontSize: "28px", transition: "all 0.3s ease" }}>
+                {destino.icon}
+              </span>
+              <div style={{ flex: 1 }}>
+                <div className="option-title">{destino.value}</div>
+                <div className="option-description">{destino.description}</div>
               </div>
             </div>
           </OptionLabel>
@@ -80,4 +132,4 @@ const Step1: React.FC<Step1Props> = ({ formData, handleChange }) => {
   );
 };
 
-export default Step1; 
+export default Step1;

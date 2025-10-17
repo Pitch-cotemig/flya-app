@@ -1,5 +1,15 @@
 import React from "react";
-import { Lightbulb, Plus } from "lucide-react";
+import {
+  Lightbulb,
+  Plus,
+  Briefcase,
+  FileText,
+  Pill,
+  Backpack,
+  FileCheck,
+  Shirt,
+  Droplets,
+} from "lucide-react";
 import {
   SuggestionsContainer,
   SuggestionsHeader,
@@ -80,13 +90,44 @@ export const ItemSuggestions: React.FC<SuggestionProps> = ({
         {Object.entries(suggestions).map(([category, items]) => (
           <SuggestionCard key={category}>
             <SuggestionCategory>
-              {category === "clothes" && "👕 Roupas"}
-              {category === "toiletries" && "🧴 Higiene"}
-              {category === "electronics" && "📱 Eletrônicos"}
-              {category === "documents" && "📄 Documentos"}
-              {category === "medicine" && "💊 Remédios"}
-              {category === "accessories" && "🎒 Acessórios"}
-              {category === "other" && "📋 Outros"}
+              {category === "clothes" && (
+                <>
+                  <Shirt size={14} style={{ marginRight: "4px" }} /> Roupas
+                </>
+              )}
+              {category === "toiletries" && (
+                <>
+                  <Droplets size={14} style={{ marginRight: "4px" }} /> Higiene
+                </>
+              )}
+              {category === "electronics" && (
+                <>
+                  <Briefcase size={14} style={{ marginRight: "4px" }} />{" "}
+                  Eletrônicos
+                </>
+              )}
+              {category === "documents" && (
+                <>
+                  <FileText size={14} style={{ marginRight: "4px" }} />{" "}
+                  Documentos
+                </>
+              )}
+              {category === "medicine" && (
+                <>
+                  <Pill size={14} style={{ marginRight: "4px" }} /> Remédios
+                </>
+              )}
+              {category === "accessories" && (
+                <>
+                  <Backpack size={14} style={{ marginRight: "4px" }} />{" "}
+                  Acessórios
+                </>
+              )}
+              {category === "other" && (
+                <>
+                  <FileCheck size={14} style={{ marginRight: "4px" }} /> Outros
+                </>
+              )}
             </SuggestionCategory>
             <SuggestionsList>
               {items.map((item) => (

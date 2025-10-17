@@ -74,6 +74,38 @@ export const BagHeader = styled.header`
   z-index: 1;
 `;
 
+export const BackButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: ${colors.background.glass};
+  backdrop-filter: blur(20px);
+  border: 1px solid ${colors.border.white};
+  border-radius: 25px;
+  color: ${colors.text.primary};
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${colors.shadow.cyan};
+    border-color: ${colors.alpha.cyan03};
+    background: ${colors.background.glassStrong};
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+`;
+
 export const BagTitle = styled.h1`
   font-size: 2.5rem;
   font-weight: 700;
@@ -302,8 +334,8 @@ export const CategoryTab = styled.button<{ active?: boolean; variant?: "add" }>`
   border-radius: 25px;
   background: ${(props) =>
     props.active
-      ? "${colors.gradients.cyan}"
-      : "${colors.alpha.white01}"};
+      ? "linear-gradient(135deg, #00bcd4 0%, #00acc1 100%)"
+      : "rgba(255, 255, 255, 0.1)"};
   color: white;
   font-size: 0.9rem;
   font-weight: 500;
@@ -324,6 +356,11 @@ export const CategoryTab = styled.button<{ active?: boolean; variant?: "add" }>`
       props.active
         ? "${colors.gradients.cyanHover}"
         : "${colors.background.glassStrong}"};
+  }
+
+  .category-icon {
+    flex-shrink: 0;
+    opacity: 0.9;
   }
 
   span {
@@ -385,6 +422,13 @@ export const ItemCategory = styled.div`
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
   margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+
+  .category-icon {
+    opacity: 0.7;
+  }
 `;
 
 export const ItemActions = styled.div`
@@ -428,4 +472,116 @@ export const CategoriesWrapper = styled.div`
   display: flex;
   gap: 2rem;
   flex-direction: column;
+`;
+
+export const SaveSection = styled.div`
+  position: sticky;
+  bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 3rem;
+  z-index: 10;
+`;
+
+export const SaveButton = styled.button<{ saving?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2.5rem;
+  background: ${(props) =>
+    props.saving
+      ? colors.gradients.primary.replace("135deg", "45deg")
+      : colors.gradients.primary};
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: ${(props) => (props.saving ? "not-allowed" : "pointer")};
+  transition: all 0.3s ease;
+  box-shadow: ${colors.shadow.cyanStrong};
+  backdrop-filter: blur(10px);
+  border: 1px solid ${colors.alpha.cyan02};
+  min-width: 200px;
+
+  &:hover {
+    transform: ${(props) =>
+      props.saving ? "none" : "translateY(-3px) scale(1.02)"};
+    box-shadow: ${(props) =>
+      props.saving
+        ? colors.shadow.cyanStrong
+        : colors.shadow.cyan + ", 0 15px 40px rgba(0, 188, 212, 0.4)"};
+  }
+
+  &:active {
+    transform: ${(props) => (props.saving ? "none" : "translateY(-1px)")};
+  }
+
+  svg {
+    flex-shrink: 0;
+    ${(props) =>
+      props.saving &&
+      `
+      animation: spin 1s linear infinite;
+    `}
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+`;
+
+export const SaveStatus = styled.div<{ type: "success" | "error" | "info" }>`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 1rem;
+  backdrop-filter: blur(10px);
+
+  ${(props) => {
+    switch (props.type) {
+      case "success":
+        return `
+          background: ${colors.alpha.white01};
+          border: 1px solid ${colors.state.success}40;
+          color: ${colors.state.success};
+        `;
+      case "error":
+        return `
+          background: ${colors.alpha.white01};
+          border: 1px solid ${colors.state.error}40;
+          color: ${colors.state.error};
+        `;
+      case "info":
+        return `
+          background: ${colors.alpha.cyan01};
+          border: 1px solid ${colors.alpha.cyan02};
+          color: ${colors.primary.cyan};
+        `;
+      default:
+        return "";
+    }
+  }}
+
+  svg {
+    flex-shrink: 0;
+  }
 `;

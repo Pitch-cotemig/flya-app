@@ -1,267 +1,90 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { exportToPDF, exportToText } from "../../utils/pdfExport";
-import { colors } from "../../design-tokens/colors";
+import {
+  MapPin,
+  Clock,
+  Calendar,
+  Star,
+  X,
+  FileText,
+  Download,
+  AlertTriangle,
+} from "lucide-react";
+import {
+  Card,
+  CardHeader,
+  TripTitle,
+  TripDetails,
+  DetailItem,
+  TripSummary,
+  CardActions,
+  ActionButtons,
+  ViewDetailsButton,
+  IconButton,
+  FavoriteButton,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalTitle,
+  CloseButton,
+  ModalBody,
+  PlanContent,
+  ExportButtons,
+  ExportButton,
+  ConfirmModal,
+  ConfirmContent,
+  ConfirmTitle,
+  ConfirmMessage,
+  ConfirmActions,
+  ConfirmButton,
+} from "./styles";
 
-interface CardProps {
-  isFavorite?: boolean;
-}
+// Função para formatar texto no preview (sem dias destacados)
+const formatTextPreview = (text: string) => {
+  return (
+    text
+      // Títulos com ###
+      .replace(
+        /### (.*?)(?=\n|$)/g,
+        '<h3 style="color: #00d4ff; font-size: 1.25rem; font-weight: 600; margin: 20px 0 12px 0;">$1</h3>'
+      )
+      // Negrito com **texto**
+      .replace(
+        /\*\*(.*?)\*\*/g,
+        '<strong style="color: #ffffff; font-weight: 600;">$1</strong>'
+      )
+      // Asteriscos simples viram bullets
+      .replace(/^\* (.*?)$/gm, "• $1")
+      // Hífens viram bullets
+      .replace(/^- (.*?)$/gm, "• $1")
+  );
+};
 
-interface FavoriteButtonProps {
-  isFavorite?: boolean;
-}
-
-const Card = styled.div<CardProps>`
-  background-color: ${colors.background.primaryAlpha};
-  backdrop-filter: blur(12px);
-  color: #fff;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: ${colors.shadow.card};
-  position: relative;
-  border: 1px solid ${colors.alpha.white01};
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-left: 4px solid ${colors.primary.cyan};
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: ${colors.shadow.cardHover};
-    border-color: ${colors.alpha.cyan03};
-  }
-`;
-
-const CardHeader = styled.div`
-  margin-bottom: 16px;
-`;
-
-const TripTitle = styled.h3`
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #fff;
-  margin: 0 0 8px 0;
-  background: ${colors.gradients.primary};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-`;
-
-const TripDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 16px;
-`;
-
-const DetailItem = styled.span`
-  font-size: 0.875rem;
-  color: ${colors.text.muted};
-  display: flex;
-  align-items: center;
-  gap: 6px;
-
-  &::before {
-    content: "•";
-    color: ${colors.primary.cyan};
-    font-weight: bold;
-  }
-`;
-
-const TripSummary = styled.p`
-  font-size: 0.875rem;
-  color: ${colors.text.mutedDark};
-  line-height: 1.5;
-  margin-bottom: 16px;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-`;
-
-const CardActions = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const ActionButtons = styled.div`
-  display: flex;
-  gap: 8px;
-`;
-
-const ViewDetailsButton = styled.button`
-  background: ${colors.gradients.primary};
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: ${colors.gradients.cyanHover};
-    transform: scale(1.05);
-  }
-`;
-
-const DeleteButton = styled.button`
-  background: ${colors.state.errorGradient};
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: linear-gradient(
-      135deg,
-      ${colors.state.errorDark} 0%,
-      #b3300b 100%
-    );
-    transform: scale(1.1);
-  }
-`;
-
-const FavoriteButton = styled.button<FavoriteButtonProps>`
-  background: ${(props) =>
-    props.isFavorite ? "${colors.state.warning}" : "${colors.alpha.white01}"};
-  color: ${(props) =>
-    props.isFavorite ? "${colors.text.contrast}" : "${colors.text.primary}"};
-  border: 2px solid
-    ${(props) =>
-      props.isFavorite ? "${colors.state.warning}" : "${colors.alpha.cyan03}"};
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: all 0.2s ease;
-
-  &:hover {
-    transform: scale(1.1);
-    background: ${(props) =>
-      props.isFavorite ? "${colors.state.warning}" : "${colors.alpha.cyan02}"};
-    border-color: ${(props) =>
-      props.isFavorite ? "${colors.state.warning}" : "${colors.primary.cyan}"};
-  }
-`;
-
-const Modal = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: ${colors.background.overlay};
-  backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-`;
-
-const ModalContent = styled.div`
-  background-color: ${colors.background.primaryAlpha};
-  backdrop-filter: blur(20px);
-  border-radius: 16px;
-  padding: 32px;
-  max-width: 800px;
-  max-height: 80vh;
-  overflow-y: auto;
-  width: 100%;
-  position: relative;
-  border: 1px solid ${colors.alpha.white01};
-  box-shadow: ${colors.shadow.modal};
-  color: #fff;
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  border-bottom: 1px solid ${colors.alpha.white01};
-  padding-bottom: 16px;
-`;
-
-const ModalTitle = styled.h2`
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0;
-  background: ${colors.gradients.primary};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-`;
-
-const CloseButton = styled.button`
-  background: ${colors.alpha.white01};
-  border: 2px solid ${colors.alpha.cyan03};
-  color: #fff;
-  padding: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: bold;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: ${colors.alpha.cyan02};
-    border-color: ${colors.primary.cyan};
-    color: ${colors.primary.cyan};
-    transform: scale(1.1);
-  }
-`;
-
-const ModalBody = styled.div`
-  margin-bottom: 24px;
-`;
-
-const PlanContent = styled.p`
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  line-height: 1.6;
-  color: ${colors.text.muted};
-  background: ${colors.background.glassSoft};
-  padding: 16px;
-  border-radius: 8px;
-  border-left: 4px solid ${colors.primary.cyan};
-`;
-
-const ExportButtons = styled.div`
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-`;
-
-const ExportButton = styled.button`
-  padding: 8px 16px;
-  border: 2px solid #00bcd4;
-  background: transparent;
-  color: #00bcd4;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: #00bcd4;
-    color: white;
-    transform: translateY(-2px);
-  }
-`;
+// Função para formatar texto completo no modal (com dias destacados)
+const formatTextWithBold = (text: string) => {
+  return (
+    text
+      // Títulos com ###
+      .replace(
+        /### (.*?)(?=\n|$)/g,
+        '<h3 style="color: #00d4ff; font-size: 1.25rem; font-weight: 600; margin: 20px 0 12px 0;">$1</h3>'
+      )
+      // Dias como subtítulos (Dia X: ...)
+      .replace(
+        /^(Dia \d+:.*?)$/gm,
+        '<h4 style="color: #ffffff; font-size: 1.1rem; font-weight: 600; margin: 16px 0 8px 0;">$1</h4>'
+      )
+      // Negrito com **texto**
+      .replace(
+        /\*\*(.*?)\*\*/g,
+        '<strong style="color: #ffffff; font-weight: 600;">$1</strong>'
+      )
+      // Asteriscos simples viram bullets
+      .replace(/^\* (.*?)$/gm, "• $1")
+      // Hífens viram bullets
+      .replace(/^- (.*?)$/gm, "• $1")
+  );
+};
 
 interface TripCardProps {
   trip: {
@@ -282,21 +105,19 @@ const TripCard: React.FC<TripCardProps> = ({
   onToggleFavorite,
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  // Função para extrair informações básicas do plano
   const extractTripInfo = (planResult: string) => {
     const lines = planResult.split("\n");
     let title = "Minha Viagem";
     let destination = "Destino não especificado";
     let dates = "Datas não especificadas";
 
-    // Procurar pelo título
     const titleMatch = lines.find((line) => line.includes("### Título:"));
     if (titleMatch) {
       title = titleMatch.replace("### Título:", "").trim();
     }
 
-    // Procurar por informações de destino no prompt_data se disponível
     if (trip.prompt_data) {
       const promptData = trip.prompt_data as any;
       if (promptData.destino) {
@@ -304,7 +125,6 @@ const TripCard: React.FC<TripCardProps> = ({
       }
     }
 
-    // Procurar por dias no plano
     const dayMatches = lines.filter((line) => line.includes("**Dia"));
     if (dayMatches.length > 0) {
       dates = `${dayMatches.length} dias de viagem`;
@@ -335,6 +155,19 @@ const TripCard: React.FC<TripCardProps> = ({
     }
   };
 
+  const handleDeleteClick = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const handleConfirmDelete = () => {
+    onDelete(trip.id);
+    setShowDeleteConfirm(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteConfirm(false);
+  };
+
   return (
     <>
       <Card isFavorite={trip.is_favorite} onClick={() => setShowModal(true)}>
@@ -343,17 +176,28 @@ const TripCard: React.FC<TripCardProps> = ({
         </CardHeader>
 
         <TripDetails>
-          <DetailItem>📍 {tripInfo.destination}</DetailItem>
-          <DetailItem>📅 {tripInfo.dates}</DetailItem>
+          <DetailItem>
+            <MapPin size={16} className="icon" />
+            {tripInfo.destination}
+          </DetailItem>
+          <DetailItem>
+            <Clock size={16} className="icon" />
+            {tripInfo.dates}
+          </DetailItem>
           {trip.created_at && (
             <DetailItem>
-              🗓️ Criada em{" "}
-              {new Date(trip.created_at).toLocaleDateString("pt-BR")}
+              <Calendar size={16} className="icon" />
+              Criada em {new Date(trip.created_at).toLocaleDateString("pt-BR")}
             </DetailItem>
           )}
         </TripDetails>
 
-        <TripSummary>{trip.plan_result.substring(0, 200)}...</TripSummary>
+        <TripSummary
+          dangerouslySetInnerHTML={{
+            __html:
+              formatTextPreview(trip.plan_result.substring(0, 200)) + "...",
+          }}
+        />
 
         <CardActions>
           <ViewDetailsButton
@@ -373,16 +217,20 @@ const TripCard: React.FC<TripCardProps> = ({
                 onToggleFavorite(trip.id);
               }}
             >
-              {trip.is_favorite ? "★" : "☆"}
+              <Star
+                size={16}
+                fill={trip.is_favorite ? "currentColor" : "none"}
+              />
             </FavoriteButton>
-            <DeleteButton
+            <IconButton
+              variant="danger"
               onClick={(e) => {
                 e.stopPropagation();
-                onDelete(trip.id);
+                handleDeleteClick();
               }}
             >
-              ×
-            </DeleteButton>
+              <X size={16} />
+            </IconButton>
           </ActionButtons>
         </CardActions>
       </Card>
@@ -392,36 +240,78 @@ const TripCard: React.FC<TripCardProps> = ({
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <ModalHeader>
               <ModalTitle>{tripInfo.title}</ModalTitle>
-              <CloseButton onClick={() => setShowModal(false)}>×</CloseButton>
+              <CloseButton onClick={() => setShowModal(false)}>
+                <X size={20} />
+              </CloseButton>
             </ModalHeader>
 
             <ModalBody>
               <TripDetails>
-                <DetailItem>📍 {tripInfo.destination}</DetailItem>
-                <DetailItem>📅 {tripInfo.dates}</DetailItem>
+                <DetailItem>
+                  <MapPin size={16} className="icon" />
+                  {tripInfo.destination}
+                </DetailItem>
+                <DetailItem>
+                  <Clock size={16} className="icon" />
+                  {tripInfo.dates}
+                </DetailItem>
                 {trip.created_at && (
                   <DetailItem>
-                    🗓️ Criada em{" "}
+                    <Calendar size={16} className="icon" />
+                    Criada em{" "}
                     {new Date(trip.created_at).toLocaleDateString("pt-BR")}
                   </DetailItem>
                 )}
               </TripDetails>
 
-              <PlanContent>{trip.plan_result}</PlanContent>
+              <PlanContent
+                dangerouslySetInnerHTML={{
+                  __html: formatTextWithBold(trip.plan_result).replace(
+                    /\n/g,
+                    "<br/>"
+                  ),
+                }}
+              />
             </ModalBody>
 
             {trip.prompt_data && trip.ai_prompt && (
               <ExportButtons>
                 <ExportButton onClick={handleExportPDF}>
-                  📄 Exportar PDF
+                  <Download size={16} />
+                  Exportar PDF
                 </ExportButton>
                 <ExportButton onClick={handleExportTXT}>
-                  📝 Exportar TXT
+                  <FileText size={16} />
+                  Exportar TXT
                 </ExportButton>
               </ExportButtons>
             )}
           </ModalContent>
         </Modal>
+      )}
+
+      {showDeleteConfirm && (
+        <ConfirmModal onClick={handleCancelDelete}>
+          <ConfirmContent onClick={(e) => e.stopPropagation()}>
+            <ConfirmTitle>
+              <AlertTriangle size={20} />
+              Confirmar Exclusão
+            </ConfirmTitle>
+            <ConfirmMessage>
+              Tem certeza que deseja excluir este roteiro de viagem?
+              <br />
+              <strong>Esta ação não pode ser desfeita.</strong>
+            </ConfirmMessage>
+            <ConfirmActions>
+              <ConfirmButton variant="cancel" onClick={handleCancelDelete}>
+                Cancelar
+              </ConfirmButton>
+              <ConfirmButton variant="danger" onClick={handleConfirmDelete}>
+                Excluir
+              </ConfirmButton>
+            </ConfirmActions>
+          </ConfirmContent>
+        </ConfirmModal>
       )}
     </>
   );
