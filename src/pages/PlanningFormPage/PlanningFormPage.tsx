@@ -44,6 +44,7 @@ interface TripData {
 interface IFormData {
   motivo: string;
   destino: string;
+  destinoEspecifico: string;
   pet: string;
   orcamento: string;
   acompanhantes: string;
@@ -56,6 +57,7 @@ export function PlanningFormPage() {
   const [formData, setFormData] = useState<IFormData>({
     motivo: "",
     destino: "",
+    destinoEspecifico: "",
     pet: "",
     orcamento: "",
     acompanhantes: "",
@@ -113,13 +115,18 @@ export function PlanningFormPage() {
     const prompt = buildPrompt(formData);
 
     try {
+      const token = localStorage.getItem("authToken");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
       const response = await fetch("http://localhost:3000/planning", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // TODO: Adicionar token de autenticação se a rota for privada
-          // 'Authorization': `Bearer ${token}`
-        },
+        headers,
         body: JSON.stringify(formData),
       });
 
@@ -155,6 +162,9 @@ export function PlanningFormPage() {
     );
     promptParts.push(`- Motivo da Viagem: ${data.motivo}.`);
     promptParts.push(`- Tipo de Destino: ${data.destino}.`);
+    if (data.destinoEspecifico && data.destino === "Para o exterior") {
+      promptParts.push(`- Destino Específico: ${data.destinoEspecifico}.`);
+    }
     if (data.pet === "Sim") promptParts.push(`- O viajante levará um pet.`);
     promptParts.push(`- Orçamento: ${data.orcamento}.`);
     promptParts.push(`- Número de Acompanhantes: ${data.acompanhantes}.`);

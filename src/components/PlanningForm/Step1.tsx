@@ -18,6 +18,7 @@ interface Step1Props {
   formData: {
     motivo: string;
     destino: string;
+    destinoEspecifico: string;
   };
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -128,6 +129,54 @@ const Step1: React.FC<Step1Props> = ({ formData, handleChange }) => {
           </OptionLabel>
         ))}
       </OptionContainer>
+
+      {/* Campo de destino específico - só aparece se escolher "Para o exterior" */}
+      {(formData.destino === "Para o exterior" || formData.destino === "Para alguma cidade Brasileira") && (
+        <>
+          <QuestionTitle style={{ marginTop: "40px" }}>
+            Tem algum lugar específico onde queira ir?
+          </QuestionTitle>
+          <div style={{ marginTop: "20px" }}>
+            <input
+              type="text"
+              name="destinoEspecifico"
+              value={formData.destinoEspecifico}
+              onChange={handleChange}
+              placeholder={formData.destino === "Para o exterior" 
+                ? "Ex: Paris, França ou Tóquio, Japão" 
+                : "Ex: Rio de Janeiro, RJ ou São Paulo, SP"}
+              style={{
+                width: "100%",
+                padding: "16px 20px",
+                fontSize: "16px",
+                borderRadius: "12px",
+                border: "2px solid rgba(255, 255, 255, 0.1)",
+                background: "rgba(255, 255, 255, 0.05)",
+                color: "#ffffff",
+                backdropFilter: "blur(10px)",
+                transition: "all 0.3s ease",
+                outline: "none",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = "#00bcd4";
+                e.target.style.background = "rgba(255, 255, 255, 0.1)";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "rgba(255, 255, 255, 0.1)";
+                e.target.style.background = "rgba(255, 255, 255, 0.05)";
+              }}
+            />
+            <p style={{
+              marginTop: "8px",
+              fontSize: "14px",
+              color: "rgba(255, 255, 255, 0.6)",
+              fontStyle: "italic"
+            }}>
+              Deixe em branco se quiser que nossa IA sugira destinos baseado no seu orçamento e preferências.
+            </p>
+          </div>
+        </>
+      )}
     </>
   );
 };
