@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { User, Bell, LogOut, Shield, Eye, EyeOff, Key, Smartphone, AlertTriangle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { User, Bell, LogOut, Shield, Eye, EyeOff, Key, AlertTriangle } from "lucide-react";
 import { User as UserType } from "../../services/authService";
-import { profileService, PasswordChangeData } from "../../services/profileService";
+import { profileService } from "../../services/profileService";
 import { useApiState } from "../../hooks/useApiState";
-import { FeedbackMessage } from "../../components";
+import { FeedbackMessage, SecuritySection } from "../../components";
+import NotificationsPage from "./NotificationsPage";
 
 import { colors } from "../../design-tokens/colors";
 
@@ -355,33 +355,7 @@ const PasswordToggle = styled.button`
   }
 `;
 
-const TwoFactorSection = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
-  }
-`;
-
-const TwoFactorStatus = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-weight: 500;
-  color: ${colors.text.primary};
-`;
-
-const StatusIndicator = styled.div<{ active: boolean }>`
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: ${({ active }) => active ? colors.state.success : colors.neutral.gray500};
-  box-shadow: 0 0 0 2px ${({ active }) => (active ? colors.alpha.cyan02 : colors.alpha.white01)};
-`;
 
 const ActionButton = styled.button<{ variant?: "primary" | "outline" }>`
   padding: 0.75rem 1.5rem;
@@ -443,7 +417,6 @@ interface ProfilePageProps {
 }
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("profile");
   const [formData, setFormData] = useState({
     username: user?.username || "",
@@ -458,7 +431,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+
+
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -466,20 +440,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
   });
 
   const passwordState = useApiState();
-  const twoFactorState = useApiState();
   const sessionsState = useApiState();
   const deleteAccountState = useApiState();
 
-  useEffect(() => {
-    if (activeTab === "security") {
-      loadSecuritySettings();
-    }
-  }, [activeTab]);
 
-  const loadSecuritySettings = async () => {
-    // Mock security settings - no API call needed
-    setTwoFactorEnabled(false);
-  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -558,21 +522,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
     }
   };
 
-  const handleToggle2FA = async () => {
-    try {
-      twoFactorState.setLoading(true);
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const newState = !twoFactorEnabled;
-      setTwoFactorEnabled(newState);
-      twoFactorState.setSuccess(
-        `Autenticação de dois fatores ${newState ? "ativada" : "desativada"} com sucesso`
-      );
-    } catch (error) {
-      twoFactorState.setError("Erro ao configurar autenticação de dois fatores");
-    }
-  };
+
 
   const handleTerminateSessions = async () => {
     if (!window.confirm("Tem certeza que deseja encerrar todas as outras sessões?")) return;
@@ -587,12 +537,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
 
   const handleDeleteAccount = async () => {
     if (!window.confirm("Tem certeza que deseja excluir sua conta permanentemente?")) return;
+    if (!window.confirm("Esta ação é IRREVERSÍVEL. Confirma a exclusão?")) return;
+    
     deleteAccountState.setLoading(true);
     const response = await profileService.deleteAccount();
+    
     if (response.success) {
       deleteAccountState.setSuccess(response.message);
       setTimeout(() => {
-        localStorage.removeItem("token");
+        localStorage.clear();
         window.location.href = "/auth";
       }, 2000);
     } else {
@@ -845,75 +798,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
                 </SecurityCard>
 
                 {/* Autenticação de Dois Fatores */}
-                <SecurityCard>
-                  <SecurityCardHeader>
-                    <SecurityCardIcon>
-                      <Smartphone size={24} />
-                    </SecurityCardIcon>
-                    <div>
-                      <SecurityCardTitle>Autenticação de Dois Fatores</SecurityCardTitle>
-                      <SecurityCardDescription>
-                        Adicione uma camada extra de segurança à sua conta
-                      </SecurityCardDescription>
-                    </div>
-                  </SecurityCardHeader>
-
-                  <SecurityCardContent>
-                    {twoFactorState.loading && (
-                      <FeedbackMessage type="loading" message="Configurando autenticação..." />
-                    )}
-                    {twoFactorState.error && (
-                      <FeedbackMessage
-                        type="error"
-                        message={twoFactorState.error}
-                        onClose={twoFactorState.clearMessages}
-                      />
-                    )}
-                    {twoFactorState.success && (
-                      <FeedbackMessage
-                        type="success"
-                        message={twoFactorState.success}
-                        onClose={twoFactorState.clearMessages}
-                      />
-                    )}
-
-                    <TwoFactorSection>
-                      <TwoFactorStatus>
-                        <StatusIndicator active={twoFactorEnabled} />
-                        <span>{twoFactorEnabled ? "Ativado" : "Desativado"}</span>
-                      </TwoFactorStatus>
-
-                      <ActionButton
-                        variant={twoFactorEnabled ? "outline" : "primary"}
-                        onClick={handleToggle2FA}
-                        disabled={twoFactorState.loading}
-                      >
-                        {twoFactorState.loading
-                          ? "Configurando..."
-                          : twoFactorEnabled
-                          ? "Desativar 2FA"
-                          : "Ativar 2FA"}
-                      </ActionButton>
-                    </TwoFactorSection>
-
-                    {twoFactorEnabled && (
-                      <div style={{
-                        marginTop: "1rem",
-                        padding: "1rem",
-                        backgroundColor: colors.alpha.cyan01,
-                        borderRadius: "12px",
-                      }}>
-                        <p style={{
-                          color: colors.text.primary,
-                          margin: 0,
-                          fontSize: "0.875rem",
-                        }}>
-                          ✓ Sua conta está protegida com autenticação de dois fatores
-                        </p>
-                      </div>
-                    )}
-                  </SecurityCardContent>
-                </SecurityCard>
+                <SecuritySection />
 
                 {/* Sessões Ativas */}
                 <SecurityCard>
@@ -1031,13 +916,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
           )}
 
           {activeTab === "notifications" && (
-            <div
-              style={{ padding: "2rem", textAlign: "center", color: "white" }}
-            >
-              <h2>Configurações de Notificações</h2>
-              <p>Funcionalidade em desenvolvimento</p>
-              {/* TODO: Implementar configurações de notificações por email, push, etc. */}
-            </div>
+            <NotificationsPage />
           )}
         </ContentArea>
       </MainContent>

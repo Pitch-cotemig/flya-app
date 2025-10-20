@@ -102,6 +102,7 @@ export class AuthService {
         lastName: profile?.last_name,
         fullName: profile?.full_name,
         birthDate: profile?.birth_date,
+        two_factor_enabled: profile?.two_factor_enabled || false,
       },
       token: data.session.access_token,
     };
@@ -146,6 +147,7 @@ export class AuthService {
           lastName: profile?.last_name,
           fullName: profile?.full_name,
           birthDate: profile?.birth_date,
+          two_factor_enabled: profile?.two_factor_enabled || false,
         },
       };
     } catch (error) {
@@ -297,6 +299,7 @@ export class AuthService {
         lastName: profile?.last_name,
         fullName: profile?.full_name,
         birthDate: profile?.birth_date,
+        two_factor_enabled: profile?.two_factor_enabled || false,
       },
       token: data.session.access_token,
     };

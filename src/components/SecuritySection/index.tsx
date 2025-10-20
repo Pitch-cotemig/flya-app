@@ -1,43 +1,106 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { Smartphone } from "lucide-react";
+import { colors } from "../../design-tokens/colors";
 
-const Container = styled.div`
-  padding: 2rem;
-  color: white;
+const SecurityCard = styled.div`
+  background: ${colors.background.glassSoft};
+  border-radius: 16px;
+  border: 1px solid ${colors.border.white};
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: ${colors.border.whiteStrong};
+    box-shadow: ${colors.shadow.lg};
+  }
 `;
 
-const Title = styled.h2`
-  margin-bottom: 2rem;
-  color: white;
+const SecurityCardHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid ${colors.border.white};
 `;
 
-const SecurityItem = styled.div`
+const SecurityCardIcon = styled.div`
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: ${colors.gradients.primary};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${colors.text.primary};
+  box-shadow: ${colors.shadow.cyan};
+`;
+
+const SecurityCardTitle = styled.h3`
+  color: ${colors.text.primary};
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+`;
+
+const SecurityCardDescription = styled.p`
+  color: ${colors.text.primaryAlpha80};
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0;
+`;
+
+const SecurityCardContent = styled.div`
+  padding: 1.5rem;
+`;
+
+const TwoFactorSection = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  border: 1px solid #475569;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  background: #1e293b;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
 `;
 
-const SecurityLabel = styled.div`
+const TwoFactorStatus = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   font-weight: 500;
+  color: ${colors.text.primary};
 `;
 
-const SecurityButton = styled.button`
-  padding: 0.5rem 1rem;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 6px;
+const StatusIndicator = styled.div<{ $active: boolean }>`
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: ${({ $active }) => $active ? colors.state.success : colors.neutral.gray500};
+  box-shadow: 0 0 0 2px ${({ $active }) => ($active ? colors.alpha.cyan02 : colors.alpha.white01)};
+`;
+
+const ActionButton = styled.button<{ variant?: "primary" | "outline" }>`
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  border: ${({ variant }) => variant === "outline" ? `1px solid ${colors.border.white}` : "none"};
+  background: ${({ variant }) => variant === "outline" ? "transparent" : colors.gradients.primary};
+  color: ${colors.text.primary};
+  font-weight: 500;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 
   &:hover {
-    background: #2563eb;
+    background: ${({ variant }) => variant === "outline" ? colors.background.glassStrong : colors.gradients.cyanHover};
+    transform: translateY(-2px);
+    box-shadow: ${({ variant }) => variant === "outline" ? colors.shadow.lg : colors.shadow.cyan};
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
   }
 `;
 
@@ -121,21 +184,53 @@ const SecuritySection: React.FC = () => {
   };
 
   return (
-    <Container>
-      <Title>Configurações de Segurança</Title>
-      
-      <SecurityItem>
-        <SecurityLabel>Alterar Senha</SecurityLabel>
-        <SecurityButton>Alterar</SecurityButton>
-      </SecurityItem>
-      
-      <SecurityItem>
-        <SecurityLabel>Autenticação em Duas Etapas</SecurityLabel>
-        <SecurityButton onClick={toggle2FA} disabled={loading}>
-          {loading ? "..." : twoFactorEnabled ? "Desativar" : "Ativar"}
-        </SecurityButton>
-      </SecurityItem>
-    </Container>
+    <SecurityCard>
+      <SecurityCardHeader>
+        <SecurityCardIcon>
+          <Smartphone size={24} />
+        </SecurityCardIcon>
+        <div>
+          <SecurityCardTitle>Autenticação de Dois Fatores</SecurityCardTitle>
+          <SecurityCardDescription>
+            Adicione uma camada extra de segurança à sua conta
+          </SecurityCardDescription>
+        </div>
+      </SecurityCardHeader>
+
+      <SecurityCardContent>
+        <TwoFactorSection>
+          <TwoFactorStatus>
+            <StatusIndicator $active={twoFactorEnabled} />
+            <span>{twoFactorEnabled ? "Ativado" : "Desativado"}</span>
+          </TwoFactorStatus>
+
+          <ActionButton
+            variant={twoFactorEnabled ? "outline" : "primary"}
+            onClick={toggle2FA}
+            disabled={loading}
+          >
+            {loading ? "Configurando..." : twoFactorEnabled ? "Desativar 2FA" : "Ativar 2FA"}
+          </ActionButton>
+        </TwoFactorSection>
+
+        {twoFactorEnabled && (
+          <div style={{
+            marginTop: "1rem",
+            padding: "1rem",
+            backgroundColor: colors.alpha.cyan01,
+            borderRadius: "12px",
+          }}>
+            <p style={{
+              color: colors.text.primary,
+              margin: 0,
+              fontSize: "0.875rem",
+            }}>
+              ✓ Sua conta está protegida com autenticação de dois fatores
+            </p>
+          </div>
+        )}
+      </SecurityCardContent>
+    </SecurityCard>
   );
 };
 
