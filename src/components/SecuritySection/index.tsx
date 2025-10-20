@@ -49,11 +49,23 @@ const SecuritySection: React.FC = () => {
   React.useEffect(() => {
     const loadStatus = async () => {
       try {
-        const user = localStorage.getItem("user");
-        if (user) {
-          const userData = JSON.parse(user);
-          // Por enquanto, assumir false - será carregado do backend depois
-          setTwoFactorEnabled(false);
+        const token = localStorage.getItem("authToken");
+        console.log("Carregando status 2FA, token:", token ? "Presente" : "Ausente");
+        if (!token) return;
+        
+        const response = await fetch("http://localhost:3000/auth/2fa/status", {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          }
+        });
+        
+        console.log("Status response:", response.status);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Status 2FA carregado:", data);
+          setTwoFactorEnabled(data.two_factor_enabled);
+        } else {
+          console.log("Erro ao carregar status:", await response.text());
         }
       } catch (error) {
         console.error("Erro ao carregar status 2FA:", error);
@@ -65,13 +77,15 @@ const SecuritySection: React.FC = () => {
   const toggle2FA = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("authToken");
+      console.log("Token encontrado:", token ? "Sim" : "Não");
       
       if (!token) {
         alert("Faça login novamente");
         return;
       }
       
+      console.log("Fazendo requisição para toggle 2FA...");
       const response = await fetch("http://localhost:3000/auth/2fa/toggle", {
         method: "POST",
         headers: {
@@ -80,14 +94,23 @@ const SecuritySection: React.FC = () => {
         }
       });
 
+      console.log("Status da resposta:", response.status);
       const data = await response.json();
+      console.log("Dados da resposta:", data);
 
       if (response.ok) {
         setTwoFactorEnabled(data.two_factor_enabled);
         alert(`2FA ${data.two_factor_enabled ? 'ativado' : 'desativado'} com sucesso!`);
       } else {
         console.error("Erro:", data);
-        alert(`Erro: ${data.message}`);
+        if (response.status === 401) {
+          alert("Sessão expirada. Faça login novamente.");
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("user");
+          window.location.href = "/auth";
+        } else {
+          alert(`Erro: ${data.message || 'Erro desconhecido'}`);
+        }
       }
     } catch (error) {
       console.error("Erro ao alterar 2FA:", error);

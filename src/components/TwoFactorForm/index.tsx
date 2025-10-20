@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Input } from "..";
 import {
   TwoFactorContainer,
+  FormCard,
   FormTitle,
   FormGroup,
   SubmitButton,
@@ -31,29 +32,31 @@ const TwoFactorForm: React.FC<TwoFactorFormProps> = ({
 
   return (
     <TwoFactorContainer onSubmit={handleSubmit}>
-      <FormTitle>Verificação em Duas Etapas</FormTitle>
-      <InfoText>
-        Enviamos um código de 6 dígitos para {email}
-      </InfoText>
-      
-      <FormGroup>
-        <Input
-          type="text"
-          placeholder="Digite o código de 6 dígitos"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          maxLength={6}
-          required
-        />
-      </FormGroup>
-      
-      {error && <ErrorMessage>{error}</ErrorMessage>}
-      
-      <FormGroup>
-        <SubmitButton type="submit" disabled={loading || code.length !== 6}>
-          {loading ? "Verificando..." : "Verificar"}
-        </SubmitButton>
-      </FormGroup>
+      <FormCard>
+        <FormTitle>Verificação em Duas Etapas</FormTitle>
+        <InfoText>
+          Enviamos um código de 6 dígitos para {email}
+        </InfoText>
+        
+        <FormGroup>
+          <Input
+            type="text"
+            placeholder="Digite o código de 6 dígitos"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            maxLength={6}
+            required
+          />
+        </FormGroup>
+        
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+        
+        <FormGroup>
+          <SubmitButton type="submit" disabled={loading || code.length !== 6}>
+            {loading ? "Verificando..." : "Verificar"}
+          </SubmitButton>
+        </FormGroup>
+      </FormCard>
     </TwoFactorContainer>
   );
 };

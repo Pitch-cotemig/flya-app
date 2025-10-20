@@ -4,22 +4,41 @@ export const TwoFactorContainer = styled.form`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+`;
+
+export const FormCard = styled.div`
+  background: rgba(30, 41, 59, 0.8);
+  padding: 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  backdrop-filter: blur(10px);
   max-width: 400px;
-  margin: 0 auto;
-  padding: 24px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `;
 
 export const FormTitle = styled.h2`
   text-align: center;
   color: #3b82f6;
   margin-bottom: 8px;
+  font-size: 2rem;
 `;
 
 export const InfoText = styled.p`
   text-align: center;
-  color: #94a3b8;
-  font-size: 14px;
-  margin-bottom: 16px;
+  color: #e2e8f0;
+  font-size: 16px;
+  margin-bottom: 24px;
 `;
 
 export const FormGroup = styled.div`

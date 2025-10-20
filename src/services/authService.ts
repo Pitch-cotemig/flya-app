@@ -53,6 +53,10 @@ export interface ValidateSuccessData {
   user: User;
 }
 
+export interface TwoFactorStatusData {
+  two_factor_enabled: boolean;
+}
+
 const API_URL = 'http://localhost:3000';
 
 // Auth service class
@@ -160,6 +164,56 @@ class AuthService {
   async logout(): Promise<AuthResponse<null>> {
     // TODO: Implementar chamada real de API
     throw new Error('Backend não implementado');
+  }
+
+  async get2FAStatus(): Promise<AuthResponse<{ two_factor_enabled: boolean }>> {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        return { success: false, message: 'Token não encontrado', data: null };
+      }
+
+      const response = await fetch(`${API_URL}/auth/2fa/status`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, message: data.message, data: null };
+      }
+      return { success: true, message: 'Status obtido', data };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An unknown error occurred';
+      return { success: false, message, data: null };
+    }
+  }
+
+  async toggle2FA(): Promise<AuthResponse<{ two_factor_enabled: boolean }>> {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        return { success: false, message: 'Token não encontrado', data: null };
+      }
+
+      const response = await fetch(`${API_URL}/auth/2fa/toggle`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, message: data.message, data: null };
+      }
+      return { success: true, message: '2FA atualizado', data };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An unknown error occurred';
+      return { success: false, message, data: null };
+    }
   }
 }
 

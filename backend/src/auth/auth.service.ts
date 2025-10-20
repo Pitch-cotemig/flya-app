@@ -108,45 +108,49 @@ export class AuthService {
   }
 
   async validateToken(token: string) {
-    // Criar cliente com chave anon para validar tokens de usuário
-    const { createClient } = require('@supabase/supabase-js');
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-    
-    const supabaseAnon = createClient(supabaseUrl, supabaseAnonKey);
-    
-    const {
-      data: { user },
-      error,
-    } = await supabaseAnon.auth.getUser(token);
+    try {
+      // Criar cliente com chave anon para validar tokens de usuário
+      const { createClient } = require('@supabase/supabase-js');
+      const supabaseUrl = process.env.SUPABASE_URL;
+      const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+      
+      const supabaseAnon = createClient(supabaseUrl, supabaseAnonKey);
+      
+      const {
+        data: { user },
+        error,
+      } = await supabaseAnon.auth.getUser(token);
 
-    if (error || !user) {
-      throw new UnauthorizedException('Token inválido');
+      if (error || !user) {
+        throw new UnauthorizedException('Token inválido');
+      }
+
+      // Usar cliente service para buscar dados do perfil
+      const supabase = this.supabaseService.getClient();
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (profileError) {
+        throw new UnauthorizedException('Erro ao buscar perfil do usuário');
+      }
+
+      return {
+        user: {
+          id: user.id,
+          email: user.email,
+          username: profile?.username,
+          firstName: profile?.first_name,
+          lastName: profile?.last_name,
+          fullName: profile?.full_name,
+          birthDate: profile?.birth_date,
+        },
+      };
+    } catch (error) {
+      throw error;
     }
-
-    // Usar cliente service para buscar dados do perfil
-    const supabase = this.supabaseService.getClient();
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-
-    if (profileError) {
-      throw new UnauthorizedException('Erro ao buscar perfil do usuário');
-    }
-
-    return {
-      user: {
-        id: user.id,
-        email: user.email,
-        username: profile?.username,
-        firstName: profile?.first_name,
-        lastName: profile?.last_name,
-        fullName: profile?.full_name,
-        birthDate: profile?.birth_date,
-      },
-    };
   }
   async send2FACode(email: string) {
     const code = randomInt(100000, 999999).toString();
@@ -296,5 +300,64 @@ export class AuthService {
       },
       token: data.session.access_token,
     };
+  }
+
+  async toggle2FA(token: string) {
+    // Validar token
+    const userValidation = await this.validateToken(token);
+    
+    if (!userValidation.user) {
+      throw new UnauthorizedException('Usuário não encontrado');
+    }
+
+    const supabase = this.supabaseService.getClient();
+    
+    // Buscar status atual do 2FA
+    const { data: profile, error: selectError } = await supabase
+      .from('profiles')
+      .select('two_factor_enabled')
+      .eq('id', userValidation.user.id)
+      .single();
+    
+    if (selectError) {
+      throw new BadRequestException('Erro ao buscar perfil: ' + selectError.message);
+    }
+    
+    const currentStatus = profile?.two_factor_enabled || false;
+    const newStatus = !currentStatus;
+    
+    // Atualizar status do 2FA
+    const { error: updateError } = await supabase
+      .from('profiles')
+      .update({ two_factor_enabled: newStatus })
+      .eq('id', userValidation.user.id);
+    
+    if (updateError) {
+      throw new BadRequestException('Erro ao atualizar 2FA: ' + updateError.message);
+    }
+    
+    return { two_factor_enabled: newStatus };
+  }
+
+  async get2FAStatus(token: string) {
+    const userValidation = await this.validateToken(token);
+    
+    if (!userValidation.user) {
+      throw new UnauthorizedException('Usuário não encontrado');
+    }
+
+    const supabase = this.supabaseService.getClient();
+    
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('two_factor_enabled')
+      .eq('id', userValidation.user.id)
+      .single();
+    
+    if (error) {
+      throw new BadRequestException('Erro ao buscar perfil: ' + error.message);
+    }
+    
+    return { two_factor_enabled: profile?.two_factor_enabled || false };
   }
 }
