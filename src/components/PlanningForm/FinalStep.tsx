@@ -8,6 +8,8 @@ import { tripsService } from "../../services/tripsService";
 import { exportToPDF, exportToText } from "../../utils/pdfExport";
 import { colors } from "../../design-tokens/colors";
 import { Edit3, Trash2, X, AlertTriangle } from "lucide-react";
+import { useToast } from "../../hooks/useToast";
+import { ToastContainer } from "../ToastContainer";
 
 const ExportButton = styled.button`
   padding: 12px 24px;
@@ -690,6 +692,7 @@ const FinalStep: React.FC<FinalStepProps> = ({
     index: number;
   }>({ isOpen: false, dia: "", periodo: "", index: -1 });
   const [editText, setEditText] = useState("");
+  const { toasts, showSuccess, showError, removeToast } = useToast();
 
   React.useEffect(() => {
     if (tripData?.plan_result) {
@@ -820,11 +823,13 @@ const FinalStep: React.FC<FinalStepProps> = ({
     setIsSaving(false);
     if (response.success) {
       setSaveMessage("Viagem salva com sucesso!");
+      showSuccess("Viagem salva com sucesso! Você pode visualizá-la em 'Minhas Viagens'.");
       if (onSaveSuccess) {
         onSaveSuccess();
       }
     } else {
       setSaveMessage(response.message);
+      showError(response.message || "Erro ao salvar a viagem. Tente novamente.");
     }
   };
 
@@ -844,6 +849,7 @@ const FinalStep: React.FC<FinalStepProps> = ({
 
   return (
     <FinalScreenContainer>
+      <ToastContainer toasts={toasts} onRemoveToast={removeToast} />
       <HeaderSection>
         <h1>{plan.title || "Seu Roteiro está Pronto!"}</h1>
         <p>Edite, remova ou adicione itens ao seu roteiro antes de salvar.</p>
