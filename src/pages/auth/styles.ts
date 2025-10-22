@@ -4,8 +4,7 @@ export const authStyles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background:
-      "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
+    background: "#1c1c43",
     color: "white",
     fontSize: "18px",
   } as React.CSSProperties,

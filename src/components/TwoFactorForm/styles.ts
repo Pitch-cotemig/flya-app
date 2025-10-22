@@ -6,7 +6,7 @@ export const TwoFactorContainer = styled.form`
   gap: 16px;
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background: #1c1c43;
   justify-content: center;
   align-items: center;
   position: fixed;

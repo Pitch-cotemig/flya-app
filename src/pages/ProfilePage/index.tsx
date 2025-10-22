@@ -1,6 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { User, Bell, LogOut, Shield, Eye, EyeOff, Key, AlertTriangle } from "lucide-react";
+import {
+  User,
+  Bell,
+  LogOut,
+  Shield,
+  Eye,
+  EyeOff,
+  Key,
+  AlertTriangle,
+} from "lucide-react";
 import { User as UserType } from "../../services/authService";
 import { profileService } from "../../services/profileService";
 import { useApiState } from "../../hooks/useApiState";
@@ -10,250 +19,248 @@ import NotificationsPage from "./NotificationsPage";
 import { colors } from "../../design-tokens/colors";
 
 const Container = styled.div`
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-background-color: ${colors.profile.background};
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: ${colors.background.primary};
 `;
 
-
-
 const MainContent = styled.main`
-flex: 1;
-display: flex;
-max-width: 1200px;
-margin: 0 auto;
-padding: 2rem 1rem;
-gap: 2rem;
-width: 100%;
+  flex: 1;
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  gap: 2rem;
+  width: 100%;
 
-@media (max-width: 768px) {
-flex-direction: column;
-padding: 1rem;
-gap: 1rem;
-}
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
 `;
 
 const Sidebar = styled.aside`
-width: 280px;
-background: ${colors.profile.surface};
-border-radius: 16px;
-padding: 1.5rem;
-height: fit-content;
-box-shadow: ${colors.shadow.card};
-border: 1px solid ${colors.profile.border};
+  width: 280px;
+  background: ${colors.profile.surface};
+  border-radius: 16px;
+  padding: 1.5rem;
+  height: fit-content;
+  box-shadow: ${colors.shadow.card};
+  border: 1px solid ${colors.profile.border};
 
-@media (max-width: 768px) {
-width: 100%;
-}
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const SidebarNav = styled.nav`
-display: flex;
-flex-direction: column;
-gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 `;
 
 const SidebarItem = styled.button<{ active?: boolean }>`
-display: flex;
-align-items: center;
-gap: 0.75rem;
-padding: 1rem;
-border: none;
-border-radius: 12px;
-background: ${({ active }) => (active ? "#3b82f6" : "transparent")};
-color: ${({ active }) => (active ? "white" : "#e2e8f0")};
-font-weight: ${({ active }) => (active ? "600" : "500")};
-cursor: pointer;
-transition: all 0.2s ease;
-text-align: left;
-width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  background: ${({ active }) => (active ? "#3b82f6" : "transparent")};
+  color: ${({ active }) => (active ? "white" : "#e2e8f0")};
+  font-weight: ${({ active }) => (active ? "600" : "500")};
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
 
-&:hover {
-background: ${({ active }) => (active ? "#3b82f6" : "#1e293b")};
-transform: translateX(4px);
-}
+  &:hover {
+    background: ${({ active }) => (active ? "#3b82f6" : "#1e293b")};
+    transform: translateX(4px);
+  }
 
-&.logout {
-margin-top: 1rem;
-color: ${colors.state.error};
+  &.logout {
+    margin-top: 1rem;
+    color: ${colors.state.error};
 
-&:hover {
-background: ${colors.alpha.error02};
-color: ${colors.state.error};
-}
-}
+    &:hover {
+      background: ${colors.alpha.error02};
+      color: ${colors.state.error};
+    }
+  }
 
-svg {
-flex-shrink: 0;
-}
+  svg {
+    flex-shrink: 0;
+  }
 `;
 
 const ContentArea = styled.div`
-flex: 1;
-background: ${colors.profile.surface};
-border-radius: 16px;
-box-shadow: ${colors.shadow.card};
-border: 1px solid ${colors.profile.border};
-overflow: hidden;
+  flex: 1;
+  background: ${colors.profile.surface};
+  border-radius: 16px;
+  box-shadow: ${colors.shadow.card};
+  border: 1px solid ${colors.profile.border};
+  overflow: hidden;
 `;
 
 const ProfileHeader = styled.div`
-padding: 2rem;
-border-bottom: 1px solid ${colors.profile.border};
-background: ${colors.profile.surface};
-color: white;
+  padding: 2rem;
+  border-bottom: 1px solid ${colors.profile.border};
+  background: ${colors.profile.surface};
+  color: white;
 
-h1 {
-font-size: 2rem;
-font-weight: 700;
-margin-bottom: 0.5rem;
-color: white;
-}
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: white;
+  }
 
-p {
-font-size: 1.1rem;
-opacity: 0.9;
-margin: 0;
-color: #cbd5e1;
-}
+  p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0;
+    color: #cbd5e1;
+  }
 `;
 
 const ProfileForm = styled.form`
-padding: 2rem;
+  padding: 2rem;
 `;
 
 const FormSection = styled.div`
-display: flex;
-flex-direction: column;
-gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 `;
 
 const PhotoSection = styled.div`
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 1.5rem;
-padding: 2rem;
-background: #1e293b;
-border-radius: 12px;
-border: 1px solid #334155;
-text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: #1e293b;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  text-align: center;
 `;
 
 const PhotoPreview = styled.div`
-width: 150px;
-height: 150px;
-border-radius: 50%;
-background: #334155;
-border: 3px solid #475569;
-display: flex;
-align-items: center;
-justify-content: center;
-overflow: hidden;
-position: relative;
-margin: 0 auto;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: #334155;
+  border: 3px solid #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
 
-img {
-width: 100%;
-height: 100%;
-object-fit: cover;
-}
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
-svg {
-color: #94a3b8;
-width: 60px;
-height: 60px;
-}
+  svg {
+    color: #94a3b8;
+    width: 60px;
+    height: 60px;
+  }
 `;
 
 const PhotoActions = styled.div`
-display: flex;
-flex-direction: column;
-gap: 0.75rem;
-width: 100%;
-max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 300px;
 `;
 
 const PhotoButton = styled.button<{ variant?: "outline" }>`
-padding: 0.75rem 1.5rem;
-border: ${({ variant }) =>
+  padding: 0.75rem 1.5rem;
+  border: ${({ variant }) =>
     variant === "outline" ? "1px solid #475569" : "1px solid #3b82f6"};
-border-radius: 8px;
-background: ${({ variant }) =>
+  border-radius: 8px;
+  background: ${({ variant }) =>
     variant === "outline" ? "transparent" : "#3b82f6"};
-color: ${({ variant }) => (variant === "outline" ? "#e2e8f0" : "white")};
-font-weight: 500;
-cursor: pointer;
-transition: all 0.2s ease;
+  color: ${({ variant }) => (variant === "outline" ? "#e2e8f0" : "white")};
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
 
-&:hover {
-background: ${({ variant }) =>
-    variant === "outline" ? "#1e293b" : "#2563eb"};
-transform: translateY(-2px);
-}
+  &:hover {
+    background: ${({ variant }) =>
+      variant === "outline" ? "#1e293b" : "#2563eb"};
+    transform: translateY(-2px);
+  }
 `;
 
 const FormRow = styled.div`
-display: flex;
-gap: 1rem;
-width: 100%;
+  display: flex;
+  gap: 1rem;
+  width: 100%;
 
-@media (max-width: 768px) {
-flex-direction: column;
-}
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const FormGroup = styled.div`
-flex: 1;
-display: flex;
-flex-direction: column;
-gap: 0.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 `;
 
 const Label = styled.label`
-font-weight: 600;
-color: #e2e8f0;
-font-size: 0.9rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  font-size: 0.9rem;
 `;
 
 const Input = styled.input`
-padding: 1rem;
-border: 1px solid #475569;
-border-radius: 8px;
-font-size: 1rem;
-transition: all 0.2s ease;
-background: #1e293b;
-color: white;
+  padding: 1rem;
+  border: 1px solid #475569;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: #1e293b;
+  color: white;
 
-&:focus {
-outline: none;
-border-color: ${colors.profile.blue};
-box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
+  &:focus {
+    outline: none;
+    border-color: ${colors.profile.blue};
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
 
-&::placeholder {
-color: ${colors.profile.textDimmed};
-}
+  &::placeholder {
+    color: ${colors.profile.textDimmed};
+  }
 `;
 
 const SaveButton = styled.button`
-padding: 1rem 2rem;
-background: #1e40af;
-color: white;
-border: none;
-border-radius: 8px;
-font-weight: 600;
-font-size: 1rem;
-cursor: pointer;
-transition: all 0.2s ease;
-align-self: flex-start;
+  padding: 1rem 2rem;
+  background: #1e40af;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-self: flex-start;
 
-&:hover {
-background: ${colors.profile.blueDark};
-transform: translateY(-2px);
-box-shadow: ${colors.shadow.purple};
-}
+  &:hover {
+    background: ${colors.profile.blueDark};
+    transform: translateY(-2px);
+    box-shadow: ${colors.shadow.purple};
+  }
 `;
 
 // Security Styles
@@ -355,28 +362,36 @@ const PasswordToggle = styled.button`
   }
 `;
 
-
-
 const ActionButton = styled.button<{ variant?: "primary" | "outline" }>`
   padding: 0.75rem 1.5rem;
   border-radius: 12px;
-  border: ${({ variant }) => variant === "outline" ? `1px solid ${colors.border.white}` : "none"};
-  background: ${({ variant }) => variant === "outline" ? "transparent" : colors.gradients.primary};
+  border: ${({ variant }) =>
+    variant === "outline" ? `1px solid ${colors.border.white}` : "none"};
+  background: ${({ variant }) =>
+    variant === "outline" ? "transparent" : colors.gradients.primary};
   color: ${colors.text.primary};
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
 
   &:hover {
-    background: ${({ variant }) => variant === "outline" ? colors.background.glassStrong : colors.gradients.cyanHover};
+    background: ${({ variant }) =>
+      variant === "outline"
+        ? colors.background.glassStrong
+        : colors.gradients.cyanHover};
     transform: translateY(-2px);
-    box-shadow: ${({ variant }) => variant === "outline" ? colors.shadow.lg : colors.shadow.cyan};
+    box-shadow: ${({ variant }) =>
+      variant === "outline" ? colors.shadow.lg : colors.shadow.cyan};
   }
 `;
 
 const DangerZone = styled(SecurityCard)`
   border-color: ${colors.alpha.error02};
-  background: linear-gradient(135deg, ${colors.alpha.error02}, ${colors.background.glassSoft});
+  background: linear-gradient(
+    135deg,
+    ${colors.alpha.error02},
+    ${colors.background.glassSoft}
+  );
 
   &:hover {
     border-color: ${colors.state.error};
@@ -409,8 +424,6 @@ const DangerButton = styled.button`
   }
 `;
 
-
-
 interface ProfilePageProps {
   user: UserType;
   onLogout: () => void;
@@ -432,7 +445,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -442,8 +454,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
   const passwordState = useApiState();
   const sessionsState = useApiState();
   const deleteAccountState = useApiState();
-
-
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -498,10 +508,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
   };
 
   const validatePasswordForm = (): string | null => {
-    if (!passwordData.currentPassword.trim()) return "Por favor, digite sua senha atual";
-    if (!passwordData.newPassword.trim()) return "Por favor, digite uma nova senha";
-    if (passwordData.newPassword.length < 8) return "A nova senha deve ter pelo menos 8 caracteres";
-    if (passwordData.newPassword !== passwordData.confirmPassword) return "As senhas não coincidem";
+    if (!passwordData.currentPassword.trim())
+      return "Por favor, digite sua senha atual";
+    if (!passwordData.newPassword.trim())
+      return "Por favor, digite uma nova senha";
+    if (passwordData.newPassword.length < 8)
+      return "A nova senha deve ter pelo menos 8 caracteres";
+    if (passwordData.newPassword !== passwordData.confirmPassword)
+      return "As senhas não coincidem";
     return null;
   };
 
@@ -516,16 +530,23 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
     const response = await profileService.changePassword(passwordData);
     if (response.success) {
       passwordState.setSuccess(response.message);
-      setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
     } else {
       passwordState.setError(response.message);
     }
   };
 
-
-
   const handleTerminateSessions = async () => {
-    if (!window.confirm("Tem certeza que deseja encerrar todas as outras sessões?")) return;
+    if (
+      !window.confirm(
+        "Tem certeza que deseja encerrar todas as outras sessões?"
+      )
+    )
+      return;
     sessionsState.setLoading(true);
     const response = await profileService.terminateAllSessions();
     if (response.success) {
@@ -536,12 +557,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
   };
 
   const handleDeleteAccount = async () => {
-    if (!window.confirm("Tem certeza que deseja excluir sua conta permanentemente?")) return;
-    if (!window.confirm("Esta ação é IRREVERSÍVEL. Confirma a exclusão?")) return;
-    
+    if (
+      !window.confirm(
+        "Tem certeza que deseja excluir sua conta permanentemente?"
+      )
+    )
+      return;
+    if (!window.confirm("Esta ação é IRREVERSÍVEL. Confirma a exclusão?"))
+      return;
+
     deleteAccountState.setLoading(true);
     const response = await profileService.deleteAccount();
-    
+
     if (response.success) {
       deleteAccountState.setSuccess(response.message);
       setTimeout(() => {
@@ -709,7 +736,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
 
                   <SecurityCardContent>
                     {passwordState.loading && (
-                      <FeedbackMessage type="loading" message="Alterando senha..." />
+                      <FeedbackMessage
+                        type="loading"
+                        message="Alterando senha..."
+                      />
                     )}
                     {passwordState.error && (
                       <FeedbackMessage
@@ -741,9 +771,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
                             />
                             <PasswordToggle
                               type="button"
-                              onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                              onClick={() =>
+                                setShowCurrentPassword(!showCurrentPassword)
+                              }
                             >
-                              {showCurrentPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                              {showCurrentPassword ? (
+                                <EyeOff size={18} />
+                              ) : (
+                                <Eye size={18} />
+                              )}
                             </PasswordToggle>
                           </PasswordInputGroup>
                         </PasswordFieldGroup>
@@ -762,9 +798,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
                             />
                             <PasswordToggle
                               type="button"
-                              onClick={() => setShowNewPassword(!showNewPassword)}
+                              onClick={() =>
+                                setShowNewPassword(!showNewPassword)
+                              }
                             >
-                              {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                              {showNewPassword ? (
+                                <EyeOff size={18} />
+                              ) : (
+                                <Eye size={18} />
+                              )}
                             </PasswordToggle>
                           </PasswordInputGroup>
                         </PasswordFieldGroup>
@@ -782,16 +824,27 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
                             />
                             <PasswordToggle
                               type="button"
-                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                              onClick={() =>
+                                setShowConfirmPassword(!showConfirmPassword)
+                              }
                             >
-                              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                              {showConfirmPassword ? (
+                                <EyeOff size={18} />
+                              ) : (
+                                <Eye size={18} />
+                              )}
                             </PasswordToggle>
                           </PasswordInputGroup>
                         </PasswordFieldGroup>
                       </PasswordSection>
 
-                      <SaveButton type="submit" disabled={passwordState.loading}>
-                        {passwordState.loading ? "Alterando..." : "Alterar Senha"}
+                      <SaveButton
+                        type="submit"
+                        disabled={passwordState.loading}
+                      >
+                        {passwordState.loading
+                          ? "Alterando..."
+                          : "Alterar Senha"}
                       </SaveButton>
                     </form>
                   </SecurityCardContent>
@@ -816,7 +869,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
 
                   <SecurityCardContent>
                     {sessionsState.loading && (
-                      <FeedbackMessage type="loading" message="Encerrando sessões..." />
+                      <FeedbackMessage
+                        type="loading"
+                        message="Encerrando sessões..."
+                      />
                     )}
                     {sessionsState.error && (
                       <FeedbackMessage
@@ -833,30 +889,46 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
                       />
                     )}
 
-                    <div style={{
-                      padding: "1rem",
-                      backgroundColor: colors.background.glassSoft,
-                      borderRadius: "12px",
-                      marginBottom: "1rem",
-                    }}>
-                      <div style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: "0.5rem",
-                      }}>
-                        <span style={{ color: colors.text.primary, fontWeight: "600" }}>
+                    <div
+                      style={{
+                        padding: "1rem",
+                        backgroundColor: colors.background.glassSoft,
+                        borderRadius: "12px",
+                        marginBottom: "1rem",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "0.5rem",
+                        }}
+                      >
+                        <span
+                          style={{
+                            color: colors.text.primary,
+                            fontWeight: "600",
+                          }}
+                        >
                           Sessão Atual
                         </span>
-                        <span style={{ color: colors.primary.cyan, fontSize: "0.875rem" }}>
+                        <span
+                          style={{
+                            color: colors.primary.cyan,
+                            fontSize: "0.875rem",
+                          }}
+                        >
                           Ativo agora
                         </span>
                       </div>
-                      <p style={{
-                        color: colors.text.primaryAlpha80,
-                        fontSize: "0.875rem",
-                        margin: 0,
-                      }}>
+                      <p
+                        style={{
+                          color: colors.text.primaryAlpha80,
+                          fontSize: "0.875rem",
+                          margin: 0,
+                        }}
+                      >
                         Windows • Chrome • São Paulo, Brasil
                       </p>
                     </div>
@@ -866,7 +938,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
                       onClick={handleTerminateSessions}
                       disabled={sessionsState.loading}
                     >
-                      {sessionsState.loading ? "Encerrando..." : "Encerrar Todas as Outras Sessões"}
+                      {sessionsState.loading
+                        ? "Encerrando..."
+                        : "Encerrar Todas as Outras Sessões"}
                     </ActionButton>
                   </SecurityCardContent>
                 </SecurityCard>
@@ -887,7 +961,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
 
                   <SecurityCardContent>
                     {deleteAccountState.loading && (
-                      <FeedbackMessage type="loading" message="Excluindo conta..." />
+                      <FeedbackMessage
+                        type="loading"
+                        message="Excluindo conta..."
+                      />
                     )}
                     {deleteAccountState.error && (
                       <FeedbackMessage
@@ -907,7 +984,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
                       onClick={handleDeleteAccount}
                       disabled={deleteAccountState.loading}
                     >
-                      {deleteAccountState.loading ? "Excluindo..." : "Excluir Conta Permanentemente"}
+                      {deleteAccountState.loading
+                        ? "Excluindo..."
+                        : "Excluir Conta Permanentemente"}
                     </DangerButton>
                   </SecurityCardContent>
                 </DangerZone>
@@ -915,9 +994,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
             </>
           )}
 
-          {activeTab === "notifications" && (
-            <NotificationsPage />
-          )}
+          {activeTab === "notifications" && <NotificationsPage />}
         </ContentArea>
       </MainContent>
     </Container>
