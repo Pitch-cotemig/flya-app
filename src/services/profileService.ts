@@ -46,7 +46,7 @@ export interface ApiResponse<T = any> {
 
 // Get auth token from localStorage
 const getAuthToken = (): string | null => {
-  return localStorage.getItem("token");
+  return localStorage.getItem("authToken");
 };
 
 // Helper function to create headers with auth token
