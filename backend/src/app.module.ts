@@ -7,9 +7,10 @@ import { AuthModule } from './auth/auth.module';
 import { PlanningModule } from './planning/planning.module';
 import { AiModule } from './ai/ai.module';
 import { TripsModule } from './trips/trips.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), SupabaseModule, AuthModule, PlanningModule, AiModule, TripsModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), SupabaseModule, AuthModule, PlanningModule, AiModule, TripsModule, DashboardModule],
   controllers: [AppController],
   providers: [AppService],
 })

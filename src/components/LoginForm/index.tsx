@@ -60,7 +60,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         <Input
           type="email"
           name="email"
-          placeholder="Digite seu e-mail ou nome de usuário"
+          placeholder="Digite seu e-mail"
           value={formData.email}
           onChange={handleInputChange}
           required

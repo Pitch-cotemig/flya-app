@@ -241,7 +241,6 @@ export const ModalContent = styled.div`
   border-radius: 16px;
   padding: 32px;
   max-width: 800px;
-  max-height: 80vh;
   overflow-y: auto;
   width: 100%;
   position: relative;
@@ -321,13 +320,21 @@ export const PlanContent = styled.div`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, ${colors.primary.cyan} 0%, ${colors.primary.blue} 100%);
+    background: linear-gradient(
+      135deg,
+      ${colors.primary.cyan} 0%,
+      ${colors.primary.blue} 100%
+    );
     border-radius: 10px;
     transition: background 0.3s ease;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, ${colors.primary.blue} 0%, ${colors.primary.cyan} 100%);
+    background: linear-gradient(
+      135deg,
+      ${colors.primary.blue} 0%,
+      ${colors.primary.cyan} 100%
+    );
   }
 
   /* Firefox */

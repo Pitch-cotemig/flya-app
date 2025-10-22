@@ -15,10 +15,10 @@ import { User, authService } from "./services/authService";
 
 // --- Importação das Páginas ---
 
-// 1. A HomePage original (seu Dashboard), que fica em 'pages/home'
-import DashboardPage from "./pages/home";
-// 2. A página de autenticação, que fica em 'pages/auth'
+// 1. A página de autenticação, que fica em 'pages/auth'
 import AuthPage from "./pages/auth";
+// 2. Dashboard Page - analytics e estatísticas do usuário
+import DashboardPage from "./pages/DashboardPage";
 // 3. A nova Landing Page, que fica em 'pages/HomePage'
 import LandingPage from "./pages/HomePage/HomePage";
 // 4. As páginas de conteúdo estático

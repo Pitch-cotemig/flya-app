@@ -49,6 +49,8 @@ interface IFormData {
   acompanhantes: string;
   transporte: string;
   clima: string[]; // Array para as checkboxes
+  dataInicio: string;
+  dataFim: string;
 }
 
 export function PlanningFormPage() {
@@ -61,6 +63,8 @@ export function PlanningFormPage() {
     acompanhantes: "",
     transporte: "",
     clima: [],
+    dataInicio: "",
+    dataFim: "",
   });
   const [loadingStep, setLoadingStep] = useState(0);
   const [generatedPlan, setGeneratedPlan] = useState<TripData | null>(null);
@@ -198,7 +202,13 @@ export function PlanningFormPage() {
       case 1:
         return !formData.motivo || !formData.destino;
       case 2:
-        return !formData.pet || !formData.orcamento;
+        const hasRequiredFields = formData.pet && formData.orcamento && formData.dataInicio && formData.dataFim;
+        if (!hasRequiredFields) return true;
+
+        // Validar que dataFim não é anterior a dataInicio
+        const dataInicio = new Date(formData.dataInicio);
+        const dataFim = new Date(formData.dataFim);
+        return dataFim < dataInicio;
       case 3:
         return !formData.acompanhantes || !formData.transporte;
       case 4:
