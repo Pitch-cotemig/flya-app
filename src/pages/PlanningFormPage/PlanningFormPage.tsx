@@ -44,8 +44,10 @@ interface TripData {
 interface IFormData {
   motivo: string;
   destino: string;
+  destinoEspecifico: string;
   pet: string;
   orcamento: string;
+  dias: string;
   acompanhantes: string;
   transporte: string;
   clima: string[]; // Array para as checkboxes
@@ -56,8 +58,10 @@ export function PlanningFormPage() {
   const [formData, setFormData] = useState<IFormData>({
     motivo: "",
     destino: "",
+    destinoEspecifico: "",
     pet: "",
     orcamento: "",
+    dias: "",
     acompanhantes: "",
     transporte: "",
     clima: [],
@@ -155,7 +159,11 @@ export function PlanningFormPage() {
     );
     promptParts.push(`- Motivo da Viagem: ${data.motivo}.`);
     promptParts.push(`- Tipo de Destino: ${data.destino}.`);
+    if (data.destinoEspecifico && (data.destino === "Para o exterior" || data.destino === "Para alguma cidade Brasileira")) {
+      promptParts.push(`- Destino Específico: ${data.destinoEspecifico}.`);
+    }
     if (data.pet === "Sim") promptParts.push(`- O viajante levará um pet.`);
+    promptParts.push(`- Duração da Viagem: ${data.dias} dias.`);
     promptParts.push(`- Orçamento: ${data.orcamento}.`);
     promptParts.push(`- Número de Acompanhantes: ${data.acompanhantes}.`);
     if (data.transporte !== "Não")
