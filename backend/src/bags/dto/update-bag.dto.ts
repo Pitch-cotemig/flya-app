@@ -1,8 +1,7 @@
-import { CreateBagDto, BagItem } from './create-bag.dto';
-import { IsArray, IsOptional } from 'class-validator';
+import { BagItem } from './create-bag.dto';
+import { IsArray } from 'class-validator';
 
 export class UpdateBagDto {
   @IsArray()
-  @IsOptional()
-  items?: BagItem[];
+  items: BagItem[];
 }

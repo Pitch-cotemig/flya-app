@@ -4,9 +4,6 @@ export class CreateBagDto {
   @IsString()
   tripId: string;
 
-  @IsString()
-  userId: string;
-
   @IsArray()
   @IsOptional()
   items?: BagItem[];
