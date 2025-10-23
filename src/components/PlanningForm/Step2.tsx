@@ -55,11 +55,11 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
 
   const handleDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    
+
     // Permitir apenas números
     if (value === "" || /^\d+$/.test(value)) {
       const numValue = parseInt(value);
-      
+
       if (value === "") {
         setDaysError("");
         handleChange(e);
@@ -114,7 +114,14 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
       <QuestionTitle style={{ marginTop: "40px" }}>
         Quantos dias terá sua viagem?
       </QuestionTitle>
-      <div style={{ marginTop: "20px" }}>
+      <div
+        style={{
+          marginTop: "20px",
+          maxWidth: "600px",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      >
         <div style={{ position: "relative" }}>
           <Calendar
             size={20}
@@ -155,21 +162,25 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
             }}
           />
         </div>
-        <p style={{
-          marginTop: "8px",
-          fontSize: "14px",
-          color: "rgba(255, 255, 255, 0.6)",
-          fontStyle: "italic"
-        }}>
+        <p
+          style={{
+            marginTop: "8px",
+            fontSize: "14px",
+            color: "rgba(255, 255, 255, 0.6)",
+            fontStyle: "italic",
+          }}
+        >
           📅 Digite apenas números (ex: 7 para 7 dias)
         </p>
         {daysError && (
-          <p style={{
-            marginTop: "8px",
-            fontSize: "14px",
-            color: "#ff6b6b",
-            fontWeight: "500"
-          }}>
+          <p
+            style={{
+              marginTop: "8px",
+              fontSize: "14px",
+              color: "#ff6b6b",
+              fontWeight: "500",
+            }}
+          >
             ⚠️ {daysError}
           </p>
         )}
