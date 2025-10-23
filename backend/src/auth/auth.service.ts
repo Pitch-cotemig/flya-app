@@ -110,24 +110,19 @@ export class AuthService {
 
   async validateToken(token: string) {
     try {
-      // Criar cliente com chave anon para validar tokens de usuário
-      const { createClient } = require('@supabase/supabase-js');
-      const supabaseUrl = process.env.SUPABASE_URL;
-      const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-      
-      const supabaseAnon = createClient(supabaseUrl, supabaseAnonKey);
+      // Usar o cliente do SupabaseService que já está configurado
+      const supabase = this.supabaseService.getClient();
       
       const {
         data: { user },
         error,
-      } = await supabaseAnon.auth.getUser(token);
+      } = await supabase.auth.getUser(token);
 
       if (error || !user) {
         throw new UnauthorizedException('Token inválido');
       }
 
-      // Usar cliente service para buscar dados do perfil
-      const supabase = this.supabaseService.getClient();
+      // Buscar dados do perfil
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
