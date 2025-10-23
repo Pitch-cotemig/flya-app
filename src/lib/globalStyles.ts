@@ -56,6 +56,49 @@ const GlobalStyles = createGlobalStyle`
   * {
     box-sizing: border-box;
   }
+
+  /* Responsividade: Prevenir overflow e melhorar a experiência mobile */
+  html {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  /* Tornar imagens responsivas por padrão */
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Melhorar legibilidade em dispositivos móveis */
+  p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  /* Garantir que inputs e buttons sejam responsivos */
+  input,
+  button,
+  textarea,
+  select {
+    font: inherit;
+    max-width: 100%;
+  }
+
+  /* Remover tap highlight no mobile */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
 `;
 
 export default GlobalStyles;

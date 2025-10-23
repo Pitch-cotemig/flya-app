@@ -31,9 +31,17 @@ export const FooterContainer = styled.footer`
 export const FooterContent = styled.div`
   margin: 0 auto;
   max-width: 1200px;
-  padding: 3rem 1.5rem;
+  padding: 2rem 1rem;
   position: relative;
   z-index: 1;
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    padding: 2.5rem 1.25rem;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    padding: 3rem 1.5rem;
+  }
 `;
 
 export const FooterGrid = styled.div`
@@ -41,8 +49,14 @@ export const FooterGrid = styled.div`
   grid-template-columns: 1fr;
   gap: 2rem;
 
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
   @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
     grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
   }
 `;
 
@@ -60,8 +74,8 @@ export const LogoLink = styled(Link)`
   text-decoration: none;
   color: inherit;
   transition: transform 0.3s ease;
-  max-width: 250px;
-  max-height: 80px;
+  max-width: 200px;
+  max-height: 70px;
 
   &:hover {
     transform: scale(1.05);
@@ -69,34 +83,66 @@ export const LogoLink = styled(Link)`
 
   img {
     aspect-ratio: 1/1;
-    height: 5rem;
+    height: 3.5rem;
     width: auto;
     filter: drop-shadow(0 0 5px rgba(0, 188, 212, 0.3));
+
+    @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+      height: 4rem;
+    }
+
+    @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+      height: 5rem;
+    }
   }
 
   span {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
     font-family: ${({ theme }) => theme.fonts.main};
     background: linear-gradient(45deg, #ffffff, #00bcd4);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+
+    @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    max-width: 220px;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    max-width: 250px;
+    max-height: 80px;
   }
 `;
 
 export const LogoDescription = styled.p`
   color: ${({ theme }) => theme.colors.gray[400]};
   font-family: ${({ theme }) => theme.fonts.main};
+  font-size: 0.875rem;
+  line-height: 1.5;
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: 1rem;
+  }
 `;
 
 export const FooterColumn = styled.div``;
 
 export const ColumnTitle = styled.h3`
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   font-family: ${({ theme }) => theme.fonts.main};
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+  }
 `;
 
 export const LinkList = styled.ul`
@@ -164,13 +210,19 @@ export const SocialLink = styled.a`
 `;
 
 export const CopyrightSection = styled.div`
-  margin-top: 3rem;
-  padding-top: 2rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
   border-top: 1px solid ${({ theme }) => theme.colors.gray[800]};
   text-align: center;
   color: ${({ theme }) => theme.colors.gray[500]};
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-family: ${({ theme }) => theme.fonts.main};
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    font-size: 0.875rem;
+  }
 `;
 
 export const CopyrightLinks = styled.div`

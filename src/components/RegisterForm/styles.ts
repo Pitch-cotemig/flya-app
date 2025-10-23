@@ -2,46 +2,105 @@ import styled from "styled-components";
 
 export const RegisterFormContainer = styled.form`
   width: 100%;
-  max-width: 500px;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   height: fit-content;
+  padding: 0 0.5rem;
+
+  @media (min-width: 480px) {
+    max-width: 500px;
+    padding: 0;
+  }
 `;
 
 export const LogoContainer = styled.div`
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   text-align: center;
+
+  @media (min-width: 480px) {
+    margin-bottom: 10px;
+  }
+
+  @media (min-width: 768px) {
+    margin-bottom: 12px;
+  }
+
+  img,
+  svg {
+    max-width: 100px;
+    height: auto;
+
+    @media (min-width: 480px) {
+      max-width: 120px;
+    }
+
+    @media (min-width: 768px) {
+      max-width: 140px;
+    }
+  }
 `;
 
 export const FormTitle = styled.h1`
   color: #fff;
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 600;
-  margin: 0 0 32px 0;
+  margin: 0 0 14px 0;
   text-align: center;
+
+  @media (min-width: 480px) {
+    font-size: 22px;
+    margin: 0 0 18px 0;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 24px;
+    margin: 0 0 20px 0;
+  }
 `;
 
 export const FormGroup = styled.div`
-  margin-bottom: 24px;
+  margin-bottom: 10px;
   width: 100%;
+
+  @media (min-width: 480px) {
+    margin-bottom: 12px;
+  }
+
+  @media (min-width: 768px) {
+    margin-bottom: 16px;
+  }
 `;
 
 export const FormRow = styled.div`
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  gap: 0;
   width: 100%;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 0;
+  @media (min-width: 640px) {
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  @media (min-width: 768px) {
+    gap: 16px;
   }
 `;
 
 export const LoginLink = styled.div`
-  margin-top: 24px;
+  margin-top: 12px;
   text-align: center;
   width: 100%;
+
+  @media (min-width: 480px) {
+    margin-top: 16px;
+  }
+
+  @media (min-width: 768px) {
+    margin-top: 20px;
+  }
 `;
 
 export const LoginText = styled.span`
@@ -66,13 +125,23 @@ export const LoginButton = styled.button`
 
 export const RegisterButton = styled(LoginButton)`
   width: 100%;
-  padding: 16px;
+  padding: 12px;
   background: #00bcd4;
   color: white;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   margin: 0;
+
+  @media (min-width: 480px) {
+    padding: 14px;
+    font-size: 15.5px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 16px;
+    font-size: 16px;
+  }
 
   &:hover {
     background: #00acc1;
