@@ -57,18 +57,19 @@ export interface TwoFactorStatusData {
   two_factor_enabled: boolean;
 }
 
-const API_URL = 'http://localhost:3000';
+const API_URL = "http://localhost:3000";
 
 // Auth service class
+//teste
 class AuthService {
   async login(
-    credentials: LoginCredentials,
+    credentials: LoginCredentials
   ): Promise<AuthResponse<LoginSuccessData>> {
     try {
       const response = await fetch(`${API_URL}/auth/signin`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(credentials),
       });
@@ -79,9 +80,10 @@ class AuthService {
         return { success: false, message: data.message, data: null };
       }
 
-      return { success: true, message: 'Login successful', data };
+      return { success: true, message: "Login successful", data };
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'An unknown error occurred';
+      const message =
+        error instanceof Error ? error.message : "An unknown error occurred";
       return {
         success: false,
         message,
@@ -91,13 +93,13 @@ class AuthService {
   }
 
   async register(
-    credentials: RegisterCredentials,
+    credentials: RegisterCredentials
   ): Promise<AuthResponse<RegisterSuccessData>> {
     try {
       const response = await fetch(`${API_URL}/auth/signup`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(credentials),
       });
@@ -108,9 +110,10 @@ class AuthService {
         return { success: false, message: data.message, data: null };
       }
 
-      return { success: true, message: 'Registration successful', data };
+      return { success: true, message: "Registration successful", data };
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'An unknown error occurred';
+      const message =
+        error instanceof Error ? error.message : "An unknown error occurred";
       return {
         success: false,
         message,
@@ -119,13 +122,15 @@ class AuthService {
     }
   }
 
-  async validateToken(token: string): Promise<AuthResponse<ValidateSuccessData>> {
+  async validateToken(
+    token: string
+  ): Promise<AuthResponse<ValidateSuccessData>> {
     try {
       const response = await fetch(`${API_URL}/auth/validate`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -133,19 +138,23 @@ class AuthService {
       if (!response.ok) {
         return { success: false, message: data.message, data: null };
       }
-      return { success: true, message: 'Token is valid', data };
+      return { success: true, message: "Token is valid", data };
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'An unknown error occurred';
+      const message =
+        error instanceof Error ? error.message : "An unknown error occurred";
       return { success: false, message, data: null };
     }
   }
 
-  async verify2FA(email: string, code: string): Promise<AuthResponse<LoginSuccessData>> {
+  async verify2FA(
+    email: string,
+    code: string
+  ): Promise<AuthResponse<LoginSuccessData>> {
     try {
       const response = await fetch(`${API_URL}/auth/2fa/verify`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, code }),
       });
@@ -154,28 +163,29 @@ class AuthService {
       if (!response.ok) {
         return { success: false, message: data.message, data: null };
       }
-      return { success: true, message: '2FA verified', data };
+      return { success: true, message: "2FA verified", data };
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'An unknown error occurred';
+      const message =
+        error instanceof Error ? error.message : "An unknown error occurred";
       return { success: false, message, data: null };
     }
   }
 
   async logout(): Promise<AuthResponse<null>> {
     // TODO: Implementar chamada real de API
-    throw new Error('Backend não implementado');
+    throw new Error("Backend não implementado");
   }
 
   async get2FAStatus(): Promise<AuthResponse<{ two_factor_enabled: boolean }>> {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem("authToken");
       if (!token) {
-        return { success: false, message: 'Token não encontrado', data: null };
+        return { success: false, message: "Token não encontrado", data: null };
       }
 
       const response = await fetch(`${API_URL}/auth/2fa/status`, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -183,25 +193,26 @@ class AuthService {
       if (!response.ok) {
         return { success: false, message: data.message, data: null };
       }
-      return { success: true, message: 'Status obtido', data };
+      return { success: true, message: "Status obtido", data };
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'An unknown error occurred';
+      const message =
+        error instanceof Error ? error.message : "An unknown error occurred";
       return { success: false, message, data: null };
     }
   }
 
   async toggle2FA(): Promise<AuthResponse<{ two_factor_enabled: boolean }>> {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem("authToken");
       if (!token) {
-        return { success: false, message: 'Token não encontrado', data: null };
+        return { success: false, message: "Token não encontrado", data: null };
       }
 
       const response = await fetch(`${API_URL}/auth/2fa/toggle`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
       });
 
@@ -209,9 +220,10 @@ class AuthService {
       if (!response.ok) {
         return { success: false, message: data.message, data: null };
       }
-      return { success: true, message: '2FA atualizado', data };
+      return { success: true, message: "2FA atualizado", data };
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'An unknown error occurred';
+      const message =
+        error instanceof Error ? error.message : "An unknown error occurred";
       return { success: false, message, data: null };
     }
   }
