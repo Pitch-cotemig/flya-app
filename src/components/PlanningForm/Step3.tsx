@@ -45,7 +45,7 @@ const Step3: React.FC<Step3Props> = ({ formData, handleChange }) => {
       description: "Transporte ferroviário",
     },
     {
-      value: "Sim, avião",
+      value: "Avião",
       icon: <Plane size={24} />,
       description: "Transporte aéreo",
     },
