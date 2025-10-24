@@ -11,7 +11,20 @@ import { ProfileModule } from './profile/profile.module';
 import { BagsModule } from './bags/bags.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), SupabaseModule, AuthModule, PlanningModule, AiModule, TripsModule, ProfileModule, BagsModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+      expandVariables: true,
+    }),
+    SupabaseModule,
+    AuthModule,
+    PlanningModule,
+    AiModule,
+    TripsModule,
+    ProfileModule,
+    BagsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
