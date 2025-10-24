@@ -10,6 +10,8 @@ export { default as RegisterForm } from "./RegisterForm";
 export { default as ItemSuggestions } from "./ItemSuggestions";
 export { default as MainLayout } from "./MainLayout";
 export { default as SuccessModal } from "./SuccessModal";
+export { default as TwoFactorForm } from "./TwoFactorForm";
+export { default as SecuritySection } from "./SecuritySection";
 export { default as FeedbackMessage } from "./FeedbackMessage";
 export { TripSelection } from "./TripSelection";
 export { FlyaLoading } from "./FlyaLoading";
