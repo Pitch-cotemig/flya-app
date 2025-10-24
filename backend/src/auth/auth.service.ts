@@ -213,15 +213,19 @@ export class AuthService {
   async verify2FACode(email: string, code: string): Promise<boolean> {
     const supabase = this.supabaseService.getClient();
     
+    // Buscar código sem usar .single() para evitar problemas de permissão
     const { data, error } = await supabase
       .from('two_factor_codes')
       .select('*')
       .eq('email', email)
       .eq('code', code)
-      .gt('expires_at', new Date().toISOString())
-      .single();
+      .gt('expires_at', new Date().toISOString());
     
-    if (error || !data) {
+    if (error) {
+      return false;
+    }
+    
+    if (!data || data.length === 0) {
       return false;
     }
     
@@ -275,6 +279,7 @@ export class AuthService {
 
   private async completeLogin(data: any) {
     const supabase = this.supabaseService.getClient();
+    
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('*')
