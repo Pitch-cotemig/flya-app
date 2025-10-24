@@ -2,6 +2,16 @@
 // TODO: Implementar chamadas reais de API para o backend
 
 // Type definitions
+declare global {
+  interface ImportMetaEnv {
+    readonly VITE_API_URL: string;
+  }
+
+  interface ImportMeta {
+    readonly env: ImportMetaEnv;
+  }
+}
+
 export interface User {
   id: string;
   email: string;
@@ -57,7 +67,7 @@ export interface TwoFactorStatusData {
   two_factor_enabled: boolean;
 }
 
-const API_URL = "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 // Auth service class
 //teste
