@@ -14,14 +14,14 @@ export const NotificationSection = styled.div`
   gap: 1rem;
 `;
 
-export const SectionTitle = styled.div`
+export const SectionTitle = styled.h2`
   display: flex;
   align-items: center;
   gap: 0.75rem;
   color: ${colors.text.primary};
   font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin: 0;
 `;
 
 export const SectionDescription = styled.p`
@@ -50,18 +50,15 @@ export const NotificationHeader = styled.div`
 `;
 
 export const NotificationIcon = styled.div<{ enabled: boolean }>`
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: ${({ enabled }) =>
-    enabled ? colors.gradients.primary : colors.background.glassStrong};
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: ${({ enabled }) => enabled ? colors.gradients.primary : colors.background.glass};
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ enabled }) =>
-    enabled ? colors.text.primary : colors.text.primaryAlpha60};
+  color: ${({ enabled }) => enabled ? colors.text.primary : colors.text.primaryAlpha60};
   transition: all 0.3s ease;
-  box-shadow: ${({ enabled }) => (enabled ? colors.shadow.cyan : "none")};
 `;
 
 export const NotificationInfo = styled.div`
@@ -71,7 +68,7 @@ export const NotificationInfo = styled.div`
   gap: 0.25rem;
 `;
 
-export const NotificationTitle = styled.h4`
+export const NotificationTitle = styled.h3`
   color: ${colors.text.primary};
   font-size: 1rem;
   font-weight: 600;
@@ -82,7 +79,6 @@ export const NotificationDescription = styled.p`
   color: ${colors.text.primaryAlpha80};
   font-size: 0.875rem;
   margin: 0;
-  line-height: 1.4;
 `;
 
 export const NotificationToggle = styled.div`
@@ -91,33 +87,31 @@ export const NotificationToggle = styled.div`
 `;
 
 export const ToggleSwitch = styled.button<{ enabled: boolean }>`
-  width: 50px;
-  height: 28px;
-  border-radius: 14px;
+  width: 48px;
+  height: 24px;
+  border-radius: 12px;
   border: none;
-  background: ${({ enabled }) =>
-    enabled ? colors.gradients.primary : colors.neutral.gray600};
-  cursor: pointer;
+  background: ${({ enabled }) => enabled ? colors.primary.cyan : colors.neutral.gray500};
   position: relative;
+  cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: ${({ enabled }) =>
-    enabled ? colors.shadow.cyan : colors.shadow.sm};
+  padding: 0;
 
   &:hover {
-    transform: scale(1.05);
+    background: ${({ enabled }) => enabled ? colors.primary.cyanHover : colors.neutral.gray400};
   }
 `;
 
 export const ToggleSlider = styled.div<{ enabled: boolean }>`
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: ${colors.text.primary};
+  background: white;
   position: absolute;
-  top: 3px;
-  left: ${({ enabled }) => (enabled ? "25px" : "3px")};
+  top: 2px;
+  left: ${({ enabled }) => enabled ? '26px' : '2px'};
   transition: all 0.3s ease;
-  box-shadow: ${colors.shadow.sm};
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;
 
 export const NotificationFrequency = styled.div`
@@ -127,12 +121,6 @@ export const NotificationFrequency = styled.div`
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px solid ${colors.border.white};
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
 `;
 
 export const FrequencyLabel = styled.label`
@@ -142,55 +130,43 @@ export const FrequencyLabel = styled.label`
 `;
 
 export const FrequencySelect = styled.select`
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem 1rem;
   border: 1px solid ${colors.border.white};
   border-radius: 8px;
   background: ${colors.background.glass};
   color: ${colors.text.primary};
   font-size: 0.875rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 
   &:focus {
     outline: none;
     border-color: ${colors.primary.cyan};
-    box-shadow: 0 0 0 2px ${colors.alpha.cyan02};
-  }
-
-  &:hover {
-    border-color: ${colors.border.whiteStrong};
-  }
-
-  option {
-    background: ${colors.background.primary};
-    color: ${colors.text.primary};
+    box-shadow: 0 0 0 3px ${colors.alpha.cyan02};
   }
 `;
 
 export const SaveButton = styled.button`
+  padding: 1rem 2rem;
   background: ${colors.gradients.primary};
   color: ${colors.text.primary};
   border: none;
   border-radius: 12px;
-  padding: 1rem 2.5rem;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: ${colors.shadow.cyan};
   align-self: flex-start;
 
   &:hover {
     background: ${colors.gradients.cyanHover};
     transform: translateY(-2px);
-    box-shadow: ${colors.shadow.cyanStrong};
+    box-shadow: ${colors.shadow.cyan};
   }
 
-  &:active {
-    transform: translateY(0);
-  }
-
-  @media (max-width: 768px) {
-    width: 100%;
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
   }
 `;

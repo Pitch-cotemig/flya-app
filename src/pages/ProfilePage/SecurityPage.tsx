@@ -60,9 +60,22 @@ const SecurityPage: React.FC = () => {
   }, []);
 
   const loadSecuritySettings = async () => {
-    const response = await profileService.getSecuritySettings();
-    if (response.success && response.data) {
-      setTwoFactorEnabled(response.data.twoFactorEnabled);
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) return;
+      
+      const response = await fetch("http://localhost:3000/auth/2fa/status", {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setTwoFactorEnabled(data.two_factor_enabled);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar status 2FA:", error);
     }
   };
 
@@ -125,15 +138,39 @@ const SecurityPage: React.FC = () => {
 
   const handleToggle2FA = async () => {
     twoFactorState.setLoading(true);
+    try {
+      const token = localStorage.getItem("authToken");
+      
+      if (!token) {
+        twoFactorState.setError("Faça login novamente");
+        return;
+      }
+      
+      const response = await fetch("http://localhost:3000/auth/2fa/toggle", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+      });
 
-    const newEnabled = !twoFactorEnabled;
-    const response = await profileService.toggleTwoFactor(newEnabled);
+      const data = await response.json();
 
-    if (response.success) {
-      setTwoFactorEnabled(newEnabled);
-      twoFactorState.setSuccess(response.message);
-    } else {
-      twoFactorState.setError(response.message);
+      if (response.ok) {
+        setTwoFactorEnabled(data.two_factor_enabled);
+        twoFactorState.setSuccess(`2FA ${data.two_factor_enabled ? 'ativado' : 'desativado'} com sucesso!`);
+      } else {
+        if (response.status === 401) {
+          twoFactorState.setError("Sessão expirada. Faça login novamente.");
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("user");
+          window.location.href = "/auth";
+        } else {
+          twoFactorState.setError(data.message || 'Erro desconhecido');
+        }
+      }
+    } catch (error) {
+      twoFactorState.setError("Erro de conexão");
     }
   };
 

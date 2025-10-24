@@ -7,9 +7,22 @@ import { AuthModule } from './auth/auth.module';
 import { PlanningModule } from './planning/planning.module';
 import { AiModule } from './ai/ai.module';
 import { TripsModule } from './trips/trips.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), SupabaseModule, AuthModule, PlanningModule, AiModule, TripsModule],
+  imports: [
+    ConfigModule.forRoot({ 
+      isGlobal: true,
+      envFilePath: '.env',
+      expandVariables: true
+    }), 
+    SupabaseModule, 
+    AuthModule, 
+    PlanningModule, 
+    AiModule, 
+    TripsModule, 
+    ProfileModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

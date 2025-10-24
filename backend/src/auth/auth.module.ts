@@ -8,6 +8,6 @@ import { JwtGuard } from './jwt.guard';
   imports: [SupabaseModule],
   controllers: [AuthController],
   providers: [AuthService, JwtGuard],
-  exports: [JwtGuard],
+  exports: [AuthService, JwtGuard],
 })
 export class AuthModule {}

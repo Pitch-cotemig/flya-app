@@ -53,6 +53,7 @@ export class PlanningService {
       - **Objetivo da Viagem:** ${dto.motivo}
       - **Tipo de Destino Desejado:** ${dto.destino}
       ${dto.destinoEspecifico && (dto.destino === "Para o exterior" || dto.destino === "Para alguma cidade Brasileira") ? `- **Destino Específico:** ${dto.destinoEspecifico}` : ''}
+      - **Duração da Viagem:** ${dto.dias} dias
       - **Leva Pet?** ${dto.pet}
       - **Orçamento Total:** ${dto.orcamento}
       - **Número de Acompanhantes:** ${dto.acompanhantes}

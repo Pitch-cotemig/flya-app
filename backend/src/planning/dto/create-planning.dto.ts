@@ -19,6 +19,10 @@ export class CreatePlanningDto {
 
   @IsString()
   @IsNotEmpty()
+  dias: string;
+
+  @IsString()
+  @IsNotEmpty()
   orcamento: string;
 
   @IsString()
