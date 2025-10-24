@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   QuestionTitle,
   OptionContainer,
@@ -110,6 +110,37 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
     },
   ];
 
+  const orcamentoOpcoes = [
+    {
+      value: "Econômico",
+      icon: <DollarSign size={24} />,
+      description: "Viagens com custo reduzido",
+      color: "#4caf50",
+    },
+    {
+      value: "Moderado",
+      icon: <DollarSign size={24} />,
+      description: "Conforto equilibrado e bom custo-benefício",
+      color: "#00bcd4",
+    },
+    {
+      value: "Luxo",
+      icon: <DollarSign size={24} />,
+      description: "Experiências premium",
+      color: "#9c27b0",
+    },
+  ];
+
+  const [budgetInput, setBudgetInput] = useState<string>(
+    (formData as any).orcamento || ""
+  );
+  const [budgetError, setBudgetError] = useState<string>("");
+
+  useEffect(() => {
+    // keep local formatted input in sync if parent updates
+    setBudgetInput((formData as any).orcamento || "");
+  }, [formData.orcamento]);
+
   // Função para formatar o valor como moeda brasileira
   const formatCurrency = (value: string) => {
     // Remove tudo que não é dígito
@@ -132,7 +163,6 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
   const handleBudgetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
     const formattedValue = formatCurrency(rawValue);
-
     setBudgetInput(formattedValue);
 
     // Validação mínima de R$ 2.000
@@ -154,29 +184,6 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
     } as React.ChangeEvent<HTMLInputElement>;
 
     handleChange(syntheticEvent);
-  };
-
-  const handleDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-
-    // Permitir apenas números
-    if (value === "" || /^\d+$/.test(value)) {
-      const numValue = parseInt(value);
-
-      if (value === "") {
-        setDaysError("");
-        handleChange(e);
-      } else if (numValue < 1) {
-        setDaysError("Mínimo de 1 dia");
-        handleChange(e);
-      } else if (numValue > 365) {
-        setDaysError("Máximo de 365 dias");
-        handleChange(e);
-      } else {
-        setDaysError("");
-        handleChange(e);
-      }
-    }
   };
 
   return (
@@ -214,80 +221,7 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
         ))}
       </OptionContainer>
 
-      <QuestionTitle style={{ marginTop: "40px" }}>
-        Quantos dias terá sua viagem?
-      </QuestionTitle>
-      <div
-        style={{
-          marginTop: "20px",
-          maxWidth: "600px",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-      >
-        <div style={{ position: "relative" }}>
-          <Calendar
-            size={20}
-            style={{
-              position: "absolute",
-              left: "20px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              color: "rgba(255, 255, 255, 0.6)",
-              zIndex: 1,
-            }}
-          />
-          <input
-            type="text"
-            name="dias"
-            value={formData.dias}
-            onChange={handleDaysChange}
-            placeholder="Ex: 7 dias"
-            style={{
-              width: "100%",
-              padding: "16px 20px 16px 60px",
-              fontSize: "16px",
-              borderRadius: "12px",
-              border: "2px solid rgba(255, 255, 255, 0.1)",
-              background: "rgba(255, 255, 255, 0.05)",
-              color: "#ffffff",
-              backdropFilter: "blur(10px)",
-              transition: "all 0.3s ease",
-              outline: "none",
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = "#00bcd4";
-              e.target.style.background = "rgba(255, 255, 255, 0.1)";
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = "rgba(255, 255, 255, 0.1)";
-              e.target.style.background = "rgba(255, 255, 255, 0.05)";
-            }}
-          />
-        </div>
-        <p
-          style={{
-            marginTop: "8px",
-            fontSize: "14px",
-            color: "rgba(255, 255, 255, 0.6)",
-            fontStyle: "italic",
-          }}
-        >
-          📅 Digite apenas números (ex: 7 para 7 dias)
-        </p>
-        {daysError && (
-          <p
-            style={{
-              marginTop: "8px",
-              fontSize: "14px",
-              color: "#ff6b6b",
-              fontWeight: "500",
-            }}
-          >
-            ⚠️ {daysError}
-          </p>
-        )}
-      </div>
+      {/* dias input removed — using explicit start/end dates instead */}
 
       <QuestionTitle style={{ marginTop: "40px" }}>
         Qual sua faixa de orçamento para esta viagem?{" "}

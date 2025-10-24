@@ -8,7 +8,7 @@ export class PlanningService {
 
   async create(createPlanningDto: CreatePlanningDto, userId: string) {
     const prompt = this.buildPrompt(createPlanningDto);
-    
+
     const generatedPlan = await this.aiService.generatePlan(prompt);
 
     return {
@@ -52,8 +52,8 @@ export class PlanningService {
       **Preferências do Cliente para Inspirar a Criação:**
       - **Objetivo da Viagem:** ${dto.motivo}
       - **Tipo de Destino Desejado:** ${dto.destino}
-      ${dto.destinoEspecifico && (dto.destino === "Para o exterior" || dto.destino === "Para alguma cidade Brasileira") ? `- **Destino Específico:** ${dto.destinoEspecifico}` : ''}
-      - **Duração da Viagem:** ${dto.dias} dias
+      ${dto.destinoEspecifico && (dto.destino === 'Para o exterior' || dto.destino === 'Para alguma cidade Brasileira') ? `- **Destino Específico:** ${dto.destinoEspecifico}` : ''}
+      - **Duração da Viagem:** de ${dto.dataInicio} até ${dto.dataFim} 
       - **Leva Pet?** ${dto.pet}
       - **Orçamento Total:** ${dto.orcamento}
       - **Número de Acompanhantes:** ${dto.acompanhantes}

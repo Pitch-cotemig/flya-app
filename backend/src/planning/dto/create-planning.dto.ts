@@ -1,4 +1,10 @@
-import { IsArray, IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  IsDateString,
+} from 'class-validator';
 
 export class CreatePlanningDto {
   @IsString()
@@ -17,9 +23,13 @@ export class CreatePlanningDto {
   @IsNotEmpty()
   pet: string;
 
-  @IsString()
+  @IsDateString()
   @IsNotEmpty()
-  dias: string;
+  dataInicio: string;
+
+  @IsDateString()
+  @IsNotEmpty()
+  dataFim: string;
 
   @IsString()
   @IsNotEmpty()
@@ -37,4 +47,4 @@ export class CreatePlanningDto {
   @IsString({ each: true })
   @IsNotEmpty()
   clima: string[];
-} 
+}
