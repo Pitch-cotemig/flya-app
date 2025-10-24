@@ -7,12 +7,11 @@ interface ApiResponse<T = any> {
 }
 
 export interface BagItem {
-  id: string;
+  id?: string;
   name: string;
   category: string;
-  checked: boolean;
-  essential: boolean;
-  addedAt: string;
+  quantity: number;
+  packed: boolean;
 }
 
 export interface TripBag {
@@ -291,33 +290,48 @@ class BagsService {
   // Buscar mala específica de uma viagem
   async getTripBag(tripId: string): Promise<ApiResponse<TripBag>> {
     try {
-      // Por enquanto, vamos usar localStorage para simular a persistência
-      const savedBag = localStorage.getItem(`tripBag_${tripId}`);
+      const response = await fetch(`${API_URL}/bags/trip/${tripId}`, {
+        method: "GET",
+        headers: this.getAuthHeaders(),
+      });
 
-      if (savedBag) {
-        const bagData: TripBag = JSON.parse(savedBag);
+      const data = await response.json();
 
-        // Recalcular progresso
-        const total = bagData.items.length;
-        const checked = bagData.items.filter((item) => item.checked).length;
-        bagData.progress = {
-          total,
-          checked,
-          progress: total > 0 ? (checked / total) * 100 : 0,
-        };
-
-        return {
-          success: true,
-          message: "Mala carregada com sucesso.",
-          data: bagData,
-        };
-      } else {
-        return {
-          success: false,
-          message: "Mala não encontrada para esta viagem",
-          data: null,
-        };
+      if (!response.ok) {
+        // Se não encontrou (404), retornar que não existe
+        if (response.status === 404 || data.error?.includes("não encontrada")) {
+          return {
+            success: false,
+            message: "Mala não encontrada para esta viagem",
+            data: null,
+          };
+        }
+        return this.handleAuthError(response, data);
       }
+
+      // Mapear resposta do backend para o formato esperado
+      const bagData: TripBag = {
+        id: data.id,
+        tripId: data.trip_id,
+        items: data.items || [],
+        lastModified: data.updated_at,
+        progress: {
+          total: (data.items || []).length,
+          checked: (data.items || []).filter((item: BagItem) => item.packed).length,
+          progress:
+            (data.items || []).length > 0
+              ? ((data.items || []).filter((item: BagItem) => item.packed).length /
+                  (data.items || []).length) *
+                100
+              : 0,
+        },
+      };
+
+      return {
+        success: true,
+        message: "Mala carregada com sucesso.",
+        data: bagData,
+      };
     } catch (error) {
       console.error("Erro ao buscar mala da viagem:", error);
       const message =
@@ -329,11 +343,27 @@ class BagsService {
   // Criar nova mala para uma viagem
   async createTripBag(tripId: string): Promise<ApiResponse<TripBag>> {
     try {
-      const newBag: TripBag = {
-        id: `bag_${tripId}_${Date.now()}`,
-        tripId,
-        items: [],
-        lastModified: new Date().toISOString(),
+      const response = await fetch(`${API_URL}/bags`, {
+        method: "POST",
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({
+          tripId,
+          items: [],
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return this.handleAuthError(response, data);
+      }
+
+      // Mapear resposta do backend para o formato esperado
+      const bagData: TripBag = {
+        id: data.id,
+        tripId: data.trip_id,
+        items: data.items || [],
+        lastModified: data.updated_at,
         progress: {
           total: 0,
           checked: 0,
@@ -341,13 +371,10 @@ class BagsService {
         },
       };
 
-      // Salvar no localStorage por enquanto
-      localStorage.setItem(`tripBag_${tripId}`, JSON.stringify(newBag));
-
       return {
         success: true,
         message: "Mala criada com sucesso.",
-        data: newBag,
+        data: bagData,
       };
     } catch (error) {
       console.error("Erro ao criar mala da viagem:", error);
@@ -360,11 +387,13 @@ class BagsService {
   // Adicionar item à mala
   async addItemToBag(
     tripId: string,
-    item: Omit<BagItem, "id" | "addedAt">
+    item: Omit<BagItem, "id">
   ): Promise<ApiResponse<BagItem>> {
     try {
-      const savedBag = localStorage.getItem(`tripBag_${tripId}`);
-      if (!savedBag) {
+      // Primeiro, buscar a mala atual
+      const bagResponse = await this.getTripBag(tripId);
+
+      if (!bagResponse.success || !bagResponse.data) {
         return {
           success: false,
           message: "Mala não encontrada. Crie uma mala primeiro.",
@@ -372,27 +401,28 @@ class BagsService {
         };
       }
 
-      const bagData: TripBag = JSON.parse(savedBag);
-
       const newItem: BagItem = {
         ...item,
         id: `item_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        addedAt: new Date().toISOString(),
       };
 
-      bagData.items.push(newItem);
-      bagData.lastModified = new Date().toISOString();
+      // Atualizar items array
+      const updatedItems = [...bagResponse.data.items, newItem];
 
-      // Recalcular progresso
-      const total = bagData.items.length;
-      const checked = bagData.items.filter((item) => item.checked).length;
-      bagData.progress = {
-        total,
-        checked,
-        progress: total > 0 ? (checked / total) * 100 : 0,
-      };
+      // Atualizar no backend
+      const response = await fetch(`${API_URL}/bags/${bagResponse.data.id}`, {
+        method: "PATCH",
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({
+          items: updatedItems,
+        }),
+      });
 
-      localStorage.setItem(`tripBag_${tripId}`, JSON.stringify(bagData));
+      const data = await response.json();
+
+      if (!response.ok) {
+        return this.handleAuthError(response, data);
+      }
 
       return {
         success: true,
@@ -414,14 +444,40 @@ class BagsService {
     updates: Partial<BagItem>
   ): Promise<ApiResponse<BagItem>> {
     try {
-      const response = await fetch(
-        `${API_URL}/bags/trip/${tripId}/items/${itemId}`,
-        {
-          method: "PATCH",
-          headers: this.getAuthHeaders(),
-          body: JSON.stringify(updates),
-        }
+      // Primeiro, buscar a mala atual
+      const bagResponse = await this.getTripBag(tripId);
+
+      if (!bagResponse.success || !bagResponse.data) {
+        return {
+          success: false,
+          message: "Mala não encontrada.",
+          data: null,
+        };
+      }
+
+      // Encontrar e atualizar o item
+      const updatedItems = bagResponse.data.items.map((item) =>
+        item.id === itemId ? { ...item, ...updates } : item
       );
+
+      const updatedItem = updatedItems.find((item) => item.id === itemId);
+
+      if (!updatedItem) {
+        return {
+          success: false,
+          message: "Item não encontrado.",
+          data: null,
+        };
+      }
+
+      // Atualizar no backend
+      const response = await fetch(`${API_URL}/bags/${bagResponse.data.id}`, {
+        method: "PATCH",
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({
+          items: updatedItems,
+        }),
+      });
 
       const data = await response.json();
 
@@ -432,7 +488,7 @@ class BagsService {
       return {
         success: true,
         message: "Item atualizado com sucesso.",
-        data,
+        data: updatedItem,
       };
     } catch (error) {
       console.error("Erro ao atualizar item da mala:", error);
@@ -448,8 +504,10 @@ class BagsService {
     itemId: string
   ): Promise<ApiResponse<null>> {
     try {
-      const savedBag = localStorage.getItem(`tripBag_${tripId}`);
-      if (!savedBag) {
+      // Primeiro, buscar a mala atual
+      const bagResponse = await this.getTripBag(tripId);
+
+      if (!bagResponse.success || !bagResponse.data) {
         return {
           success: false,
           message: "Mala não encontrada.",
@@ -457,10 +515,12 @@ class BagsService {
         };
       }
 
-      const bagData: TripBag = JSON.parse(savedBag);
-      const itemIndex = bagData.items.findIndex((item) => item.id === itemId);
+      // Filtrar o item removido
+      const updatedItems = bagResponse.data.items.filter(
+        (item) => item.id !== itemId
+      );
 
-      if (itemIndex === -1) {
+      if (updatedItems.length === bagResponse.data.items.length) {
         return {
           success: false,
           message: "Item não encontrado.",
@@ -468,19 +528,20 @@ class BagsService {
         };
       }
 
-      bagData.items.splice(itemIndex, 1);
-      bagData.lastModified = new Date().toISOString();
+      // Atualizar no backend
+      const response = await fetch(`${API_URL}/bags/${bagResponse.data.id}`, {
+        method: "PATCH",
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({
+          items: updatedItems,
+        }),
+      });
 
-      // Recalcular progresso
-      const total = bagData.items.length;
-      const checked = bagData.items.filter((item) => item.checked).length;
-      bagData.progress = {
-        total,
-        checked,
-        progress: total > 0 ? (checked / total) * 100 : 0,
-      };
+      const data = await response.json();
 
-      localStorage.setItem(`tripBag_${tripId}`, JSON.stringify(bagData));
+      if (!response.ok) {
+        return this.handleAuthError(response, data);
+      }
 
       return {
         success: true,
@@ -501,8 +562,10 @@ class BagsService {
     itemId: string
   ): Promise<ApiResponse<BagItem>> {
     try {
-      const savedBag = localStorage.getItem(`tripBag_${tripId}`);
-      if (!savedBag) {
+      // Primeiro, buscar a mala atual
+      const bagResponse = await this.getTripBag(tripId);
+
+      if (!bagResponse.success || !bagResponse.data) {
         return {
           success: false,
           message: "Mala não encontrada.",
@@ -510,8 +573,7 @@ class BagsService {
         };
       }
 
-      const bagData: TripBag = JSON.parse(savedBag);
-      const item = bagData.items.find((item) => item.id === itemId);
+      const item = bagResponse.data.items.find((item) => item.id === itemId);
 
       if (!item) {
         return {
@@ -521,24 +583,32 @@ class BagsService {
         };
       }
 
-      item.checked = !item.checked;
-      bagData.lastModified = new Date().toISOString();
+      // Toggle packed status
+      const updatedItems = bagResponse.data.items.map((item) =>
+        item.id === itemId ? { ...item, packed: !item.packed } : item
+      );
 
-      // Recalcular progresso
-      const total = bagData.items.length;
-      const checked = bagData.items.filter((item) => item.checked).length;
-      bagData.progress = {
-        total,
-        checked,
-        progress: total > 0 ? (checked / total) * 100 : 0,
-      };
+      const updatedItem = updatedItems.find((item) => item.id === itemId)!;
 
-      localStorage.setItem(`tripBag_${tripId}`, JSON.stringify(bagData));
+      // Atualizar no backend
+      const response = await fetch(`${API_URL}/bags/${bagResponse.data.id}`, {
+        method: "PATCH",
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({
+          items: updatedItems,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return this.handleAuthError(response, data);
+      }
 
       return {
         success: true,
         message: "Item atualizado com sucesso.",
-        data: item,
+        data: updatedItem,
       };
     } catch (error) {
       console.error("Erro ao marcar/desmarcar item:", error);
@@ -554,8 +624,10 @@ class BagsService {
     items: BagItem[]
   ): Promise<ApiResponse<TripBag>> {
     try {
-      const savedBag = localStorage.getItem(`tripBag_${tripId}`);
-      if (!savedBag) {
+      // Primeiro, buscar a mala atual para obter o ID
+      const bagResponse = await this.getTripBag(tripId);
+
+      if (!bagResponse.success || !bagResponse.data) {
         return {
           success: false,
           message: "Mala não encontrada.",
@@ -563,20 +635,38 @@ class BagsService {
         };
       }
 
-      const bagData: TripBag = JSON.parse(savedBag);
-      bagData.items = items;
-      bagData.lastModified = new Date().toISOString();
+      // Atualizar no backend
+      const response = await fetch(`${API_URL}/bags/${bagResponse.data.id}`, {
+        method: "PATCH",
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({
+          items,
+        }),
+      });
 
-      // Recalcular progresso
-      const total = items.length;
-      const checked = items.filter((item) => item.checked).length;
-      bagData.progress = {
-        total,
-        checked,
-        progress: total > 0 ? (checked / total) * 100 : 0,
+      const data = await response.json();
+
+      if (!response.ok) {
+        return this.handleAuthError(response, data);
+      }
+
+      // Mapear resposta do backend
+      const bagData: TripBag = {
+        id: data.id,
+        tripId: data.trip_id,
+        items: data.items || [],
+        lastModified: data.updated_at,
+        progress: {
+          total: (data.items || []).length,
+          checked: (data.items || []).filter((item: BagItem) => item.packed).length,
+          progress:
+            (data.items || []).length > 0
+              ? ((data.items || []).filter((item: BagItem) => item.packed).length /
+                  (data.items || []).length) *
+                100
+              : 0,
+        },
       };
-
-      localStorage.setItem(`tripBag_${tripId}`, JSON.stringify(bagData));
 
       return {
         success: true,
@@ -591,11 +681,13 @@ class BagsService {
     }
   }
 
-  // Salvar mala completa no backend (preparado para implementação real)
+  // Salvar mala completa no backend
   async saveTripBag(tripId: string): Promise<ApiResponse<TripBag>> {
     try {
-      const savedBag = localStorage.getItem(`tripBag_${tripId}`);
-      if (!savedBag) {
+      // Buscar a mala atual do backend
+      const bagResponse = await this.getTripBag(tripId);
+
+      if (!bagResponse.success || !bagResponse.data) {
         return {
           success: false,
           message: "Mala não encontrada para salvar.",
@@ -603,31 +695,12 @@ class BagsService {
         };
       }
 
-      const bagData: TripBag = JSON.parse(savedBag);
-
-      // TODO: Quando o backend estiver pronto, substituir por chamada real
-      // const response = await fetch(`${API_URL}/bags/trip/${tripId}/save`, {
-      //   method: "POST",
-      //   headers: this.getAuthHeaders(),
-      //   body: JSON.stringify({
-      //     tripId: bagData.tripId,
-      //     items: bagData.items,
-      //     progress: bagData.progress
-      //   }),
-      // });
-
-      // Por enquanto, simular sucesso após 1 segundo
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Marcar como salva no localStorage
-      bagData.lastModified = new Date().toISOString();
-      localStorage.setItem(`tripBag_${tripId}`, JSON.stringify(bagData));
-      localStorage.setItem(`tripBag_${tripId}_saved`, "true");
-
+      // A mala já está salva no backend através dos métodos PATCH
+      // Este método apenas retorna os dados atuais
       return {
         success: true,
         message: "Mala salva com sucesso no servidor!",
-        data: bagData,
+        data: bagResponse.data,
       };
     } catch (error) {
       console.error("Erro ao salvar mala:", error);
@@ -638,22 +711,9 @@ class BagsService {
   }
 
   // Verificar se a mala tem alterações não salvas
+  // Como agora tudo é salvo diretamente no backend, sempre retornamos false
   hasPendingChanges(tripId: string): boolean {
-    const savedBag = localStorage.getItem(`tripBag_${tripId}`);
-    const lastSaved = localStorage.getItem(`tripBag_${tripId}_saved`);
-
-    if (!savedBag) return false;
-    if (!lastSaved) return true; // Nunca foi salva
-
-    try {
-      const bagData: TripBag = JSON.parse(savedBag);
-      const lastSavedTime = localStorage.getItem(`tripBag_${tripId}_savedTime`);
-
-      // Se não há timestamp de salvamento ou se foi modificada depois
-      return !lastSavedTime || bagData.lastModified > lastSavedTime;
-    } catch {
-      return true;
-    }
+    return false;
   }
 }
 

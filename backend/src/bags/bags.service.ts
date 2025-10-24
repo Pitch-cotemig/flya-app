@@ -9,13 +9,13 @@ export class BagsService {
 
   async create(createBagDto: CreateBagDto, userId: string) {
     const supabase = this.supabaseService.getClient();
-    
+
     const { data, error } = await supabase
       .from('bags')
       .insert({
         trip_id: createBagDto.tripId,
         user_id: userId,
-        items: createBagDto.items || []
+        items: createBagDto.items || [],
       })
       .select()
       .single();
@@ -26,7 +26,7 @@ export class BagsService {
 
   async findByTripAndUser(tripId: string, userId: string) {
     const supabase = this.supabaseService.getClient();
-    
+
     const { data, error } = await supabase
       .from('bags')
       .select('*')
@@ -40,7 +40,7 @@ export class BagsService {
 
   async update(id: string, updateBagDto: UpdateBagDto, userId: string) {
     const supabase = this.supabaseService.getClient();
-    
+
     const { data, error } = await supabase
       .from('bags')
       .update({ items: updateBagDto.items })

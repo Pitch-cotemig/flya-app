@@ -144,3 +144,32 @@ export const CalendarContainer = styled.div`
     margin: 0;
   }
 `;
+
+export const BackButton = styled.button`
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #00bcd4;
+  border: 1px solid rgba(0, 188, 212, 0.22);
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all 0.18s ease;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: rgba(0, 188, 212, 0.08);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 188, 212, 0.12);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+`;

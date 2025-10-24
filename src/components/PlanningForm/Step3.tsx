@@ -33,14 +33,14 @@ const Step3: React.FC<Step3Props> = ({ formData, handleChange }) => {
   ];
 
   const transporteOpcoes = [
-    { value: "Não", icon: <Car size={24} />, description: "Carro próprio" },
+    { value: "Carro", icon: <Car size={24} />, description: "Veículo pessoal" },
     {
-      value: "Sim, ônibus",
+      value: "Ônibus",
       icon: <Bus size={24} />,
-      description: "Transporte rodoviário",
+      description: "Transporte público",
     },
     {
-      value: "Sim, trem",
+      value: "Trem",
       icon: <Train size={24} />,
       description: "Transporte ferroviário",
     },
@@ -95,7 +95,7 @@ const Step3: React.FC<Step3Props> = ({ formData, handleChange }) => {
       </OptionContainer>
 
       <QuestionTitle style={{ marginTop: "40px" }}>
-        Alguma preferência por meio de transporte?
+        Qual meio de transporte você gostaria de usar?
       </QuestionTitle>
       <OptionContainer>
         {transporteOpcoes.map((opcao) => (

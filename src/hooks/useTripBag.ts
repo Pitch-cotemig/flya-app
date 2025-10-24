@@ -36,7 +36,7 @@ interface UseTripBagReturn {
   clearSelection: () => void;
 
   // Ações de mala
-  addItem: (item: Omit<BagItem, "id" | "addedAt">) => Promise<void>;
+  addItem: (item: Omit<BagItem, "id">) => Promise<void>;
   updateItem: (itemId: string, updates: Partial<BagItem>) => Promise<void>;
   removeItem: (itemId: string) => Promise<void>;
   toggleItem: (itemId: string) => Promise<void>;
@@ -148,7 +148,7 @@ export function useTripBag(): UseTripBagReturn {
   };
 
   // Adicionar item à mala
-  const addItem = async (item: Omit<BagItem, "id" | "addedAt">) => {
+  const addItem = async (item: Omit<BagItem, "id">) => {
     if (!selectedTrip) return;
 
     try {
@@ -228,7 +228,7 @@ export function useTripBag(): UseTripBagReturn {
         setBagItems((prevItems) =>
           prevItems.map((item) =>
             item.id === itemId
-              ? { ...item, checked: response.data!.checked }
+              ? { ...item, packed: response.data!.packed }
               : item
           )
         );
@@ -323,10 +323,10 @@ export function useTripBag(): UseTripBagReturn {
   // Calcular progresso da mala
   const bagProgress = {
     total: bagItems.length,
-    checked: bagItems.filter((item) => item.checked).length,
+    checked: bagItems.filter((item) => item.packed).length,
     progress:
       bagItems.length > 0
-        ? (bagItems.filter((item) => item.checked).length / bagItems.length) *
+        ? (bagItems.filter((item) => item.packed).length / bagItems.length) *
           100
         : 0,
   };

@@ -14,6 +14,7 @@ import {
   ErrorMessage,
   FormRow,
   FieldError,
+  BackButton,
 } from "./styles";
 
 interface FormData {
@@ -267,9 +268,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           Faça login
         </LoginButton>
       </LoginLink>
-      <LoginButton type="button" onClick={handleGoToHome}>
+      <BackButton type="button" onClick={handleGoToHome}>
         Voltar
-      </LoginButton>
+      </BackButton>
     </RegisterFormContainer>
   );
 };
