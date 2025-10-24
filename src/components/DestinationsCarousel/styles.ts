@@ -1,10 +1,22 @@
 import styled from "styled-components";
 
 export const DestinationsSection = styled.section`
-  padding: 6rem 2rem;
+  padding: 3rem 1rem;
   color: white;
   position: relative;
   overflow: hidden;
+
+  @media (min-width: 640px) {
+    padding: 4rem 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    padding: 5rem 2rem;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 6rem 2rem;
+  }
 
   &::before {
     content: "";
@@ -37,15 +49,29 @@ export const DestinationsContainer = styled.div`
 `;
 
 export const SectionTitle = styled.h2`
-  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 700;
   text-align: center;
-  margin-bottom: 4rem;
+  margin-bottom: 2.5rem;
   color: white;
   position: relative;
   display: inline-block;
   width: 100%;
   animation: titleSlideIn 1.2s ease-out;
+  padding: 0 1rem;
+
+  @media (min-width: 640px) {
+    margin-bottom: 3rem;
+  }
+
+  @media (min-width: 768px) {
+    margin-bottom: 3.5rem;
+    padding: 0;
+  }
+
+  @media (min-width: 1024px) {
+    margin-bottom: 4rem;
+  }
 
   &::after {
     content: "";
@@ -131,21 +157,40 @@ export const SectionTitle = styled.h2`
 export const CarouselContainer = styled.div`
   position: relative;
   overflow: hidden;
-  margin-top: 2rem;
+  margin-top: 1rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
 
-  @media (max-width: 768px) {
-    margin: 1rem -2rem 0;
+  @media (min-width: 640px) {
+    margin-top: 1.5rem;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    margin-top: 2rem;
+    margin-left: 0;
+    margin-right: 0;
   }
 `;
 
 export const CarouselTrack = styled.div`
   display: flex;
   transition: transform 0.5s ease-in-out;
-  gap: 1.5rem;
+  gap: 0.75rem;
+  padding: 0 1rem;
 
-  @media (max-width: 768px) {
+  @media (min-width: 640px) {
     gap: 1rem;
-    padding: 0 1rem;
+  }
+
+  @media (min-width: 768px) {
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 1024px) {
+    gap: 1.5rem;
+    padding: 0;
   }
 `;
 
@@ -161,8 +206,8 @@ export const CarouselButton = styled.button`
   border-radius: 50%;
   z-index: 10;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  width: 55px;
-  height: 55px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -171,9 +216,39 @@ export const CarouselButton = styled.button`
   border: 1px solid rgba(255, 255, 255, 0.2);
 
   svg {
-    width: 24px;
-    height: 24px;
+    width: 18px;
+    height: 18px;
     stroke-width: 2.5;
+  }
+
+  @media (min-width: 640px) {
+    width: 48px;
+    height: 48px;
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    width: 52px;
+    height: 52px;
+
+    svg {
+      width: 23px;
+      height: 23px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    width: 55px;
+    height: 55px;
+
+    svg {
+      width: 24px;
+      height: 24px;
+    }
   }
 
   &:hover {
@@ -192,13 +267,29 @@ export const CarouselButton = styled.button`
   }
 
   &.prev {
-    left: 1rem;
+    left: 0.5rem;
     animation: slideInLeft 0.6s ease-out;
+
+    @media (min-width: 640px) {
+      left: 0.75rem;
+    }
+
+    @media (min-width: 768px) {
+      left: 1rem;
+    }
   }
 
   &.next {
-    right: 1rem;
+    right: 0.5rem;
     animation: slideInRight 0.6s ease-out;
+
+    @media (min-width: 640px) {
+      right: 0.75rem;
+    }
+
+    @media (min-width: 768px) {
+      right: 1rem;
+    }
   }
 
   @keyframes slideInLeft {
@@ -222,38 +313,31 @@ export const CarouselButton = styled.button`
       transform: translateY(-50%) translateX(0);
     }
   }
-
-  @media (max-width: 768px) {
-    width: 45px;
-    height: 45px;
-
-    svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    &.prev {
-      left: 0.5rem;
-    }
-
-    &.next {
-      right: 0.5rem;
-    }
-  }
 `;
 
 export const DotsContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.8rem;
-  margin-top: 3rem;
-  padding: 1rem;
+  gap: 0.6rem;
+  margin-top: 2rem;
+  padding: 0.75rem 1rem;
+
+  @media (min-width: 640px) {
+    gap: 0.7rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 768px) {
+    gap: 0.8rem;
+    margin-top: 3rem;
+    padding: 1rem;
+  }
 `;
 
 export const Dot = styled.button`
-  width: 14px;
-  height: 14px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   border: none;
   background: rgba(255, 255, 255, 0.4);
@@ -262,10 +346,26 @@ export const Dot = styled.button`
   position: relative;
   backdrop-filter: blur(5px);
 
+  @media (min-width: 640px) {
+    width: 12px;
+    height: 12px;
+  }
+
+  @media (min-width: 768px) {
+    width: 14px;
+    height: 14px;
+  }
+
   &.active {
     background: linear-gradient(135deg, #00bcd4 0%, #00acc1 100%);
-    transform: scale(1.5);
-    box-shadow: 0 0 15px rgba(0, 188, 212, 0.8), 0 0 30px rgba(0, 188, 212, 0.4);
+    transform: scale(1.4);
+    box-shadow: 0 0 12px rgba(0, 188, 212, 0.8), 0 0 25px rgba(0, 188, 212, 0.4);
+
+    @media (min-width: 768px) {
+      transform: scale(1.5);
+      box-shadow: 0 0 15px rgba(0, 188, 212, 0.8),
+        0 0 30px rgba(0, 188, 212, 0.4);
+    }
   }
 
   &:hover:not(.active) {

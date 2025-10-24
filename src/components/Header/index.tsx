@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Menu } from "lucide-react";
 import flyaLogo from "../../assets/flyalogo.svg";
 import { User } from "../../services/authService";
+import { MobileSidebar } from "./MobileSidebar";
 import {
   HeaderContainer,
   HeaderContent,
@@ -10,6 +13,7 @@ import {
   LoginSection,
   LoginButton,
   UserIcon,
+  MobileMenuButton,
 } from "./styles";
 
 interface HeaderProps {
@@ -17,6 +21,8 @@ interface HeaderProps {
 }
 
 export function Header({ user }: HeaderProps) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   // Dados dos links de navegação
   const navLinks = [
     { label: "Início", to: "/" },
@@ -25,47 +31,70 @@ export function Header({ user }: HeaderProps) {
     { label: "Minhas Viagens", to: "/Minhas-Viagens" },
   ];
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
+
   return (
-    <HeaderContainer>
-      <HeaderContent>
-        {/* Logo na Esquerda */}
-        <Logo to="/">
-          <img src={flyaLogo} alt="Flya Logo" />
-        </Logo>
+    <>
+      {/* Sidebar para Mobile */}
+      <MobileSidebar
+        isOpen={isSidebarOpen}
+        onClose={closeSidebar}
+        user={user}
+        navLinks={navLinks}
+      />
 
-        {/* Links de Navegação no Centro (absoluto) */}
-        <Navigation>
-          {navLinks.map((link) => (
-            <StyledNavLink
-              key={link.to}
-              to={link.to}
-              className={({ isActive }) => (isActive ? "active" : "")}
-            >
-              {link.label}
-            </StyledNavLink>
-          ))}
-        </Navigation>
+      <HeaderContainer>
+        <HeaderContent>
+          {/* Botão Hamburger para Mobile */}
+          <MobileMenuButton onClick={toggleSidebar} aria-label="Abrir menu">
+            <Menu />
+          </MobileMenuButton>
 
-        {/* Login na Direita */}
-        <LoginSection>
-          {user ? (
-            <Link to="/Perfil">
-              <LoginButton>
-                <UserIcon />
-                Perfil
-              </LoginButton>
-            </Link>
-          ) : (
-            <Link to="/auth">
-              <LoginButton>
-                <UserIcon />
-                Login
-              </LoginButton>
-            </Link>
-          )}
-        </LoginSection>
-      </HeaderContent>
-    </HeaderContainer>
+          {/* Logo na Esquerda */}
+          <Logo to="/">
+            <img src={flyaLogo} alt="Flya Logo" />
+          </Logo>
+
+          {/* Links de Navegação no Centro (Desktop apenas) */}
+          <Navigation>
+            {navLinks.map((link) => (
+              <StyledNavLink
+                key={link.to}
+                to={link.to}
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                {link.label}
+              </StyledNavLink>
+            ))}
+          </Navigation>
+
+          {/* Login na Direita */}
+          <LoginSection>
+            {user ? (
+              <Link to="/Perfil">
+                <LoginButton>
+                  <UserIcon />
+                  Perfil
+                </LoginButton>
+              </Link>
+            ) : (
+              <Link to="/auth">
+                <LoginButton>
+                  <UserIcon />
+                  Login
+                </LoginButton>
+              </Link>
+            )}
+          </LoginSection>
+        </HeaderContent>
+      </HeaderContainer>
+    </>
   );
 }
 

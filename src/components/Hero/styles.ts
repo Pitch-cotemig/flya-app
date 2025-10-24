@@ -1,3 +1,4 @@
+/* prettier-ignore */
 import styled from "styled-components";
 
 interface HeroContainerProps {
@@ -6,7 +7,8 @@ interface HeroContainerProps {
 
 export const HeroContainer = styled.section<HeroContainerProps>`
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -24,7 +26,7 @@ export const HeroContainer = styled.section<HeroContainerProps>`
         : "linear-gradient(135deg, #0f172a 0%, #00bcd4 100%)"};
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
+  background-attachment: scroll;
   background-repeat: no-repeat;
   color: white;
   text-align: center;
@@ -36,6 +38,11 @@ export const HeroContainer = styled.section<HeroContainerProps>`
 
   /* Fallback enquanto carrega */
   background-color: #0f172a;
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    height: 100vh;
+    background-attachment: fixed;
+  }
 
   &::before {
     content: "";
@@ -69,10 +76,6 @@ export const HeroContainer = styled.section<HeroContainerProps>`
     }
   }
 
-  @media (max-width: 768px) {
-    background-attachment: scroll;
-  }
-
   /* Preload hint para a imagem */
   &::after {
     content: "";
@@ -92,10 +95,21 @@ export const HeroContent = styled.div`
   align-items: center;
   justify-content: center;
   flex: 1;
-  padding: 2rem;
+  padding: 1rem;
   z-index: 2;
   position: relative;
-  /* Removido margin-top pois agora o MainLayout não adiciona padding-top na home */
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    padding: 1.5rem;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    padding: 2rem;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    padding: 3rem 2rem;
+  }
 `;
 
 export const HeroTitle = styled.h1`
@@ -141,17 +155,26 @@ export const HeroTitle = styled.h1`
     }
   }
 
-  @media (max-width: 768px) {
-    font-size: clamp(2rem, 8vw, 3rem);
+  @media (max-width: ${({ theme }) => theme.breakpoints.xs}) {
+    font-size: clamp(1.75rem, 7vw, 2.5rem);
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: ${({ theme }) =>
+      theme.breakpoints.xs}) and (max-width: ${({ theme }) =>
+      theme.breakpoints.md}) {
+    font-size: clamp(2rem, 6vw, 3rem);
     margin-bottom: 2rem;
   }
 `;
 
 export const HeroSubtitle = styled.p`
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   animation: heroSubtitleAnimation 1.5s ease-out 0.3s both;
+  line-height: 1.4;
+  max-width: 90%;
 
   @keyframes heroSubtitleAnimation {
     0% {
@@ -164,8 +187,19 @@ export const HeroSubtitle = styled.p`
     }
   }
 
-  @media (max-width: 768px) {
-    font-size: 1.2rem;
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: 1.125rem;
+    margin-bottom: 1.75rem;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    max-width: 100%;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    font-size: 1.5rem;
   }
 `;
 
@@ -175,16 +209,16 @@ export const HeroForm = styled.div`
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 20px;
+  border-radius: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 188, 212, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
-  padding: 2rem 2.5rem;
+  gap: 1rem;
+  padding: 1.25rem 1rem;
   width: 100%;
-  max-width: 550px;
-  margin: 0 auto 4rem auto;
+  max-width: 95%;
+  margin: 0 auto 2rem auto;
   animation: heroFormAnimation 1.5s ease-out 0.6s both;
 
   @keyframes heroFormAnimation {
@@ -198,21 +232,36 @@ export const HeroForm = styled.div`
     }
   }
 
-  @media (max-width: 768px) {
-    padding: 1.5rem 2rem;
-    margin: 0 auto 2rem auto;
-    gap: 1.2rem;
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    padding: 1.5rem 1.5rem;
+    gap: 1.25rem;
+    max-width: 480px;
+    border-radius: 18px;
+    margin-bottom: 3rem;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    padding: 2rem 2rem;
+    gap: 1.5rem;
+    max-width: 520px;
+    border-radius: 20px;
+    margin-bottom: 4rem;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    padding: 2rem 2.5rem;
+    max-width: 550px;
   }
 `;
 
 export const HeroInput = styled.input`
-  padding: 1.2rem 1.8rem;
+  padding: 0.875rem 1.25rem;
   border: none;
-  border-radius: 15px;
-  font-size: 1.1rem;
+  border-radius: 12px;
+  font-size: 0.9375rem;
   outline: none;
   width: 100%;
-  max-width: 450px;
+  max-width: 100%;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.95);
@@ -222,7 +271,7 @@ export const HeroInput = styled.input`
   font-family: inherit;
 
   &:focus {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 188, 212, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
     border-color: #00bcd4;
@@ -234,19 +283,33 @@ export const HeroInput = styled.input`
     font-weight: 400;
   }
 
-  @media (max-width: 768px) {
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
     padding: 1rem 1.5rem;
     font-size: 1rem;
+    border-radius: 14px;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    padding: 1.1rem 1.6rem;
+    font-size: 1.05rem;
+    border-radius: 15px;
+    max-width: 420px;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    padding: 1.2rem 1.8rem;
+    font-size: 1.1rem;
+    max-width: 450px;
   }
 `;
 
 export const HeroButton = styled.button`
   background: linear-gradient(135deg, #00bcd4 0%, #00acc1 50%, #0097a7 100%);
   color: white;
-  padding: 1.2rem 3rem;
+  padding: 0.875rem 2rem;
   border: none;
-  border-radius: 15px;
-  font-size: 1.2rem;
+  border-radius: 12px;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -257,6 +320,26 @@ export const HeroButton = styled.button`
   font-family: inherit;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  width: 100%;
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    padding: 1rem 2.25rem;
+    font-size: 1.05rem;
+    border-radius: 14px;
+    width: auto;
+    min-width: 200px;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    padding: 1.1rem 2.5rem;
+    font-size: 1.15rem;
+    border-radius: 15px;
+  }
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    padding: 1.2rem 3rem;
+    font-size: 1.2rem;
+  }
 
   &::before {
     content: "";
@@ -316,11 +399,6 @@ export const HeroButton = styled.button`
       box-shadow: 0 8px 30px rgba(0, 188, 212, 0.6),
         0 4px 15px rgba(0, 0, 0, 0.2);
     }
-  }
-
-  @media (max-width: 768px) {
-    padding: 1rem 2.5rem;
-    font-size: 1.1rem;
   }
 `;
 

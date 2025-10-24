@@ -46,11 +46,13 @@ export const theme = {
     main: '"Lexend", sans-serif',
   },
   breakpoints: {
-    sm: "640px",
-    md: "768px",
-    lg: "1024px",
-    xl: "1280px",
-    "2xl": "1536px",
+    xs: "320px", // Mobile pequeno
+    sm: "640px", // Mobile grande
+    md: "768px", // Tablet
+    lg: "1024px", // Desktop
+    xl: "1280px", // Desktop grande
+    "2xl": "1440px", // Desktop extra grande
+    "3xl": "1536px", // Ultra-wide
   },
   spacing: {
     xs: "0.5rem",

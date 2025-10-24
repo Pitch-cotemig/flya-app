@@ -69,26 +69,47 @@ export const FloatingElements = styled.div`
 
 export const BagHeader = styled.header`
   text-align: center;
-  padding: 2rem;
+  padding: 1rem;
   position: relative;
   z-index: 1;
+
+  @media (min-width: 640px) {
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
 `;
 
 export const BackButton = styled.button`
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
+  gap: 0.4rem;
+  padding: 0.6rem 1.2rem;
   background: ${colors.background.glass};
   backdrop-filter: blur(20px);
   border: 1px solid ${colors.border.white};
   border-radius: 25px;
   color: ${colors.text.primary};
-  font-size: 0.9rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+
+  @media (min-width: 640px) {
+    gap: 0.5rem;
+    padding: 0.7rem 1.35rem;
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
 
   &:hover {
     transform: translateY(-2px);
@@ -107,18 +128,36 @@ export const BackButton = styled.button`
 `;
 
 export const BagTitle = styled.h1`
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.5rem;
   background: linear-gradient(45deg, #ffffff, #00bcd4);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: slideInFromTop 1s ease-out;
+
+  @media (min-width: 640px) {
+    font-size: 2rem;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 2.25rem;
+    gap: 0.875rem;
+    margin-bottom: 0.9rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 2.5rem;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
 
   @keyframes slideInFromTop {
     from {
@@ -133,9 +172,23 @@ export const BagTitle = styled.h1`
 `;
 
 export const BagSubtitle = styled.p`
-  font-size: 1.2rem;
+  font-size: 0.9375rem;
   color: ${colors.text.primaryAlpha80};
   animation: slideInFromBottom 1s ease-out 0.3s both;
+  padding: 0 1rem;
+
+  @media (min-width: 640px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 1.1rem;
+    padding: 0;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1.2rem;
+  }
 
   @keyframes slideInFromBottom {
     from {
@@ -152,27 +205,56 @@ export const BagSubtitle = styled.p`
 export const BagContent = styled.main`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   position: relative;
   z-index: 1;
+
+  @media (min-width: 640px) {
+    padding: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
 `;
 
 export const TripInfo = styled.div`
   display: flex;
   justify-content: center;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
   flex-wrap: wrap;
+
+  @media (min-width: 640px) {
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
 `;
 
 export const TripDestination = styled.div`
   background: ${colors.alpha.white01};
-  padding: 1rem 2rem;
-  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
   backdrop-filter: blur(10px);
   border: 1px solid ${colors.alpha.white02};
-  font-size: 1.1rem;
+  font-size: 0.9375rem;
   animation: fadeIn 1s ease-out 0.6s both;
+
+  @media (min-width: 640px) {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 11px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 12px;
+  }
 
   @keyframes fadeIn {
     from {
@@ -188,12 +270,24 @@ export const TripDestination = styled.div`
 
 export const TripDuration = styled.div`
   background: ${colors.alpha.white01};
-  padding: 1rem 2rem;
-  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
   backdrop-filter: blur(10px);
   border: 1px solid ${colors.alpha.white02};
-  font-size: 1.1rem;
+  font-size: 0.9375rem;
   animation: fadeIn 1s ease-out 0.8s both;
+
+  @media (min-width: 640px) {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 11px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 12px;
+  }
 `;
 
 export const ProgressSection = styled.div`
@@ -253,26 +347,47 @@ export const AddItemSection = styled.div`
 
 export const AddItemForm = styled.form`
   display: flex;
-  gap: 1rem;
-  max-width: 500px;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 100%;
   margin: 0 auto;
 
-  @media (max-width: 768px) {
-    flex-direction: column;
+  @media (min-width: 640px) {
+    max-width: 500px;
+    gap: 0.875rem;
+  }
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    gap: 1rem;
   }
 `;
 
 export const AddItemInput = styled.input`
   flex: 1;
-  padding: 1rem 1.5rem;
+  padding: 0.875rem 1.25rem;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   background: ${colors.alpha.white01};
   color: white;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   backdrop-filter: blur(10px);
   border: 1px solid ${colors.alpha.white02};
   transition: all 0.3s ease;
+  width: 100%;
+
+  @media (min-width: 640px) {
+    padding: 0.9375rem 1.375rem;
+    font-size: 0.9695rem;
+    border-radius: 11px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 12px;
+    width: auto;
+  }
 
   &:focus {
     outline: none;
@@ -287,19 +402,36 @@ export const AddItemInput = styled.input`
 `;
 
 export const AddItemButton = styled.button`
-  padding: 1rem 2rem;
+  padding: 0.875rem 1.5rem;
   background: linear-gradient(135deg, #00bcd4 0%, #00acc1 100%);
   color: white;
   border: none;
-  border-radius: 12px;
-  font-size: 1rem;
+  border-radius: 10px;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  gap: 0.4rem;
   transition: all 0.3s ease;
   box-shadow: ${colors.shadow.cyanStrong};
+  width: 100%;
+
+  @media (min-width: 640px) {
+    padding: 0.9375rem 1.75rem;
+    font-size: 0.9695rem;
+    gap: 0.45rem;
+    border-radius: 11px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    gap: 0.5rem;
+    border-radius: 12px;
+    width: auto;
+  }
 
   &:hover {
     transform: translateY(-2px);
@@ -329,25 +461,46 @@ export const CategoryTabs = styled.div`
 `;
 
 export const CategoryTab = styled.button<{ active?: boolean; variant?: "add" }>`
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1rem;
   border: none;
-  border-radius: 25px;
+  border-radius: 20px;
   background: ${(props) =>
     props.active
       ? "linear-gradient(135deg, #00bcd4 0%, #00acc1 100%)"
       : "rgba(255, 255, 255, 0.1)"};
   color: white;
-  font-size: 0.9rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
   border: 1px solid
     ${(props) =>
       props.active ? "${colors.alpha.cyan05}" : "${colors.alpha.white02}"};
+
+  @media (min-width: 640px) {
+    padding: 0.65rem 1.2rem;
+    font-size: 0.85rem;
+    gap: 0.4rem;
+    border-radius: 22px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 0.7rem 1.35rem;
+    font-size: 0.875rem;
+    gap: 0.45rem;
+    border-radius: 23px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    gap: 0.5rem;
+    border-radius: 25px;
+  }
 
   &:hover {
     transform: translateY(-2px);
@@ -388,14 +541,26 @@ export const ItemsList = styled.div`
 export const ItemCard = styled.div<{ checked?: boolean }>`
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1.5rem;
+  gap: 0.75rem;
+  padding: 1rem;
   background: ${colors.alpha.white01};
-  border-radius: 12px;
+  border-radius: 10px;
   backdrop-filter: blur(10px);
   border: 1px solid ${colors.alpha.white02};
   transition: all 0.3s ease;
   opacity: ${(props) => (props.checked ? 0.7 : 1)};
+
+  @media (min-width: 640px) {
+    gap: 0.875rem;
+    padding: 1.25rem;
+    border-radius: 11px;
+  }
+
+  @media (min-width: 768px) {
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
 
   &:hover {
     transform: translateY(-2px);
@@ -412,10 +577,24 @@ export const ItemCheckbox = styled.input`
 `;
 
 export const ItemName = styled.div<{ checked?: boolean }>`
-  font-size: 1.1rem;
+  font-size: 0.9375rem;
   font-weight: 500;
   text-decoration: ${(props) => (props.checked ? "line-through" : "none")};
   color: ${(props) => (props.checked ? "rgba(255, 255, 255, 0.6)" : "white")};
+  flex: 1;
+  word-break: break-word;
+
+  @media (min-width: 640px) {
+    font-size: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 1.05rem;
+  }
+
+  @media (min-width: 1024px) {
+    font-size: 1.1rem;
+  }
 `;
 
 export const ItemCategory = styled.div`
@@ -490,8 +669,8 @@ export const SaveButton = styled.button<{ saving?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  padding: 1rem 2.5rem;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
   background: ${(props) =>
     props.saving
       ? colors.gradients.primary.replace("135deg", "45deg")
@@ -499,14 +678,31 @@ export const SaveButton = styled.button<{ saving?: boolean }>`
   color: white;
   border: none;
   border-radius: 50px;
-  font-size: 1.1rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   cursor: ${(props) => (props.saving ? "not-allowed" : "pointer")};
   transition: all 0.3s ease;
   box-shadow: ${colors.shadow.cyanStrong};
   backdrop-filter: blur(10px);
   border: 1px solid ${colors.alpha.cyan02};
-  min-width: 200px;
+  min-width: 180px;
+  width: 100%;
+  max-width: 300px;
+
+  @media (min-width: 640px) {
+    gap: 0.625rem;
+    padding: 0.9375rem 2.25rem;
+    font-size: 1rem;
+    min-width: 190px;
+    width: auto;
+  }
+
+  @media (min-width: 768px) {
+    gap: 0.75rem;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    min-width: 200px;
+  }
 
   &:hover {
     transform: ${(props) =>
