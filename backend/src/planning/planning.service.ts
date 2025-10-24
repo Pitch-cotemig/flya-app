@@ -6,7 +6,7 @@ import { AiService } from 'src/ai/ai.service';
 export class PlanningService {
   constructor(private readonly aiService: AiService) {}
 
-  async create(createPlanningDto: CreatePlanningDto) {
+  async create(createPlanningDto: CreatePlanningDto, userId: string) {
     const prompt = this.buildPrompt(createPlanningDto);
     
     const generatedPlan = await this.aiService.generatePlan(prompt);
@@ -14,6 +14,7 @@ export class PlanningService {
     return {
       message: 'Plano de viagem gerado com sucesso!',
       plan: generatedPlan,
+      userId: userId,
     };
   }
 

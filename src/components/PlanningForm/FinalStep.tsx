@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import styled, { keyframes } from "styled-components";
 import {
   ContinueButton,
@@ -355,11 +356,11 @@ const fadeIn = keyframes`
 
 const slideIn = keyframes`
   from {
-    transform: translate(-50%, -50%) scale(0.8);
+    transform: scale(0.8);
     opacity: 0;
   }
   to {
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
     opacity: 1;
   }
 `;
@@ -369,8 +370,6 @@ const Modal = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.7);
@@ -380,6 +379,9 @@ const Modal = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
 `;
 
 const ModalContent = styled.div`
@@ -395,13 +397,12 @@ const ModalContent = styled.div`
   backdrop-filter: blur(20px);
   box-shadow: ${colors.shadow.modalStrong};
   animation: ${slideIn} 0.3s ease-out;
-  
-  /* Garantir que o modal não saia da tela em dispositivos pequenos */
-  margin: 1rem;
-  
+  margin: 0 auto;
+
   @media (max-width: 768px) {
     padding: 1.5rem;
     max-width: 95%;
+    width: 95%;
   }
 `;
 
@@ -713,11 +714,19 @@ const FinalStep: React.FC<FinalStepProps> = ({
       document.addEventListener('keydown', handleEsc);
       // Prevenir scroll da página quando modal estiver aberto
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+    } else {
+      document.body.style.overflow = 'unset';
+      document.body.style.position = 'unset';
+      document.body.style.width = 'unset';
     }
 
     return () => {
       document.removeEventListener('keydown', handleEsc);
       document.body.style.overflow = 'unset';
+      document.body.style.position = 'unset';
+      document.body.style.width = 'unset';
     };
   }, [editModal.isOpen, deleteModal.isOpen]);
 
@@ -914,7 +923,7 @@ const FinalStep: React.FC<FinalStepProps> = ({
       </FooterActions>
 
       {/* Modal de Edição */}
-      {editModal.isOpen && (
+      {editModal.isOpen && createPortal(
         <Modal onClick={cancelEdit}>
           <ModalContent onClick={(e: React.MouseEvent) => e.stopPropagation()}>
             <ModalHeader>
@@ -943,11 +952,12 @@ const FinalStep: React.FC<FinalStepProps> = ({
               </ModalButton>
             </ModalActions>
           </ModalContent>
-        </Modal>
+        </Modal>,
+        document.body
       )}
 
       {/* Modal de Exclusão */}
-      {deleteModal.isOpen && (
+      {deleteModal.isOpen && createPortal(
         <Modal onClick={cancelDelete}>
           <ModalContent onClick={(e: React.MouseEvent) => e.stopPropagation()}>
             <ModalHeader>
@@ -975,7 +985,8 @@ const FinalStep: React.FC<FinalStepProps> = ({
               </ModalButton>
             </ModalActions>
           </ModalContent>
-        </Modal>
+        </Modal>,
+        document.body
       )}
     </FinalScreenContainer>
   );

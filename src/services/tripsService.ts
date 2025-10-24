@@ -30,9 +30,13 @@ class TripsService {
   private handleAuthError(response: Response, data: any): ApiResponse<any> {
     if (response.status === 401) {
       localStorage.removeItem("authToken");
+      // Redirecionar para login após um pequeno delay para mostrar a mensagem
+      setTimeout(() => {
+        window.location.href = "/auth";
+      }, 2000);
       return {
         success: false,
-        message: "Sua sessão expirou. Faça login novamente.",
+        message: "Sua sessão expirou. Redirecionando para login...",
         data: null,
       };
     }
