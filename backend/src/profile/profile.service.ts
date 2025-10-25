@@ -102,6 +102,14 @@ export class ProfileService {
       if (profileData.username) updateData.username = profileData.username;
       if (profileData.firstName) updateData.first_name = profileData.firstName;
       if (profileData.lastName) updateData.last_name = profileData.lastName;
+      
+      // Atualizar full_name se firstName ou lastName foram alterados
+      if (profileData.firstName || profileData.lastName) {
+        const firstName = profileData.firstName || userValidation.user.firstName || '';
+        const lastName = profileData.lastName || userValidation.user.lastName || '';
+        updateData.full_name = `${firstName} ${lastName}`.trim();
+      }
+      
       if (profileData.birthDate) updateData.birth_date = profileData.birthDate;
       if (profileData.email) updateData.email = profileData.email;
       if (avatarUrl) updateData.avatar_url = avatarUrl;
