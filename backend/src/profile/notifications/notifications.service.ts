@@ -32,31 +32,31 @@ export class NotificationsService {
 
       const response = {
         email: {
-          atualizacoesViagem: {
-            enabled: settings.email_atualizacoes_viagem,
-            ...(settings.email_atualizacoes_viagem && { frequency: settings.email_atualizacoes_viagem_freq })
+          tripUpdates: {
+            enabled: settings.email_trip_updates,
+            ...(settings.email_trip_updates && { frequency: settings.email_trip_updates_freq })
           },
-          confirmacoesReserva: {
-            enabled: settings.email_confirmacoes_reserva
+          bookingConfirmations: {
+            enabled: settings.email_booking_confirmations
           },
-          dicasDestino: {
-            enabled: settings.email_dicas_destino,
-            ...(settings.email_dicas_destino && { frequency: settings.email_dicas_destino_freq })
+          destinationTips: {
+            enabled: settings.email_destination_tips,
+            ...(settings.email_destination_tips && { frequency: settings.email_destination_tips_freq })
           },
-          ofertasPromocionais: {
-            enabled: settings.email_ofertas_promocionais,
-            ...(settings.email_ofertas_promocionais && { frequency: settings.email_ofertas_promocionais_freq })
+          promotionalOffers: {
+            enabled: settings.email_promotional_offers,
+            ...(settings.email_promotional_offers && { frequency: settings.email_promotional_offers_freq })
           }
         },
         push: {
-          atualizacoesTempoReal: {
-            enabled: settings.push_atualizacoes_tempo_real
+          realtimeUpdates: {
+            enabled: settings.push_realtime_updates
           },
-          lembretesCheckIn: {
-            enabled: settings.push_lembretes_checkin
+          checkinReminders: {
+            enabled: settings.push_checkin_reminders
           },
-          alertasClima: {
-            enabled: settings.push_alertas_clima
+          weatherAlerts: {
+            enabled: settings.push_weather_alerts
           }
         }
       };
@@ -79,9 +79,9 @@ export class NotificationsService {
     }
 
     const validFrequencies = ['instantaneo', 'diario', 'semanal', 'mensal'];
-    const allowedFrequencyFields = ['atualizacoesViagem', 'dicasDestino', 'ofertasPromocionais'];
+    const allowedFrequencyFields = ['tripUpdates', 'destinationTips', 'promotionalOffers'];
     
-    // Validar se frequency só está sendo usado em campos permitidos
+
     if (settings.email?.confirmacoesReserva?.frequency) {
       throw new BadRequestException('Campo confirmacoesReserva não aceita frequency');
     }
@@ -95,37 +95,50 @@ export class NotificationsService {
       throw new BadRequestException('Campo alertasClima não aceita frequency');
     }
     
-    // Validar frequências dos campos permitidos
-    const frequencies = [
-      settings.email?.atualizacoesViagem?.frequency,
-      settings.email?.dicasDestino?.frequency,
-      settings.email?.ofertasPromocionais?.frequency
-    ].filter(Boolean);
-    
-    for (const freq of frequencies) {
-      if (!validFrequencies.includes(freq)) {
-        throw new BadRequestException(`Frequência inválida: ${freq}. Use: instantaneo, diario, semanal ou mensal`);
-      }
-    }
+
 
     const supabase = this.supabaseService.getClient();
     const userId = userValidation.user.id;
 
     try {
+
+      const normalizeFrequency = (freq: string) => {
+        return freq
+          .trim()
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '');
+      };
+      
+
+      const frequenciesToValidate = [
+        settings.email?.atualizacoesViagem?.frequency,
+        settings.email?.dicasDestino?.frequency,
+        settings.email?.ofertasPromocionais?.frequency
+      ].filter(Boolean);
+      
+      for (const freq of frequenciesToValidate) {
+        const normalizedFreq = normalizeFrequency(freq);
+        if (!validFrequencies.includes(normalizedFreq)) {
+          throw new BadRequestException(`Frequência inválida: ${freq}. Use: instantaneo, diario, semanal ou mensal`);
+        }
+      }
+
+
       const updateData = {
-        email_atualizacoes_viagem: settings.email?.atualizacoesViagem?.enabled || false,
-        email_atualizacoes_viagem_freq: settings.email?.atualizacoesViagem?.frequency || 'instantaneo',
-        email_confirmacoes_reserva: settings.email?.confirmacoesReserva?.enabled || false,
-        email_dicas_destino: settings.email?.dicasDestino?.enabled || false,
-        email_dicas_destino_freq: settings.email?.dicasDestino?.frequency || 'diario',
-        email_ofertas_promocionais: settings.email?.ofertasPromocionais?.enabled || false,
-        email_ofertas_promocionais_freq: settings.email?.ofertasPromocionais?.frequency || 'semanal',
-        push_atualizacoes_tempo_real: settings.push?.atualizacoesTempoReal?.enabled || false,
-        push_lembretes_checkin: settings.push?.lembretesCheckIn?.enabled || false,
-        push_alertas_clima: settings.push?.alertasClima?.enabled || false
+        email_trip_updates: settings.email?.atualizacoesViagem?.enabled || false,
+        email_trip_updates_freq: settings.email?.atualizacoesViagem?.frequency ? normalizeFrequency(settings.email.atualizacoesViagem.frequency) : 'instantaneo',
+        email_booking_confirmations: settings.email?.confirmacoesReserva?.enabled || false,
+        email_destination_tips: settings.email?.dicasDestino?.enabled || false,
+        email_destination_tips_freq: settings.email?.dicasDestino?.frequency ? normalizeFrequency(settings.email.dicasDestino.frequency) : 'diario',
+        email_promotional_offers: settings.email?.ofertasPromocionais?.enabled || false,
+        email_promotional_offers_freq: settings.email?.ofertasPromocionais?.frequency ? normalizeFrequency(settings.email.ofertasPromocionais.frequency) : 'semanal',
+        push_realtime_updates: settings.push?.atualizacoesTempoReal?.enabled || false,
+        push_checkin_reminders: settings.push?.lembretesCheckIn?.enabled || false,
+        push_weather_alerts: settings.push?.alertasClima?.enabled || false
       };
 
-      // Verificar se já existe
+
       const { data: existing } = await supabase
         .from('notification_settings')
         .select('user_id')
@@ -134,14 +147,14 @@ export class NotificationsService {
 
       let error;
       if (existing) {
-        // Atualizar existente
+
         const result = await supabase
           .from('notification_settings')
           .update(updateData)
           .eq('user_id', userId);
         error = result.error;
       } else {
-        // Inserir novo
+
         const result = await supabase
           .from('notification_settings')
           .insert({ ...updateData, user_id: userId });
