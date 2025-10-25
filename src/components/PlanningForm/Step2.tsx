@@ -90,6 +90,9 @@ interface Step2Props {
 }
 
 const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
+  const [budgetInput, setBudgetInput] = React.useState<string>("");
+  const [budgetError, setBudgetError] = React.useState<string>("");
+
   const hasDateError = React.useMemo(() => {
     if (!formData.dataInicio || !formData.dataFim) return false;
     const dataInicio = new Date(formData.dataInicio);
@@ -109,32 +112,6 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
       description: "Viagem solo ou com humanos",
     },
   ];
-
-  const orcamentoOpcoes = [
-    {
-      value: "Econômico",
-      icon: <DollarSign size={24} />,
-      description: "Viagens com custo reduzido",
-      color: "#4caf50",
-    },
-    {
-      value: "Moderado",
-      icon: <DollarSign size={24} />,
-      description: "Conforto equilibrado e bom custo-benefício",
-      color: "#00bcd4",
-    },
-    {
-      value: "Luxo",
-      icon: <DollarSign size={24} />,
-      description: "Experiências premium",
-      color: "#9c27b0",
-    },
-  ];
-
-  const [budgetInput, setBudgetInput] = useState<string>(
-    (formData as any).orcamento || ""
-  );
-  const [budgetError, setBudgetError] = useState<string>("");
 
   useEffect(() => {
     // keep local formatted input in sync if parent updates
@@ -226,43 +203,72 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
       <QuestionTitle style={{ marginTop: "40px" }}>
         Qual sua faixa de orçamento para esta viagem?{" "}
       </QuestionTitle>
-      <OptionContainer>
-        {orcamentoOpcoes.map((opcao) => (
-          <OptionLabel
-            key={opcao.value}
-            className={formData.orcamento === opcao.value ? "selected" : ""}
+      <div style={{ marginTop: "20px" }}>
+        <div style={{ position: "relative" }}>
+          <DollarSign
+            size={20}
+            style={{
+              position: "absolute",
+              left: "16px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              color: "rgba(255, 255, 255, 0.6)",
+              zIndex: 1,
+            }}
+          />
+          <input
+            type="text"
+            name="orcamento"
+            value={budgetInput}
+            onChange={handleBudgetChange}
+            placeholder="Digite seu orçamento (ex: R$ 5.000)"
+            style={{
+              width: "100%",
+              padding: "16px 20px 16px 48px",
+              fontSize: "16px",
+              borderRadius: "12px",
+              border: "2px solid rgba(255, 255, 255, 0.1)",
+              background: "rgba(255, 255, 255, 0.05)",
+              color: "#ffffff",
+              backdropFilter: "blur(10px)",
+              transition: "all 0.3s ease",
+              outline: "none",
+              fontFamily: "inherit",
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = "#00bcd4";
+              e.target.style.background = "rgba(255, 255, 255, 0.1)";
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = "rgba(255, 255, 255, 0.1)";
+              e.target.style.background = "rgba(255, 255, 255, 0.05)";
+            }}
+          />
+        </div>
+        <p
+          style={{
+            marginTop: "8px",
+            fontSize: "14px",
+            color: "rgba(255, 255, 255, 0.6)",
+            fontStyle: "italic",
+          }}
+        >
+          💡 Dica: Inclua todos os gastos (hospedagem, transporte, alimentação,
+          passeios)
+        </p>
+        {budgetError && (
+          <p
+            style={{
+              marginTop: "8px",
+              fontSize: "14px",
+              color: "#ef4444",
+              fontWeight: "500",
+            }}
           >
-            <RadioInput
-              name="orcamento"
-              value={opcao.value}
-              checked={formData.orcamento === opcao.value}
-              onChange={handleChange}
-            />
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "12px",
-                width: "100%",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: "28px",
-                  color: opcao.color,
-                  transition: "all 0.3s ease",
-                }}
-              >
-                {opcao.icon}
-              </span>
-              <div style={{ flex: 1 }}>
-                <div className="option-title">{opcao.value}</div>
-                <div className="option-description">{opcao.description}</div>
-              </div>
-            </div>
-          </OptionLabel>
-        ))}
-      </OptionContainer>
+            ⚠️ {budgetError}
+          </p>
+        )}
+      </div>
 
       <QuestionTitle style={{ marginTop: "40px" }}>
         <Calendar size={24} style={{ marginRight: "8px" }} />
