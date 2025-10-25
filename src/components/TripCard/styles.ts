@@ -241,7 +241,6 @@ export const ModalContent = styled.div`
   border-radius: 16px;
   padding: 32px;
   max-width: 800px;
-  max-height: 80vh;
   overflow-y: auto;
   width: 100%;
   position: relative;
@@ -307,6 +306,40 @@ export const PlanContent = styled.div`
   border-radius: 12px;
   border-left: 4px solid ${colors.primary.cyan};
   font-size: 0.875rem;
+  max-height: 500px;
+  overflow-y: auto;
+
+  /* Estilo customizado do scrollbar */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: ${colors.background.glass};
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      135deg,
+      ${colors.primary.cyan} 0%,
+      ${colors.primary.blue} 100%
+    );
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      135deg,
+      ${colors.primary.blue} 0%,
+      ${colors.primary.cyan} 100%
+    );
+  }
+
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: ${colors.primary.cyan} ${colors.background.glass};
 `;
 
 export const ExportButtons = styled.div`

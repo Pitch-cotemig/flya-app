@@ -88,6 +88,9 @@ const FilterButton = styled.button<{ active?: boolean }>`
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: ${(props) =>
     props.active ? colors.shadow.cyan : colors.shadow.sm};
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
   &:hover {
     transform: translateY(-2px);

@@ -1,25 +1,104 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   QuestionTitle,
   OptionContainer,
   OptionLabel,
   RadioInput,
 } from "../../pages/PlanningFormPage/styles";
-import { Heart, Plane, DollarSign, Calendar } from "lucide-react";
+import styled from "styled-components";
+import { Heart, Plane, DollarSign, Calendar, AlertCircle } from "lucide-react";
+
+const DateInputContainer = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+`;
+
+const DateFieldWrapper = styled.div`
+  flex: 1;
+  min-width: 200px;
+`;
+
+const DateLabel = styled.label`
+  display: block;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const DateInput = styled.input<{ $hasError?: boolean }>`
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid
+    ${(props) =>
+      props.$hasError ? "rgba(239, 68, 68, 0.5)" : "rgba(255, 255, 255, 0.1)"};
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: ${(props) => (props.$hasError ? "#ef4444" : "#00bcd4")};
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px
+      ${(props) =>
+        props.$hasError ? "rgba(239, 68, 68, 0.2)" : "rgba(0, 188, 212, 0.1)"};
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+  }
+`;
+
+const ErrorMessage = styled.div`
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: fadeIn 0.3s ease;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`;
 
 interface Step2Props {
   formData: {
     pet: string;
     orcamento: string;
-    dias: string;
+    dataInicio: string;
+    dataFim: string;
   };
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
-  const [budgetInput, setBudgetInput] = useState(formData.orcamento || "");
-  const [budgetError, setBudgetError] = useState("");
-  const [daysError, setDaysError] = useState("");
+  const [budgetInput, setBudgetInput] = React.useState<string>("");
+  const [budgetError, setBudgetError] = React.useState<string>("");
+
+  const hasDateError = React.useMemo(() => {
+    if (!formData.dataInicio || !formData.dataFim) return false;
+    const dataInicio = new Date(formData.dataInicio);
+    const dataFim = new Date(formData.dataFim);
+    return dataFim < dataInicio;
+  }, [formData.dataInicio, formData.dataFim]);
 
   const petOpcoes = [
     {
@@ -34,14 +113,19 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
     },
   ];
 
+  useEffect(() => {
+    // keep local formatted input in sync if parent updates
+    setBudgetInput((formData as any).orcamento || "");
+  }, [formData.orcamento]);
+
   // Função para formatar o valor como moeda brasileira
   const formatCurrency = (value: string) => {
     // Remove tudo que não é dígito
     const numericValue = value.replace(/\D/g, "");
-    
+
     // Se não há valor, retorna vazio
     if (!numericValue) return "";
-    
+
     // Converte para número e formata
     const number = parseInt(numericValue, 10);
     return new Intl.NumberFormat("pt-BR", {
@@ -56,9 +140,8 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
   const handleBudgetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
     const formattedValue = formatCurrency(rawValue);
-    
     setBudgetInput(formattedValue);
-    
+
     // Validação mínima de R$ 2.000
     const numericValue = parseInt(rawValue.replace(/\D/g, ""), 10);
     if (numericValue > 0 && numericValue < 2000) {
@@ -66,7 +149,7 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
     } else {
       setBudgetError("");
     }
-    
+
     // Cria um evento sintético para o handleChange do pai
     const syntheticEvent = {
       ...e,
@@ -76,31 +159,8 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
         value: formattedValue,
       },
     } as React.ChangeEvent<HTMLInputElement>;
-    
+
     handleChange(syntheticEvent);
-  };
-
-  const handleDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-
-    // Permitir apenas números
-    if (value === "" || /^\d+$/.test(value)) {
-      const numValue = parseInt(value);
-
-      if (value === "") {
-        setDaysError("");
-        handleChange(e);
-      } else if (numValue < 1) {
-        setDaysError("Mínimo de 1 dia");
-        handleChange(e);
-      } else if (numValue > 365) {
-        setDaysError("Máximo de 365 dias");
-        handleChange(e);
-      } else {
-        setDaysError("");
-        handleChange(e);
-      }
-    }
   };
 
   return (
@@ -138,88 +198,15 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
         ))}
       </OptionContainer>
 
-      <QuestionTitle style={{ marginTop: "40px" }}>
-        Quantos dias terá sua viagem?
-      </QuestionTitle>
-      <div
-        style={{
-          marginTop: "20px",
-          maxWidth: "600px",
-          marginLeft: "auto",
-          marginRight: "auto",
-        }}
-      >
-        <div style={{ position: "relative" }}>
-          <Calendar
-            size={20}
-            style={{
-              position: "absolute",
-              left: "20px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              color: "rgba(255, 255, 255, 0.6)",
-              zIndex: 1,
-            }}
-          />
-          <input
-            type="text"
-            name="dias"
-            value={formData.dias}
-            onChange={handleDaysChange}
-            placeholder="Ex: 7 dias"
-            style={{
-              width: "100%",
-              padding: "16px 20px 16px 60px",
-              fontSize: "16px",
-              borderRadius: "12px",
-              border: "2px solid rgba(255, 255, 255, 0.1)",
-              background: "rgba(255, 255, 255, 0.05)",
-              color: "#ffffff",
-              backdropFilter: "blur(10px)",
-              transition: "all 0.3s ease",
-              outline: "none",
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = "#00bcd4";
-              e.target.style.background = "rgba(255, 255, 255, 0.1)";
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = "rgba(255, 255, 255, 0.1)";
-              e.target.style.background = "rgba(255, 255, 255, 0.05)";
-            }}
-          />
-        </div>
-        <p
-          style={{
-            marginTop: "8px",
-            fontSize: "14px",
-            color: "rgba(255, 255, 255, 0.6)",
-            fontStyle: "italic",
-          }}
-        >
-          📅 Digite apenas números (ex: 7 para 7 dias)
-        </p>
-        {daysError && (
-          <p
-            style={{
-              marginTop: "8px",
-              fontSize: "14px",
-              color: "#ff6b6b",
-              fontWeight: "500",
-            }}
-          >
-            ⚠️ {daysError}
-          </p>
-        )}
-      </div>
+      {/* dias input removed — using explicit start/end dates instead */}
 
       <QuestionTitle style={{ marginTop: "40px" }}>
         Qual sua faixa de orçamento para esta viagem?{" "}
       </QuestionTitle>
       <div style={{ marginTop: "20px" }}>
         <div style={{ position: "relative" }}>
-          <DollarSign 
-            size={20} 
+          <DollarSign
+            size={20}
             style={{
               position: "absolute",
               left: "16px",
@@ -258,25 +245,71 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
             }}
           />
         </div>
-        <p style={{
-          marginTop: "8px",
-          fontSize: "14px",
-          color: "rgba(255, 255, 255, 0.6)",
-          fontStyle: "italic"
-        }}>
-          💡 Dica: Inclua todos os gastos (hospedagem, transporte, alimentação, passeios)
-        </p>
-        {budgetError && (
-          <p style={{
+        <p
+          style={{
             marginTop: "8px",
             fontSize: "14px",
-            color: "#ef4444",
-            fontWeight: "500"
-          }}>
+            color: "rgba(255, 255, 255, 0.6)",
+            fontStyle: "italic",
+          }}
+        >
+          💡 Dica: Inclua todos os gastos (hospedagem, transporte, alimentação,
+          passeios)
+        </p>
+        {budgetError && (
+          <p
+            style={{
+              marginTop: "8px",
+              fontSize: "14px",
+              color: "#ef4444",
+              fontWeight: "500",
+            }}
+          >
             ⚠️ {budgetError}
           </p>
         )}
       </div>
+
+      <QuestionTitle style={{ marginTop: "40px" }}>
+        <Calendar size={24} style={{ marginRight: "8px" }} />
+        Quando você planeja viajar?
+      </QuestionTitle>
+      <DateInputContainer>
+        <DateFieldWrapper>
+          <DateLabel>
+            <Calendar size={16} />
+            Data de Início
+          </DateLabel>
+          <DateInput
+            type="date"
+            name="dataInicio"
+            value={formData.dataInicio}
+            onChange={handleChange}
+            min={new Date().toISOString().split("T")[0]}
+            $hasError={hasDateError}
+          />
+        </DateFieldWrapper>
+        <DateFieldWrapper>
+          <DateLabel>
+            <Calendar size={16} />
+            Data de Fim
+          </DateLabel>
+          <DateInput
+            type="date"
+            name="dataFim"
+            value={formData.dataFim}
+            onChange={handleChange}
+            min={formData.dataInicio || new Date().toISOString().split("T")[0]}
+            $hasError={hasDateError}
+          />
+        </DateFieldWrapper>
+      </DateInputContainer>
+      {hasDateError && (
+        <ErrorMessage>
+          <AlertCircle size={16} />A data de fim não pode ser anterior à data de
+          início da viagem
+        </ErrorMessage>
+      )}
     </>
   );
 };

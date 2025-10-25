@@ -9,6 +9,7 @@ import { AiModule } from './ai/ai.module';
 import { TripsModule } from './trips/trips.module';
 import { ProfileModule } from './profile/profile.module';
 import { BagsModule } from './bags/bags.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { BagsModule } from './bags/bags.module';
     AiModule,
     TripsModule,
     ProfileModule,
+    DashboardModule,
     BagsModule,
   ],
   controllers: [AppController],
