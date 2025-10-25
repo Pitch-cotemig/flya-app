@@ -51,6 +51,22 @@ export class AuthService {
       throw new BadRequestException('Erro ao criar perfil do usuário');
     }
 
+    // Criar configurações de segurança padrão
+    await supabase.from('security_settings').insert({
+      user_id: authData.user.id
+    });
+
+    // Criar configurações de notificação padrão
+    await supabase.from('notification_settings').insert({
+      user_id: authData.user.id
+    });
+
+    if (profileError) {
+      // Se der erro ao criar o perfil, deletar o usuário criado
+      await supabase.auth.admin.deleteUser(authData.user.id);
+      throw new BadRequestException('Erro ao criar perfil do usuário');
+    }
+
     return {
       user: {
         id: authData.user.id,
