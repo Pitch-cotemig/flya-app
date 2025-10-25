@@ -60,9 +60,29 @@ export class ProfileService {
     try {
       let avatarUrl: string | null = null;
 
-      // Upload do avatar se fornecido
       if (file) {
-        const fileName = `avatar_${userId}_${Date.now()}.${file.originalname.split('.').pop()}`;
+        const folderPath = `users/${userId}`;
+        const timestamp = Date.now();
+        const fileName = `${folderPath}/avatar_${timestamp}.${file.originalname.split('.').pop()}`;
+        
+
+
+        const { data: existingFiles } = await supabase.storage
+          .from('avatars')
+          .list(folderPath);
+        
+
+        if (existingFiles && existingFiles.length > 0) {
+          const filesToRemove = existingFiles.map(f => `${folderPath}/${f.name}`);
+
+          const { error: removeError } = await supabase.storage
+            .from('avatars')
+            .remove(filesToRemove);
+            
+          if (removeError) {
+            throw new Error('Erro ao remover avatar antigo: ' + removeError.message);
+          }
+        }
         
         const { error: uploadError } = await supabase.storage
           .from('avatars')
@@ -82,7 +102,7 @@ export class ProfileService {
         avatarUrl = publicUrl;
       }
 
-      // Atualizar email no auth se fornecido
+
       if (profileData.email && profileData.email !== userValidation.user.email) {
         const { error: emailError } = await supabase.auth.admin.updateUserById(
           userId,
@@ -94,7 +114,7 @@ export class ProfileService {
         }
       }
 
-      // Preparar dados para atualizar
+
       const updateData: any = {
         updated_at: new Date().toISOString()
       };
@@ -103,7 +123,7 @@ export class ProfileService {
       if (profileData.firstName) updateData.first_name = profileData.firstName;
       if (profileData.lastName) updateData.last_name = profileData.lastName;
       
-      // Atualizar full_name se firstName ou lastName foram alterados
+
       if (profileData.firstName || profileData.lastName) {
         const firstName = profileData.firstName || userValidation.user.firstName || '';
         const lastName = profileData.lastName || userValidation.user.lastName || '';
