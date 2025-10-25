@@ -7,8 +7,10 @@ import { UpdateBagDto } from './dto/update-bag.dto';
 export class BagsService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
-  async create(createBagDto: CreateBagDto, userId: string) {
-    const supabase = this.supabaseService.getClient();
+  async create(createBagDto: CreateBagDto, userId: string, accessToken?: string) {
+    const supabase = accessToken 
+      ? this.supabaseService.getClientWithAuth(accessToken)
+      : this.supabaseService.getClient();
 
     const { data, error } = await supabase
       .from('bags')
@@ -24,8 +26,10 @@ export class BagsService {
     return data;
   }
 
-  async findByTripAndUser(tripId: string, userId: string) {
-    const supabase = this.supabaseService.getClient();
+  async findByTripAndUser(tripId: string, userId: string, accessToken?: string) {
+    const supabase = accessToken 
+      ? this.supabaseService.getClientWithAuth(accessToken)
+      : this.supabaseService.getClient();
 
     const { data, error } = await supabase
       .from('bags')
@@ -38,8 +42,10 @@ export class BagsService {
     return data;
   }
 
-  async update(id: string, updateBagDto: UpdateBagDto, userId: string) {
-    const supabase = this.supabaseService.getClient();
+  async update(id: string, updateBagDto: UpdateBagDto, userId: string, accessToken?: string) {
+    const supabase = accessToken 
+      ? this.supabaseService.getClientWithAuth(accessToken)
+      : this.supabaseService.getClient();
 
     const { data, error } = await supabase
       .from('bags')

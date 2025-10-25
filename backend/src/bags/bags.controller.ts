@@ -24,6 +24,7 @@ export class BagsController {
   async create(@Body() createBagDto: CreateBagDto, @Request() req) {
     try {
       const userId = req.user?.sub || req.user?.id;
+      const accessToken = req.headers.authorization?.replace('Bearer ', '');
 
       if (!userId) {
         throw new HttpException(
@@ -35,7 +36,7 @@ export class BagsController {
         );
       }
 
-      return await this.bagsService.create(createBagDto, userId);
+      return await this.bagsService.create(createBagDto, userId, accessToken);
     } catch (error) {
       throw new HttpException(
         {
@@ -51,6 +52,7 @@ export class BagsController {
   async findByTrip(@Param('tripId') tripId: string, @Request() req) {
     try {
       const userId = req.user?.sub || req.user?.id;
+      const accessToken = req.headers.authorization?.replace('Bearer ', '');
       if (!userId) {
         throw new HttpException(
           {
@@ -60,7 +62,7 @@ export class BagsController {
           HttpStatus.UNAUTHORIZED,
         );
       }
-      return await this.bagsService.findByTripAndUser(tripId, userId);
+      return await this.bagsService.findByTripAndUser(tripId, userId, accessToken);
     } catch (error) {
       throw new HttpException(
         {
@@ -80,7 +82,8 @@ export class BagsController {
   ) {
     try {
       const userId = req.user?.sub || req.user?.id;
-      return await this.bagsService.update(id, updateBagDto, userId);
+      const accessToken = req.headers.authorization?.replace('Bearer ', '');
+      return await this.bagsService.update(id, updateBagDto, userId, accessToken);
     } catch (error) {
       throw new HttpException(
         {
