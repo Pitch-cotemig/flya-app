@@ -25,6 +25,7 @@ import LandingPage from "./pages/HomePage/HomePage";
 import TermsOfUsePage from "./pages/TermsOfUse/TermsOfUsePage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy/PrivacyPolicyPage";
 import AboutUsPage from "./pages/AboutUs/AboutUsPage";
+import ConsentTermPage from "./pages/ConsentTerm/ConsentTermPage";
 import { PlanningFormPage } from "./pages/PlanningFormPage/PlanningFormPage";
 import { BagPage } from "./pages/BagPage";
 import {
@@ -123,6 +124,10 @@ function App() {
               element={<PrivacyPolicyPage />}
             />
             <Route path="/Sobre-Nos" element={<AboutUsPage />} />
+            <Route
+              path="/Termo-de-Consentimento"
+              element={<ConsentTermPage />}
+            />
 
             {/* Rotas Privadas */}
             <Route

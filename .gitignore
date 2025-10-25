@@ -25,3 +25,4 @@ dist-ssr
 
 # dotenv environment variables file
 backend/.env
+src/.env

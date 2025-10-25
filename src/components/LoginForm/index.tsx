@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Input } from "..";
+import { useNavigate } from "react-router-dom";
 import flyaLogo from "../../assets/flyalogo.svg";
 import {
   LoginFormContainer,
@@ -11,6 +12,7 @@ import {
   LoginButton,
   RegisterButton,
   ErrorMessage,
+  BackButton,
 } from "./styles";
 
 interface FormData {
@@ -31,6 +33,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
   loading,
   error,
 }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
@@ -44,6 +47,10 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (onSubmit) onSubmit(formData);
+  };
+
+  const handleGoToHome = () => {
+    navigate("/");
   };
 
   return (
@@ -88,6 +95,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
           Cadastre-se
         </LoginButton>
       </LoginLink>
+      <BackButton type="button" onClick={handleGoToHome}>
+        Voltar
+      </BackButton>
     </LoginFormContainer>
   );
 };
