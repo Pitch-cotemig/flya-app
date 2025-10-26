@@ -70,7 +70,7 @@ const NotificationsPage: React.FC = () => {
         "Receba notificações sobre mudanças em seus planos de viagem",
       icon: <Calendar size={20} />,
       enabled: true,
-      frequency: "instant",
+      frequency: "instantaneo",
       hasFrequency: true,
       type: "email",
     },
@@ -88,7 +88,7 @@ const NotificationsPage: React.FC = () => {
       description: "Sugestões e informações sobre seus destinos",
       icon: <MapPin size={20} />,
       enabled: false,
-      frequency: "weekly",
+      frequency: "semanal",
       hasFrequency: true,
       type: "email",
     },
@@ -98,7 +98,7 @@ const NotificationsPage: React.FC = () => {
       description: "Descontos e ofertas especiais para viagens",
       icon: <Mail size={20} />,
       enabled: false,
-      frequency: "weekly",
+      frequency: "semanal",
       hasFrequency: true,
       type: "email",
     },
@@ -305,10 +305,10 @@ const NotificationsPage: React.FC = () => {
                       handleFrequencyChange(notification.id, e.target.value)
                     }
                   >
-                    <option value="instant">Instantâneo</option>
-                    <option value="daily">Diário</option>
-                    <option value="weekly">Semanal</option>
-                    <option value="monthly">Mensal</option>
+                    <option value="instantaneo">Instantâneo</option>
+                    <option value="diario">Diário</option>
+                    <option value="semanal">Semanal</option>
+                    <option value="mensal">Mensal</option>
                   </FrequencySelect>
                 </NotificationFrequency>
               )}
