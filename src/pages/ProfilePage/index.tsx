@@ -194,10 +194,15 @@ const PhotoButton = styled.button<{ variant?: "outline" }>`
   cursor: pointer;
   transition: all 0.2s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: ${({ variant }) =>
       variant === "outline" ? "#1e293b" : "#2563eb"};
     transform: translateY(-2px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 
@@ -242,6 +247,12 @@ const Input = styled.input`
   &::placeholder {
     color: ${colors.profile.textDimmed};
   }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: #0f172a;
+  }
 `;
 
 const SaveButton = styled.button`
@@ -256,10 +267,15 @@ const SaveButton = styled.button`
   transition: all 0.2s ease;
   align-self: flex-start;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: ${colors.profile.blueDark};
     transform: translateY(-2px);
     box-shadow: ${colors.shadow.purple};
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 `;
 
@@ -440,6 +456,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
     avatar: user?.avatar || "",
   });
 
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string>(user?.avatar || "");
+
   // Security states
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -451,6 +470,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
     confirmPassword: "",
   });
 
+  const profileState = useApiState();
   const passwordState = useApiState();
   const sessionsState = useApiState();
   const deleteAccountState = useApiState();
@@ -461,43 +481,132 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
       ...prev,
       [name]: value,
     }));
+    profileState.clearMessages();
   };
 
-  const handleSave = () => {
-    // Aqui será implementada a lógica de salvar os dados
-    console.log("Salvando dados:", formData);
-    // TODO: Implementar API call para salvar perfil no backend
+  const validateProfileForm = (): string | null => {
+    if (!formData.username.trim()) {
+      return "Nome de usuário é obrigatório";
+    }
+    if (!formData.firstName.trim()) {
+      return "Primeiro nome é obrigatório";
+    }
+    if (!formData.lastName.trim()) {
+      return "Sobrenome é obrigatório";
+    }
+    if (!formData.email.trim()) {
+      return "Email é obrigatório";
+    }
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      return "Email inválido";
+    }
+    return null;
+  };
+
+  const handleSave = async () => {
+    // Validate form
+    const validationError = validateProfileForm();
+    if (validationError) {
+      profileState.setError(validationError);
+      return;
+    }
+
+    profileState.setLoading(true);
+    profileState.clearMessages();
+
+    try {
+      // Update profile data (with avatar if present)
+      const response = await profileService.updateProfile(formData, avatarFile || undefined);
+
+      if (response.success) {
+        profileState.setSuccess(response.message);
+
+        // Update local user data
+        if (response.data) {
+          // Update the user object in parent component or context
+          console.log("Profile updated:", response.data);
+
+          // Update avatar preview with the new URL from backend
+          if (response.data.avatar) {
+            setAvatarPreview(response.data.avatar);
+            setFormData(prev => ({
+              ...prev,
+              avatar: response.data.avatar || ""
+            }));
+          }
+        }
+
+        // Clear avatar file after successful upload
+        setAvatarFile(null);
+      } else {
+        profileState.setError(response.message);
+      }
+    } catch (error) {
+      profileState.setError("Erro ao salvar perfil. Tente novamente.");
+    }
   };
 
   const handlePhotoUpload = () => {
-    // Criar input file invisível
+    // Create invisible file input
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = "image/*";
+    input.accept = "image/jpeg,image/jpg,image/png,image/gif";
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
-        // Criar URL temporária para preview
+        // Validate file size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+          profileState.setError("A imagem deve ter no máximo 5MB");
+          return;
+        }
+
+        // Validate file type
+        if (!file.type.match(/image\/(jpeg|jpg|png|gif)/)) {
+          profileState.setError("Apenas imagens JPG, PNG ou GIF são permitidas");
+          return;
+        }
+
+        // Store the file for upload
+        setAvatarFile(file);
+
+        // Create temporary URL for preview
         const reader = new FileReader();
         reader.onload = (e) => {
           const result = e.target?.result as string;
+          setAvatarPreview(result);
           setFormData((prev) => ({
             ...prev,
             avatar: result,
           }));
         };
         reader.readAsDataURL(file);
+        profileState.clearMessages();
       }
     };
     input.click();
   };
 
-  const handlePhotoRemove = () => {
-    setFormData((prev) => ({
-      ...prev,
-      avatar: "",
-    }));
-    // TODO: Implementar remoção da foto no backend
+  const handlePhotoRemove = async () => {
+    if (!window.confirm("Tem certeza que deseja remover sua foto de perfil?")) {
+      return;
+    }
+
+    profileState.setLoading(true);
+    const response = await profileService.removeAvatar();
+
+    if (response.success) {
+      setAvatarPreview("");
+      setAvatarFile(null);
+      setFormData((prev) => ({
+        ...prev,
+        avatar: "",
+      }));
+      profileState.setSuccess("Foto removida com sucesso");
+    } else {
+      profileState.setError(response.message);
+    }
   };
 
   // Security handlers
@@ -618,32 +727,65 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
             <>
               <ProfileHeader>
                 <h1>Editar Perfil</h1>
+                <p>Gerencie suas informações pessoais</p>
               </ProfileHeader>
 
               <ProfileForm>
                 <FormSection>
+                  {/* Feedback Messages */}
+                  {profileState.loading && (
+                    <FeedbackMessage
+                      type="loading"
+                      message="Salvando perfil..."
+                    />
+                  )}
+                  {profileState.error && (
+                    <FeedbackMessage
+                      type="error"
+                      message={profileState.error}
+                      onClose={profileState.clearMessages}
+                    />
+                  )}
+                  {profileState.success && (
+                    <FeedbackMessage
+                      type="success"
+                      message={profileState.success}
+                      onClose={profileState.clearMessages}
+                    />
+                  )}
+
                   <PhotoSection>
                     <PhotoPreview>
-                      {formData.avatar ? (
-                        <img src={formData.avatar} alt="Avatar" />
+                      {avatarPreview || formData.avatar ? (
+                        <img src={avatarPreview || formData.avatar} alt="Avatar" />
                       ) : (
                         <User size={60} />
                       )}
                     </PhotoPreview>
                     <PhotoActions>
-                      <PhotoButton type="button" onClick={handlePhotoUpload}>
-                        Carregar Nova Foto
+                      <PhotoButton
+                        type="button"
+                        onClick={handlePhotoUpload}
+                        disabled={profileState.loading}
+                      >
+                        {avatarFile ? "Alterar Foto" : "Carregar Nova Foto"}
                       </PhotoButton>
-                      {formData.avatar && (
+                      {(avatarPreview || formData.avatar) && (
                         <PhotoButton
                           type="button"
                           variant="outline"
                           onClick={handlePhotoRemove}
+                          disabled={profileState.loading}
                         >
                           Remover Foto
                         </PhotoButton>
                       )}
                     </PhotoActions>
+                    {avatarFile && (
+                      <p style={{ color: "#94a3b8", fontSize: "0.875rem", margin: "0.5rem 0 0" }}>
+                        Nova foto selecionada: {avatarFile.name}
+                      </p>
+                    )}
                   </PhotoSection>
 
                   <FormRow>
@@ -655,6 +797,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
                         value={formData.username}
                         onChange={handleInputChange}
                         placeholder="Digite seu nome de usuário"
+                        disabled={profileState.loading}
+                        required
                       />
                     </FormGroup>
                   </FormRow>
@@ -668,6 +812,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
                         value={formData.firstName}
                         onChange={handleInputChange}
                         placeholder="Digite seu primeiro nome"
+                        disabled={profileState.loading}
+                        required
                       />
                     </FormGroup>
                     <FormGroup>
@@ -678,6 +824,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
                         value={formData.lastName}
                         onChange={handleInputChange}
                         placeholder="Digite seu sobrenome"
+                        disabled={profileState.loading}
+                        required
                       />
                     </FormGroup>
                   </FormRow>
@@ -691,6 +839,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
                         value={formData.email}
                         onChange={handleInputChange}
                         placeholder="Digite seu email"
+                        disabled={profileState.loading}
+                        required
                       />
                     </FormGroup>
                     <FormGroup>
@@ -701,12 +851,17 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
                         value={formData.birthDate}
                         onChange={handleInputChange}
                         placeholder="Digite sua data de nascimento"
+                        disabled={profileState.loading}
                       />
                     </FormGroup>
                   </FormRow>
 
-                  <SaveButton type="button" onClick={handleSave}>
-                    Salvar alterações
+                  <SaveButton
+                    type="button"
+                    onClick={handleSave}
+                    disabled={profileState.loading}
+                  >
+                    {profileState.loading ? "Salvando..." : "Salvar alterações"}
                   </SaveButton>
                 </FormSection>
               </ProfileForm>
