@@ -110,7 +110,7 @@ export class ProfileService {
         );
         
         if (emailError) {
-          throw new Error('Erro ao atualizar email: ' + emailError.message);
+          throw new BadRequestException('Este email já está sendo usado');
         }
       }
 
@@ -140,7 +140,13 @@ export class ProfileService {
         .eq('id', userId);
 
       if (error) {
-        throw new Error('Erro ao atualizar perfil: ' + error.message);
+        if (error.code === '23505' && error.message.includes('email')) {
+          throw new BadRequestException('Este email já está sendo usado');
+        }
+        if (error.code === '23505' && error.message.includes('username')) {
+          throw new BadRequestException('Este nome de usuário já está sendo usado');
+        }
+        throw new BadRequestException('Erro ao atualizar perfil: ' + error.message);
       }
 
       const { data: profile } = await supabase
@@ -164,6 +170,15 @@ export class ProfileService {
       };
     } catch (error) {
       console.error('Erro detalhado ao atualizar perfil:', error);
+      
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      
+      if (error.message?.includes('already registered') || error.message?.includes('email_address_not_authorized')) {
+        throw new BadRequestException('Este email já está sendo usado');
+      }
+      
       throw new BadRequestException('Erro ao atualizar perfil: ' + error.message);
     }
   }
