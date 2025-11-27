@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { SupabaseModule } from './supabase/supabase.module';
-import { AuthModule } from './auth/auth.module';
-import { PlanningModule } from './planning/planning.module';
-import { AiModule } from './ai/ai.module';
-import { TripsModule } from './trips/trips.module';
-import { ProfileModule } from './profile/profile.module';
-import { BagsModule } from './bags/bags.module';
-import { DashboardModule } from './dashboard/dashboard.module';
+import { SupabaseModule } from './config/supabase/supabase.module';
+import { AuthModule } from './models/auth-model';
+import { PlanningModule } from './models/planning-model';
+import { AiModule } from './models/ai-model';
+import { TripsModule } from './models/trips-model';
+import { ProfileModule } from './models/profile-model';
+import { BagsModule } from './models/bags-model';
+import { DashboardModule } from './models/dashboard-model';
 
 @Module({
   imports: [
@@ -27,7 +25,5 @@ import { DashboardModule } from './dashboard/dashboard.module';
     DashboardModule,
     BagsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
