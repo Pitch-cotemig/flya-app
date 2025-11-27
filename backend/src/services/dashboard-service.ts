@@ -5,7 +5,7 @@ import {
   RecentTripDto,
   MonthlyTripDto,
   DestinationDto,
-} from './dto/dashboard-stats.dto';
+} from '../dtos/dashboard/dashboard-dto';
 
 @Injectable()
 export class DashboardService {

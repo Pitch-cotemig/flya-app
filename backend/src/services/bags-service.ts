@@ -1,14 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { SupabaseService } from '../config/supabase/supabase.service';
-import { CreateBagDto } from './dto/create-bag.dto';
-import { UpdateBagDto } from './dto/update-bag.dto';
+import { CreateBagDto } from '../dtos/bags/create-bag-dto';
+import { UpdateBagDto } from '../dtos/bags/update-bag-dto';
 
 @Injectable()
 export class BagsService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
-  async create(createBagDto: CreateBagDto, userId: string, accessToken?: string) {
-    const supabase = accessToken 
+  async create(
+    createBagDto: CreateBagDto,
+    userId: string,
+    accessToken?: string,
+  ) {
+    const supabase = accessToken
       ? this.supabaseService.getClientWithAuth(accessToken)
       : this.supabaseService.getClient();
 
@@ -26,8 +30,12 @@ export class BagsService {
     return data;
   }
 
-  async findByTripAndUser(tripId: string, userId: string, accessToken?: string) {
-    const supabase = accessToken 
+  async findByTripAndUser(
+    tripId: string,
+    userId: string,
+    accessToken?: string,
+  ) {
+    const supabase = accessToken
       ? this.supabaseService.getClientWithAuth(accessToken)
       : this.supabaseService.getClient();
 
@@ -42,8 +50,13 @@ export class BagsService {
     return data;
   }
 
-  async update(id: string, updateBagDto: UpdateBagDto, userId: string, accessToken?: string) {
-    const supabase = accessToken 
+  async update(
+    id: string,
+    updateBagDto: UpdateBagDto,
+    userId: string,
+    accessToken?: string,
+  ) {
+    const supabase = accessToken
       ? this.supabaseService.getClientWithAuth(accessToken)
       : this.supabaseService.getClient();
 

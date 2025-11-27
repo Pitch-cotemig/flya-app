@@ -10,9 +10,9 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { BagsService } from './bags.service';
-import { CreateBagDto } from './dto/create-bag.dto';
-import { UpdateBagDto } from './dto/update-bag.dto';
+import { BagsService } from '../services/bags-service';
+import { CreateBagDto } from '../dtos/bags/create-bag-dto';
+import { UpdateBagDto } from '../dtos/bags/update-bag-dto';
 import { JwtGuard } from '../middlewares/auth/jwt.guard';
 
 @Controller('bags')
@@ -62,7 +62,11 @@ export class BagsController {
           HttpStatus.UNAUTHORIZED,
         );
       }
-      return await this.bagsService.findByTripAndUser(tripId, userId, accessToken);
+      return await this.bagsService.findByTripAndUser(
+        tripId,
+        userId,
+        accessToken,
+      );
     } catch (error) {
       throw new HttpException(
         {
@@ -83,7 +87,12 @@ export class BagsController {
     try {
       const userId = req.user?.sub || req.user?.id;
       const accessToken = req.headers.authorization?.replace('Bearer ', '');
-      return await this.bagsService.update(id, updateBagDto, userId, accessToken);
+      return await this.bagsService.update(
+        id,
+        updateBagDto,
+        userId,
+        accessToken,
+      );
     } catch (error) {
       throw new HttpException(
         {
