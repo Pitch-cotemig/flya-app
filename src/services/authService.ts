@@ -69,20 +69,51 @@ export interface TwoFactorStatusData {
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Auth service class
-//teste
 class AuthService {
+  private async fetchWithTimeout(
+    url: string,
+    options: RequestInit = {},
+    timeout = 10000,
+    retries = 1
+  ): Promise<Response> {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+
+        const response = await fetch(url, {
+          ...options,
+          signal: controller.signal,
+        });
+
+        clearTimeout(id);
+        return response;
+      } catch (error) {
+        if (attempt === retries) {
+          throw error;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+    }
+    throw new Error("Falha após múltiplas tentativas");
+  }
+
   async login(
     credentials: LoginCredentials
   ): Promise<AuthResponse<LoginSuccessData>> {
     try {
-      const response = await fetch(`${API_URL}/auth/signin`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await this.fetchWithTimeout(
+        `${API_URL}/auth/signin`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(credentials),
         },
-        body: JSON.stringify(credentials),
-      });
+        10000,
+        1
+      );
 
       const data = await response.json();
 
@@ -92,11 +123,27 @@ class AuthService {
 
       return { success: true, message: "Login successful", data };
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "An unknown error occurred";
+      if (error instanceof Error) {
+        if (error.name === "AbortError") {
+          return {
+            success: false,
+            message: "A conexão demorou muito. Tente novamente.",
+            data: null,
+          };
+        }
+        if (error.message.includes("fetch")) {
+          return {
+            success: false,
+            message:
+              "Erro de conexão. Verifique sua internet e tente novamente.",
+            data: null,
+          };
+        }
+        return { success: false, message: error.message, data: null };
+      }
       return {
         success: false,
-        message,
+        message: "Erro desconhecido. Tente novamente.",
         data: null,
       };
     }
@@ -106,13 +153,18 @@ class AuthService {
     credentials: RegisterCredentials
   ): Promise<AuthResponse<RegisterSuccessData>> {
     try {
-      const response = await fetch(`${API_URL}/auth/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await this.fetchWithTimeout(
+        `${API_URL}/auth/signup`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(credentials),
         },
-        body: JSON.stringify(credentials),
-      });
+        10000,
+        1
+      );
 
       const data = await response.json();
 
@@ -122,11 +174,27 @@ class AuthService {
 
       return { success: true, message: "Registration successful", data };
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "An unknown error occurred";
+      if (error instanceof Error) {
+        if (error.name === "AbortError") {
+          return {
+            success: false,
+            message: "A conexão demorou muito. Tente novamente.",
+            data: null,
+          };
+        }
+        if (error.message.includes("fetch")) {
+          return {
+            success: false,
+            message:
+              "Erro de conexão. Verifique sua internet e tente novamente.",
+            data: null,
+          };
+        }
+        return { success: false, message: error.message, data: null };
+      }
       return {
         success: false,
-        message,
+        message: "Erro desconhecido. Tente novamente.",
         data: null,
       };
     }
@@ -136,13 +204,18 @@ class AuthService {
     token: string
   ): Promise<AuthResponse<ValidateSuccessData>> {
     try {
-      const response = await fetch(`${API_URL}/auth/validate`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await this.fetchWithTimeout(
+        `${API_URL}/auth/validate`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+        10000,
+        1
+      );
 
       const data = await response.json();
       if (!response.ok) {
@@ -150,6 +223,13 @@ class AuthService {
       }
       return { success: true, message: "Token is valid", data };
     } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        return {
+          success: false,
+          message: "Tempo de validação esgotado",
+          data: null,
+        };
+      }
       const message =
         error instanceof Error ? error.message : "An unknown error occurred";
       return { success: false, message, data: null };
@@ -161,13 +241,18 @@ class AuthService {
     code: string
   ): Promise<AuthResponse<LoginSuccessData>> {
     try {
-      const response = await fetch(`${API_URL}/auth/2fa/verify`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await this.fetchWithTimeout(
+        `${API_URL}/auth/2fa/verify`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, code }),
         },
-        body: JSON.stringify({ email, code }),
-      });
+        10000,
+        1
+      );
 
       const data = await response.json();
       if (!response.ok) {
@@ -175,6 +260,13 @@ class AuthService {
       }
       return { success: true, message: "2FA verified", data };
     } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        return {
+          success: false,
+          message: "Verificação 2FA demorou muito",
+          data: null,
+        };
+      }
       const message =
         error instanceof Error ? error.message : "An unknown error occurred";
       return { success: false, message, data: null };
@@ -193,11 +285,16 @@ class AuthService {
         return { success: false, message: "Token não encontrado", data: null };
       }
 
-      const response = await fetch(`${API_URL}/auth/2fa/status`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await this.fetchWithTimeout(
+        `${API_URL}/auth/2fa/status`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+        10000,
+        1
+      );
 
       const data = await response.json();
       if (!response.ok) {
@@ -205,6 +302,13 @@ class AuthService {
       }
       return { success: true, message: "Status obtido", data };
     } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        return {
+          success: false,
+          message: "Falha ao obter status 2FA",
+          data: null,
+        };
+      }
       const message =
         error instanceof Error ? error.message : "An unknown error occurred";
       return { success: false, message, data: null };
@@ -218,13 +322,18 @@ class AuthService {
         return { success: false, message: "Token não encontrado", data: null };
       }
 
-      const response = await fetch(`${API_URL}/auth/2fa/toggle`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      const response = await this.fetchWithTimeout(
+        `${API_URL}/auth/2fa/toggle`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         },
-      });
+        10000,
+        1
+      );
 
       const data = await response.json();
       if (!response.ok) {
@@ -232,6 +341,13 @@ class AuthService {
       }
       return { success: true, message: "2FA atualizado", data };
     } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        return {
+          success: false,
+          message: "Falha ao atualizar 2FA",
+          data: null,
+        };
+      }
       const message =
         error instanceof Error ? error.message : "An unknown error occurred";
       return { success: false, message, data: null };

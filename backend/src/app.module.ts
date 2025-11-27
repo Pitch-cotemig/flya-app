@@ -8,6 +8,7 @@ import { TripsModule } from './models/trips-model';
 import { ProfileModule } from './models/profile-model';
 import { BagsModule } from './models/bags-model';
 import { DashboardModule } from './models/dashboard-model';
+import { HealthController } from './controllers/health-controller';
 
 @Module({
   imports: [
@@ -25,5 +26,6 @@ import { DashboardModule } from './models/dashboard-model';
     DashboardModule,
     BagsModule,
   ],
+  controllers: [HealthController],
 })
 export class AppModule {}
