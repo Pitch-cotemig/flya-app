@@ -45,6 +45,19 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const warmupBackend = async () => {
+      const API_URL = import.meta.env.VITE_API_URL;
+      try {
+        await fetch(`${API_URL}/health`, { method: "GET" });
+        console.log("✅ Backend aquecido e pronto");
+      } catch (error) {
+        console.warn("⚠️ Backend ainda não está disponível:", error);
+      }
+    };
+    warmupBackend();
+  }, []);
+
+  useEffect(() => {
     const checkUser = async () => {
       const token = localStorage.getItem("authToken");
       console.log("Checking token:", token ? "Token exists" : "No token");

@@ -1,11 +1,15 @@
-import { useState } from 'react';
-import { AuthCard, TwoFactorForm } from '../../components';
-import { authService, User } from '../../services/authService';
-import { authStyles } from './styles';
+import { useState } from "react";
+import { AuthCard, TwoFactorForm } from "../../components";
+import { authService, User } from "../../services/authService";
 
 interface FormData {
   email: string;
   password: string;
+  username?: string;
+  firstName?: string;
+  lastName?: string;
+  birthDate?: string;
+  confirmPassword?: string;
 }
 
 interface AuthPageProps {
@@ -16,7 +20,7 @@ function AuthPage({ onLoginSuccess }: AuthPageProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [showTwoFactor, setShowTwoFactor] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
+  const [userEmail, setUserEmail] = useState("");
 
   const handleLoginSubmit = async (formData: FormData): Promise<void> => {
     setLoading(true);
@@ -32,7 +36,25 @@ function AuthPage({ onLoginSuccess }: AuthPageProps) {
         onLoginSuccess(response.data.user, response.data.token);
       }
     } else {
-      setError(response.message);
+      let errorMessage = response.message;
+
+      if (
+        errorMessage.includes("Failed to fetch") ||
+        errorMessage.includes("conexão")
+      ) {
+        errorMessage =
+          "Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.";
+      } else if (
+        errorMessage.includes("timeout") ||
+        errorMessage.includes("demorou")
+      ) {
+        errorMessage =
+          "O servidor demorou para responder. Tente novamente em alguns instantes.";
+      } else if (errorMessage.includes("Invalid login credentials")) {
+        errorMessage = "E-mail ou senha incorretos. Tente novamente.";
+      }
+
+      setError(errorMessage);
     }
   };
 
@@ -52,7 +74,27 @@ function AuthPage({ onLoginSuccess }: AuthPageProps) {
   const handleRegisterSubmit = async (formData: FormData): Promise<void> => {
     setLoading(true);
     setError(null);
-    const response = await authService.register(formData);
+
+    if (
+      !formData.username ||
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.birthDate
+    ) {
+      setError("Todos os campos são obrigatórios.");
+      setLoading(false);
+      return;
+    }
+
+    const response = await authService.register({
+      email: formData.email,
+      password: formData.password,
+      username: formData.username,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      birthDate: formData.birthDate,
+      confirmPassword: formData.confirmPassword || formData.password,
+    });
     setLoading(false);
 
     if (response.success && response.data) {
