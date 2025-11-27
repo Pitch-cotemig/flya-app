@@ -3,15 +3,12 @@ import {
   Controller,
   Post,
   Get,
-  UseGuards,
-  Req,
   Headers,
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from '../services/auth-service';
 import { AuthDto } from '../dtos/auth/auth-dto';
 import { LoginDto } from '../dtos/auth/login-dto';
-import { JwtGuard } from '../middlewares/auth/jwt.guard';
 import { Verify2FADto } from '../dtos/auth/two-factor-dto';
 
 @Controller('auth')
@@ -34,7 +31,7 @@ export class AuthController {
       throw new Error('Token não fornecido');
     }
 
-    const token = authHeader.substring(7); // Remove 'Bearer '
+    const token = authHeader.substring(7);
     return this.authService.validateToken(token);
   }
 
@@ -49,7 +46,6 @@ export class AuthController {
       throw new UnauthorizedException('Código inválido ou expirado');
     }
 
-    // Completar login após verificação 2FA
     return this.authService.complete2FALogin(body.email);
   }
 

@@ -10,10 +10,7 @@ export class WeatherService {
     this.apiKey = this.configService.get<string>('OPENWEATHER_API_KEY');
   }
 
-  async getWeatherForLocation(
-    lat: number,
-    lon: number,
-  ): Promise<any | null> {
+  async getWeatherForLocation(lat: number, lon: number): Promise<any | null> {
     if (!this.apiKey) {
       console.error('API Key do OpenWeather não configurada.');
       return null;
@@ -27,9 +24,9 @@ export class WeatherService {
             lat,
             lon,
             appid: this.apiKey,
-            units: 'metric', // Para receber a temperatura em Celsius
+            units: 'metric',
             lang: 'pt_br',
-            cnt: 40, // A API retorna previsões a cada 3 horas, 8 * 5 = 40 para ter 5 dias
+            cnt: 40,
           },
         },
       );

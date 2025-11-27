@@ -17,19 +17,25 @@ export class PhotosService {
     }
 
     try {
-      const response = await axios.get('https://api.unsplash.com/search/photos', {
-        params: {
-          query,
-          per_page: 1,
-          orientation: 'landscape',
+      const response = await axios.get(
+        'https://api.unsplash.com/search/photos',
+        {
+          params: {
+            query,
+            per_page: 1,
+            orientation: 'landscape',
+          },
+          headers: {
+            Authorization: `Client-ID ${this.accessKey}`,
+          },
         },
-        headers: {
-          Authorization: `Client-ID ${this.accessKey}`,
-        },
-      });
+      );
 
-      if (response.data && response.data.results && response.data.results.length > 0) {
-        // Retorna a URL da imagem em tamanho "regular", que é bom para web
+      if (
+        response.data &&
+        response.data.results &&
+        response.data.results.length > 0
+      ) {
         return response.data.results[0].urls.regular;
       }
       return null;

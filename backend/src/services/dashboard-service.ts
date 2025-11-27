@@ -15,7 +15,6 @@ export class DashboardService {
     try {
       const supabase = this.supabaseService.getClient();
 
-      // Fetch all user trips
       const { data: trips, error } = await supabase
         .from('trips')
         .select('id, plan_result, is_favorite, prompt_data, created_at')
@@ -30,11 +29,9 @@ export class DashboardService {
         return this.getEmptyStats();
       }
 
-      // Calculate statistics
       const totalTrips = trips.length;
       const favoriteTrips = trips.filter((trip) => trip.is_favorite).length;
 
-      // Parse recent trips (last 5)
       const recentTrips: RecentTripDto[] = trips.slice(0, 5).map((trip) => {
         const promptData = trip.prompt_data as any;
         return {
@@ -47,7 +44,6 @@ export class DashboardService {
         };
       });
 
-      // Count unique destinations
       const destinations = new Map<string, number>();
       trips.forEach((trip) => {
         const promptData = trip.prompt_data as any;
@@ -62,7 +58,6 @@ export class DashboardService {
 
       const totalDestinations = destinations.size;
 
-      // Most visited destinations (top 5)
       const mostVisitedDestinations: DestinationDto[] = Array.from(
         destinations.entries(),
       )
@@ -70,13 +65,10 @@ export class DashboardService {
         .slice(0, 5)
         .map(([name, count]) => ({ name, count }));
 
-      // Calculate trips by month (last 12 months)
       const tripsByMonth = this.calculateTripsByMonth(trips);
 
-      // Calculate average trip duration
       const averageTripDuration = this.calculateAverageDuration(trips);
 
-      // Calculate total budget spent
       const totalBudgetSpent = this.calculateTotalBudget(trips);
 
       return {
@@ -142,7 +134,6 @@ export class DashboardService {
       }
     });
 
-    // Get last 12 months
     const result: MonthlyTripDto[] = [];
     const now = new Date();
 
