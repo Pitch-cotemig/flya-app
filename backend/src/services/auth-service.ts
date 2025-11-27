@@ -17,10 +17,8 @@ export class AuthService {
       throw new BadRequestException('As senhas não coincidem');
     }
 
-    const { data: authData, error: authError } = await this.authRepository.createUser(
-      authDto.email,
-      authDto.password
-    );
+    const { data: authData, error: authError } =
+      await this.authRepository.createUser(authDto.email, authDto.password);
 
     if (authError) {
       throw new UnauthorizedException(authError.message);
@@ -40,7 +38,8 @@ export class AuthService {
       full_name: `${authDto.firstName} ${authDto.lastName}`,
     };
 
-    const { error: profileError } = await this.authRepository.createProfile(profileData);
+    const { error: profileError } =
+      await this.authRepository.createProfile(profileData);
 
     if (profileError) {
       await this.authRepository.deleteUser(authData.user.id);
@@ -67,7 +66,7 @@ export class AuthService {
   async signIn(loginDto: LoginDto) {
     const { data, error } = await this.authRepository.signInUser(
       loginDto.email,
-      loginDto.password
+      loginDto.password,
     );
 
     if (error) {
@@ -80,7 +79,8 @@ export class AuthService {
       );
     }
 
-    const { data: profile, error: profileError } = await this.authRepository.getProfileById(data.user.id);
+    const { data: profile, error: profileError } =
+      await this.authRepository.getProfileById(data.user.id);
 
     if (profileError) {
       throw new UnauthorizedException('Erro ao buscar perfil do usuário');
@@ -103,16 +103,23 @@ export class AuthService {
 
   async validateToken(token: string) {
     try {
+      const { createClient } = require('@supabase/supabase-js');
+      const supabaseUrl = process.env.SUPABASE_URL;
+      const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+
+      const supabaseAnon = createClient(supabaseUrl, supabaseAnonKey);
+
       const {
         data: { user },
         error,
-      } = await this.authRepository.getUserByToken(token);
+      } = await supabaseAnon.auth.getUser(token);
 
       if (error || !user) {
         throw new UnauthorizedException('Token inválido');
       }
 
-      const { data: profile, error: profileError } = await this.authRepository.getProfileById(user.id);
+      const { data: profile, error: profileError } =
+        await this.authRepository.getProfileById(user.id);
 
       if (profileError) {
         throw new UnauthorizedException('Erro ao buscar perfil do usuário');
@@ -140,7 +147,6 @@ export class AuthService {
 
     await this.authRepository.save2FACode(email, code, expiresAt.toISOString());
 
-    // Enviar email usando Nodemailer
     try {
       const nodemailer = require('nodemailer');
 
@@ -201,24 +207,23 @@ export class AuthService {
   async signInWith2FA(loginDto: LoginDto) {
     const { data, error } = await this.authRepository.signInUser(
       loginDto.email,
-      loginDto.password
+      loginDto.password,
     );
 
     if (error) {
       throw new UnauthorizedException(error.message);
     }
 
-    const { data: profile } = await this.authRepository.getProfileByEmail(loginDto.email);
+    const { data: profile } = await this.authRepository.getProfileByEmail(
+      loginDto.email,
+    );
 
     if (profile?.two_factor_enabled) {
-      // Salvar dados temporários para completar login depois
       this.tempLoginData.set(loginDto.email, data);
-      // Enviar código 2FA
       await this.send2FACode(loginDto.email);
       return { requiresTwoFactor: true, message: 'Código 2FA enviado' };
     }
 
-    // Login normal se 2FA não estiver habilitado
     return this.completeLogin(data);
   }
 
@@ -234,7 +239,8 @@ export class AuthService {
   }
 
   private async completeLogin(data: any) {
-    const { data: profile, error: profileError } = await this.authRepository.getProfileById(data.user.id);
+    const { data: profile, error: profileError } =
+      await this.authRepository.getProfileById(data.user.id);
 
     if (profileError) {
       throw new UnauthorizedException('Erro ao buscar perfil do usuário');
@@ -262,7 +268,8 @@ export class AuthService {
       throw new UnauthorizedException('Usuário não encontrado');
     }
 
-    const { data: profile, error: selectError } = await this.authRepository.get2FAStatus(userValidation.user.id);
+    const { data: profile, error: selectError } =
+      await this.authRepository.get2FAStatus(userValidation.user.id);
 
     if (selectError) {
       throw new BadRequestException(
@@ -273,7 +280,10 @@ export class AuthService {
     const currentStatus = profile?.two_factor_enabled || false;
     const newStatus = !currentStatus;
 
-    const { error: updateError } = await this.authRepository.update2FAStatus(userValidation.user.id, newStatus);
+    const { error: updateError } = await this.authRepository.update2FAStatus(
+      userValidation.user.id,
+      newStatus,
+    );
 
     if (updateError) {
       throw new BadRequestException(
@@ -291,7 +301,9 @@ export class AuthService {
       throw new UnauthorizedException('Usuário não encontrado');
     }
 
-    const { data: profile, error } = await this.authRepository.get2FAStatus(userValidation.user.id);
+    const { data: profile, error } = await this.authRepository.get2FAStatus(
+      userValidation.user.id,
+    );
 
     if (error) {
       throw new BadRequestException('Erro ao buscar perfil: ' + error.message);

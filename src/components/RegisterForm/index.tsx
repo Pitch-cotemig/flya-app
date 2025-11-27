@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Input } from "..";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import flyaLogo from "../../assets/flyalogo.svg";
 import {
   RegisterFormContainer,
@@ -14,6 +14,11 @@ import {
   ErrorMessage,
   FormRow,
   FieldError,
+  BackButton,
+  ConsentCheckboxContainer,
+  Checkbox,
+  ConsentLabel,
+  FullWidthGroup,
 } from "./styles";
 
 interface FormData {
@@ -49,6 +54,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     password: "",
     confirmPassword: "",
   });
+
+  const [consentAccepted, setConsentAccepted] = useState(false);
 
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
@@ -103,6 +110,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
       errors.confirmPassword = "As senhas não coincidem";
     }
 
+    // Validar consentimento
+    if (!consentAccepted) {
+      errors.consent = "Você deve aceitar o Termo de Consentimento";
+    }
+
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -147,20 +159,22 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
       </LogoContainer>
       <FormTitle>Cadastro Flya</FormTitle>
 
-      <FormGroup>
-        <Input
-          type="text"
-          name="username"
-          placeholder="Nome de usuário"
-          value={formData.username}
-          onChange={handleInputChange}
-          required
-          error={validationErrors.username}
-        />
-        {validationErrors.username && (
-          <FieldError>{validationErrors.username}</FieldError>
-        )}
-      </FormGroup>
+      <FullWidthGroup>
+        <FormGroup>
+          <Input
+            type="text"
+            name="username"
+            placeholder="Nome de usuário"
+            value={formData.username}
+            onChange={handleInputChange}
+            required
+            error={validationErrors.username}
+          />
+          {validationErrors.username && (
+            <FieldError>{validationErrors.username}</FieldError>
+          )}
+        </FormGroup>
+      </FullWidthGroup>
 
       <FormRow>
         <FormGroup>
@@ -193,35 +207,39 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         </FormGroup>
       </FormRow>
 
-      <FormGroup>
-        <Input
-          type="email"
-          name="email"
-          placeholder="Digite seu e-mail"
-          value={formData.email}
-          onChange={handleInputChange}
-          required
-          error={validationErrors.email}
-        />
-        {validationErrors.email && (
-          <FieldError>{validationErrors.email}</FieldError>
-        )}
-      </FormGroup>
+      <FullWidthGroup>
+        <FormGroup>
+          <Input
+            type="email"
+            name="email"
+            placeholder="Digite seu e-mail"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+            error={validationErrors.email}
+          />
+          {validationErrors.email && (
+            <FieldError>{validationErrors.email}</FieldError>
+          )}
+        </FormGroup>
+      </FullWidthGroup>
 
-      <FormGroup>
-        <Input
-          type="date"
-          name="birthDate"
-          placeholder="Data de nascimento"
-          value={formData.birthDate}
-          onChange={handleInputChange}
-          required
-          error={validationErrors.birthDate}
-        />
-        {validationErrors.birthDate && (
-          <FieldError>{validationErrors.birthDate}</FieldError>
-        )}
-      </FormGroup>
+      <FullWidthGroup>
+        <FormGroup>
+          <Input
+            type="date"
+            name="birthDate"
+            placeholder="Data de nascimento"
+            value={formData.birthDate}
+            onChange={handleInputChange}
+            required
+            error={validationErrors.birthDate}
+          />
+          {validationErrors.birthDate && (
+            <FieldError>{validationErrors.birthDate}</FieldError>
+          )}
+        </FormGroup>
+      </FullWidthGroup>
 
       <FormGroup>
         <Input
@@ -255,11 +273,39 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
       {error && <ErrorMessage>{error}</ErrorMessage>}
 
-      <FormGroup>
-        <RegisterButton type="submit" disabled={loading}>
-          {loading ? "Cadastrando..." : "Cadastrar"}
-        </RegisterButton>
-      </FormGroup>
+      <ConsentCheckboxContainer>
+        <Checkbox
+          type="checkbox"
+          id="consent"
+          checked={consentAccepted}
+          onChange={(e) => {
+            setConsentAccepted(e.target.checked);
+            if (validationErrors.consent) {
+              setValidationErrors((prev) => ({
+                ...prev,
+                consent: "",
+              }));
+            }
+          }}
+        />
+        <ConsentLabel htmlFor="consent">
+          Li e aceito o{" "}
+          <Link to="/Termo-de-Consentimento" target="_blank">
+            Termo de Consentimento para Tratamento de Dados Pessoais
+          </Link>
+        </ConsentLabel>
+      </ConsentCheckboxContainer>
+      {validationErrors.consent && (
+        <FieldError>{validationErrors.consent}</FieldError>
+      )}
+
+      <FullWidthGroup>
+        <FormGroup>
+          <RegisterButton type="submit" disabled={loading}>
+            {loading ? "Cadastrando..." : "Cadastrar"}
+          </RegisterButton>
+        </FormGroup>
+      </FullWidthGroup>
 
       <LoginLink>
         <LoginText>Já tem uma conta? </LoginText>
@@ -267,9 +313,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           Faça login
         </LoginButton>
       </LoginLink>
-      <LoginButton type="button" onClick={handleGoToHome}>
+      <BackButton type="button" onClick={handleGoToHome}>
         Voltar
-      </LoginButton>
+      </BackButton>
     </RegisterFormContainer>
   );
 };

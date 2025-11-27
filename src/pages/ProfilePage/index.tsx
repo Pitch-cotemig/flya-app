@@ -443,9 +443,14 @@ const DangerButton = styled.button`
 interface ProfilePageProps {
   user: UserType;
   onLogout: () => void;
+  onUserUpdate: (updatedUser: UserType) => void;
 }
 
-const ProfilePage: React.FC<ProfilePageProps> = ({ user, onLogout }) => {
+const ProfilePage: React.FC<ProfilePageProps> = ({
+  user,
+  onLogout,
+  onUserUpdate,
+}) => {
   const [activeTab, setActiveTab] = useState("profile");
   const [formData, setFormData] = useState({
     username: user?.username || "",

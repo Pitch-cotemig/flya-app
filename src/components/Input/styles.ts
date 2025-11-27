@@ -10,7 +10,8 @@ export const StyledInput = styled.input<StyledInputProps>`
   font-size: 16px;
   color: #ffffff;
   background-color: transparent;
-  border: 2px solid ${({ hasError }) => hasError ? '#ff4d4f' : 'rgba(255, 255, 255, 0.2)'};
+  border: 2px solid
+    ${({ hasError }) => (hasError ? "#ff4d4f" : "rgba(255, 255, 255, 0.2)")};
   border-radius: 12px;
   outline: none;
   transition: all 0.3s ease;
@@ -22,12 +23,15 @@ export const StyledInput = styled.input<StyledInputProps>`
   }
 
   &:focus {
-    border-color: ${({ hasError }) => hasError ? '#ff4d4f' : '#00bcd4'};
-    box-shadow: 0 0 0 2px ${({ hasError }) => hasError ? 'rgba(255, 77, 79, 0.2)' : 'rgba(0, 188, 212, 0.2)'};
+    border-color: ${({ hasError }) => (hasError ? "#ff4d4f" : "#00bcd4")};
+    box-shadow: 0 0 0 2px
+      ${({ hasError }) =>
+        hasError ? "rgba(255, 77, 79, 0.2)" : "rgba(0, 188, 212, 0.2)"};
   }
 
   &:hover {
-    border-color: ${({ hasError }) => hasError ? '#ff4d4f' : 'rgba(255, 255, 255, 0.4)'};
+    border-color: ${({ hasError }) =>
+      hasError ? "#ff4d4f" : "rgba(255, 255, 255, 0.4)"};
   }
 
   &:-webkit-autofill,
@@ -36,5 +40,10 @@ export const StyledInput = styled.input<StyledInputProps>`
     -webkit-box-shadow: 0 0 0 1000px transparent inset;
     -webkit-text-fill-color: #ffffff;
     transition: background-color 5000s ease-in-out 0s;
+  }
+
+  &::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
   }
 `;

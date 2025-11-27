@@ -1,4 +1,10 @@
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsString,
+  IsOptional,
+  IsDateString,
+} from 'class-validator';
 
 export class CreatePlanningDto {
   @IsString()
@@ -10,8 +16,20 @@ export class CreatePlanningDto {
   destino: string;
 
   @IsString()
+  @IsOptional()
+  destinoEspecifico?: string;
+
+  @IsString()
   @IsNotEmpty()
   pet: string;
+
+  @IsDateString()
+  @IsNotEmpty()
+  dataInicio: string;
+
+  @IsDateString()
+  @IsNotEmpty()
+  dataFim: string;
 
   @IsString()
   @IsNotEmpty()

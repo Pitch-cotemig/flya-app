@@ -135,8 +135,8 @@ export function BagPage() {
       await addItem({
         name: newItemName.trim(),
         category: activeCategory,
-        checked: false,
-        essential: false,
+        quantity: 1,
+        packed: false,
       });
       setNewItemName("");
     }
@@ -146,8 +146,8 @@ export function BagPage() {
     await addItem({
       name: itemName,
       category: category,
-      checked: false,
-      essential: false,
+      quantity: 1,
+      packed: false,
     });
   };
 
@@ -312,22 +312,22 @@ export function BagPage() {
             </EmptyState>
           ) : (
             displayItems.map((item) => (
-              <ItemCard key={item.id} checked={item.checked}>
+              <ItemCard key={item.id} checked={item.packed}>
                 <ItemCheckbox
                   type="checkbox"
-                  checked={item.checked}
-                  onChange={() => handleToggleItem(item.id)}
+                  checked={item.packed}
+                  onChange={() => handleToggleItem(item.id!)}
                 />
                 <div>
-                  <ItemName checked={item.checked}>{item.name}</ItemName>
+                  <ItemName checked={item.packed}>{item.name}</ItemName>
                   <ItemCategory>
                     {getCategoryIcon(item.category, 14)}{" "}
                     {CATEGORIES.find((c) => c.id === item.category)?.name}
                   </ItemCategory>
                 </div>
                 <ItemActions>
-                  {item.checked && <CheckCircle2 size={16} color="#00bcd4" />}
-                  <DeleteButton onClick={() => handleDeleteItem(item.id)}>
+                  {item.packed && <CheckCircle2 size={16} color="#00bcd4" />}
+                  <DeleteButton onClick={() => handleDeleteItem(item.id!)}>
                     <Trash2 size={16} />
                   </DeleteButton>
                 </ItemActions>

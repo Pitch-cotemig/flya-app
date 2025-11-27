@@ -9,6 +9,8 @@ import {
   Shield,
   Sparkles,
 } from "lucide-react";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 
 const Container = styled.div`
   min-height: 100vh;
@@ -111,10 +113,47 @@ const TeamSection = styled.div`
 `;
 
 const TeamGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
   margin-top: 3rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 2rem;
+
+  .react-multi-carousel-list {
+    padding: 2rem 0 3rem;
+  }
+
+  .react-multi-carousel-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 1rem;
+  }
+
+  .react-multi-carousel-dot-list {
+    bottom: 0;
+  }
+
+  .react-multi-carousel-dot button {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  .react-multi-carousel-dot--active button {
+    background: white;
+    border-color: white;
+  }
+
+  .react-multiple-carousel__arrow {
+    background: rgba(255, 255, 255, 0.2);
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  .react-multiple-carousel__arrow::before {
+    color: white;
+  }
 `;
 
 const TeamMember = styled.div`
@@ -123,6 +162,10 @@ const TeamMember = styled.div`
   border-radius: 16px;
   padding: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+  text-align: center;
 
   h3 {
     font-size: 1.3rem;
@@ -265,22 +308,63 @@ const AboutUsPage: React.FC = () => {
             cliente.
           </p>
           <TeamGrid>
-            <TeamMember>
-              <h3>Cairo Rodrigues</h3>
-              <p>CEO & Fundador</p>
-            </TeamMember>
-            <TeamMember>
-              <h3>Gustavo Albuquerque</h3>
-              <p>CTO & Desenvolvedora</p>
-            </TeamMember>
-            <TeamMember>
-              <h3>Lucas Diniz</h3>
-              <p>Designer UX/UI</p>
-            </TeamMember>
-            <TeamMember>
-              <h3>Eduarda</h3>
-              <p>Marketing Digital</p>
-            </TeamMember>
+            <Carousel
+              responsive={{
+                desktop: {
+                  breakpoint: { max: 3000, min: 1024 },
+                  items: 3,
+                  slidesToSlide: 1,
+                },
+                tablet: {
+                  breakpoint: { max: 1024, min: 640 },
+                  items: 2,
+                  slidesToSlide: 1,
+                },
+                mobile: {
+                  breakpoint: { max: 640, min: 0 },
+                  items: 1,
+                  slidesToSlide: 1,
+                },
+              }}
+              infinite={true}
+              autoPlay={true}
+              autoPlaySpeed={3000}
+              keyBoardControl={true}
+              customTransition="transform 500ms ease-in-out"
+              transitionDuration={500}
+              containerClass="carousel-container"
+              removeArrowOnDeviceType={[]}
+              dotListClass="custom-dot-list-style"
+              itemClass="carousel-item-padding-40-px"
+              showDots={true}
+              swipeable={true}
+              draggable={true}
+            >
+              <TeamMember>
+                <h3>Cairo Rodrigues</h3>
+                <p>CEO & Fundador</p>
+              </TeamMember>
+              <TeamMember>
+                <h3>Gustavo Albuquerque</h3>
+                <p>CTO & Desenvolvedor</p>
+              </TeamMember>
+              <TeamMember>
+                <h3>Lucas Diniz</h3>
+                <p>Designer UX/UI</p>
+              </TeamMember>
+              <TeamMember>
+                <h3>Eduarda</h3>
+                <p>Marketing Digital</p>
+              </TeamMember>
+              <TeamMember>
+                <h3>Bernardo Orsi</h3>
+                <p>Desenvolvedor</p>
+              </TeamMember>
+              <TeamMember>
+                <h3>Izabela</h3>
+                <p>Desenvolvedora</p>
+              </TeamMember>
+            </Carousel>
           </TeamGrid>
         </TeamSection>
 
