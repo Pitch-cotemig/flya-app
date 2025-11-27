@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { SupabaseModule } from './config/supabase/supabase.module';
 import { AuthModule } from './models/auth-model';
 import { PlanningModule } from './models/planning-model';
@@ -27,7 +25,5 @@ import { DashboardModule } from './models/dashboard-model';
     DashboardModule,
     BagsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
