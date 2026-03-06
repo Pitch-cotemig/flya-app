@@ -67,14 +67,22 @@ export interface TwoFactorStatusData {
   two_factor_enabled: boolean;
 }
 
-const API_URL = import.meta.env.VITE_API_URL;
+// Detecta se está rodando localmente ou na Vercel
+const isLocalhost =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
+
+// Se for local, usa a porta 3000. Se for Vercel, usa a própria URL do site (já que é monorepo)
+const API_URL = isLocalhost
+  ? import.meta.env.VITE_API_URL || "http://localhost:3000"
+  : ""; // Em produção, caminhos relativos funcionam melhor no monorepo da Vercel
 
 class AuthService {
   private async fetchWithTimeout(
     url: string,
     options: RequestInit = {},
     timeout = 10000,
-    retries = 1
+    retries = 1,
   ): Promise<Response> {
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
@@ -99,7 +107,7 @@ class AuthService {
   }
 
   async login(
-    credentials: LoginCredentials
+    credentials: LoginCredentials,
   ): Promise<AuthResponse<LoginSuccessData>> {
     try {
       const response = await this.fetchWithTimeout(
@@ -112,7 +120,7 @@ class AuthService {
           body: JSON.stringify(credentials),
         },
         10000,
-        1
+        1,
       );
 
       const data = await response.json();
@@ -150,7 +158,7 @@ class AuthService {
   }
 
   async register(
-    credentials: RegisterCredentials
+    credentials: RegisterCredentials,
   ): Promise<AuthResponse<RegisterSuccessData>> {
     try {
       const response = await this.fetchWithTimeout(
@@ -163,7 +171,7 @@ class AuthService {
           body: JSON.stringify(credentials),
         },
         10000,
-        1
+        1,
       );
 
       const data = await response.json();
@@ -201,7 +209,7 @@ class AuthService {
   }
 
   async validateToken(
-    token: string
+    token: string,
   ): Promise<AuthResponse<ValidateSuccessData>> {
     try {
       const response = await this.fetchWithTimeout(
@@ -214,7 +222,7 @@ class AuthService {
           },
         },
         10000,
-        1
+        1,
       );
 
       const data = await response.json();
@@ -238,7 +246,7 @@ class AuthService {
 
   async verify2FA(
     email: string,
-    code: string
+    code: string,
   ): Promise<AuthResponse<LoginSuccessData>> {
     try {
       const response = await this.fetchWithTimeout(
@@ -251,7 +259,7 @@ class AuthService {
           body: JSON.stringify({ email, code }),
         },
         10000,
-        1
+        1,
       );
 
       const data = await response.json();
@@ -293,7 +301,7 @@ class AuthService {
           },
         },
         10000,
-        1
+        1,
       );
 
       const data = await response.json();
@@ -332,7 +340,7 @@ class AuthService {
           },
         },
         10000,
-        1
+        1,
       );
 
       const data = await response.json();
