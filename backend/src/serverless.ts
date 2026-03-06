@@ -11,8 +11,6 @@ async function bootstrap() {
   if (initialized) return;
   const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
 
-  app.setGlobalPrefix('api');
-
   app.enableCors({
     origin: [
       'http://localhost:5173',
@@ -33,5 +31,7 @@ async function bootstrap() {
 
 export default async (req: any, res: any) => {
   await bootstrap();
+  // Strip the /api prefix so NestJS routes match the controllers as-is
+  req.url = req.url.replace(/^\/api/, '') || '/';
   server(req, res);
 };
