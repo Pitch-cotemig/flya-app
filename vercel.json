@@ -1,14 +1,8 @@
 {
   "buildCommand": "npm --prefix backend install && npm --prefix backend run build && vite build",
   "outputDirectory": "dist",
-  "functions": {
-    "backend/dist/serverless.js": {
-      "memory": 512,
-      "maxDuration": 30
-    }
-  },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/backend/dist/serverless.js" },
+    { "source": "/api/(.*)", "destination": "/api/index" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
