@@ -75,7 +75,7 @@ const isLocalhost =
 // Se for local, usa a porta 3000. Se for Vercel, usa a própria URL do site (já que é monorepo)
 const API_URL = isLocalhost
   ? import.meta.env.VITE_API_URL || "http://localhost:3000"
-  : ""; // Em produção, caminhos relativos funcionam melhor no monorepo da Vercel
+  : "/api"; // Em produção, caminhos relativos funcionam melhor no monorepo da Vercel
 
 class AuthService {
   private async fetchWithTimeout(
