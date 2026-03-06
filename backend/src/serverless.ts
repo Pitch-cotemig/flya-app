@@ -29,9 +29,11 @@ async function bootstrap() {
   initialized = true;
 }
 
-export default async (req: any, res: any) => {
+const handler = async (req: any, res: any) => {
   await bootstrap();
   // Strip the /api prefix so NestJS routes match the controllers as-is
   req.url = req.url.replace(/^\/api/, '') || '/';
   server(req, res);
 };
+
+module.exports = handler;

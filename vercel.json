@@ -1,11 +1,14 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "backend/dist/serverless.js", "use": "@vercel/node" },
-    { "src": "package.json", "use": "@vercel/static-build" }
-  ],
+  "buildCommand": "npm --prefix backend install && npm --prefix backend run build && vite build",
+  "outputDirectory": "dist",
+  "functions": {
+    "backend/dist/serverless.js": {
+      "memory": 512,
+      "maxDuration": 30
+    }
+  },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "backend/dist/serverless.js" },
+    { "source": "/api/(.*)", "destination": "/backend/dist/serverless.js" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
