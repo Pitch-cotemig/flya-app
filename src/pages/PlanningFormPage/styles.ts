@@ -31,8 +31,6 @@ const spin = keyframes`
   }
 `;
 
-
-
 const travelPath = keyframes`
   0% {
     transform: translateX(-100px);
@@ -50,8 +48,6 @@ const travelPath = keyframes`
   }
 `;
 
-
-
 const pulse = keyframes`
   0%, 100% {
     opacity: 0.3;
@@ -62,8 +58,6 @@ const pulse = keyframes`
     transform: scale(1.1);
   }
 `;
-
-
 
 const iconBounce = keyframes`
   0%, 100% {
@@ -87,7 +81,6 @@ const slideInLeft = keyframes`
     transform: translateX(0) scale(1);
   }
 `;
-
 
 const float = keyframes`
   0%, 100% {
@@ -264,8 +257,8 @@ export const StepDot = styled.div<{ $active?: boolean; $completed?: boolean }>`
     props.$completed
       ? "#00bcd4"
       : props.$active
-      ? "#7c3aed"
-      : "rgba(255, 255, 255, 0.3)"};
+        ? "#7c3aed"
+        : "rgba(255, 255, 255, 0.3)"};
   transition: all 0.3s ease;
 
   ${(props) =>
@@ -319,25 +312,13 @@ export const OptionContainer = styled.div`
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.2rem;
   }
+`;
 
-  & > * {
-    animation: ${slideInLeft} 0.6s ease-out forwards;
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-
-  & > *:nth-child(1) {
-    animation-delay: 0.1s;
-  }
-  & > *:nth-child(2) {
-    animation-delay: 0.2s;
-  }
-  & > *:nth-child(3) {
-    animation-delay: 0.3s;
-  }
-  & > *:nth-child(4) {
-    animation-delay: 0.4s;
-  }
+// Container de input com tamanho padrão, centrado como o OptionContainer
+export const InputWrapper = styled.div`
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
 `;
 
 export const OptionLabel = styled.label`
@@ -458,8 +439,10 @@ export const OptionLabel = styled.label`
     border-color: rgba(0, 188, 212, 0.6);
     color: white;
     transform: translateY(-2px) scale(1.03);
-    box-shadow: 0 8px 25px rgba(0, 188, 212, 0.3),
-      0 4px 15px rgba(124, 58, 237, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow:
+      0 8px 25px rgba(0, 188, 212, 0.3),
+      0 4px 15px rgba(124, 58, 237, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
 
     &::after {
       opacity: 1;
@@ -503,7 +486,9 @@ export const StepContainer = styled.div`
   border-radius: 20px;
   padding: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 188, 212, 0.05),
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    0 2px 8px rgba(0, 188, 212, 0.05),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   animation: ${fadeInUp} 0.8s ease-out;
   position: relative;
@@ -699,7 +684,8 @@ export const BackButton = styled(BaseButton)`
   );
   color: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
 
   &::before {
@@ -725,7 +711,8 @@ export const BackButton = styled(BaseButton)`
       rgba(255, 255, 255, 0.08) 100%
     );
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15),
+    box-shadow:
+      0 6px 20px rgba(0, 0, 0, 0.15),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.3);
 
@@ -750,7 +737,9 @@ export const ContinueButton = styled(BaseButton)`
   position: relative;
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 8px 32px rgba(0, 188, 212, 0.4), 0 4px 16px rgba(0, 0, 0, 0.2),
+  box-shadow:
+    0 8px 32px rgba(0, 188, 212, 0.4),
+    0 4px 16px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   animation: pulseGlow 4s ease-in-out infinite;
 
@@ -786,8 +775,10 @@ export const ContinueButton = styled(BaseButton)`
   &:hover {
     transform: translateY(-4px) scale(1.05);
     background: linear-gradient(135deg, #00acc1 0%, #0097a7 50%, #006064 100%);
-    box-shadow: 0 12px 48px rgba(0, 188, 212, 0.6),
-      0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    box-shadow:
+      0 12px 48px rgba(0, 188, 212, 0.6),
+      0 8px 24px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
     animation: none;
 
     &::before {
@@ -821,12 +812,16 @@ export const ContinueButton = styled(BaseButton)`
   @keyframes pulseGlow {
     0%,
     100% {
-      box-shadow: 0 8px 32px rgba(0, 188, 212, 0.4),
-        0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      box-shadow:
+        0 8px 32px rgba(0, 188, 212, 0.4),
+        0 4px 16px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
     50% {
-      box-shadow: 0 12px 48px rgba(0, 188, 212, 0.6),
-        0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      box-shadow:
+        0 12px 48px rgba(0, 188, 212, 0.6),
+        0 8px 24px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
     }
   }
 
@@ -890,7 +885,8 @@ export const InitialScreenContainer = styled.div`
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: ${shimmer} 4s ease-in-out infinite,
+    animation:
+      ${shimmer} 4s ease-in-out infinite,
       ${float} 6s ease-in-out infinite;
     position: relative;
     z-index: 2;
@@ -932,8 +928,10 @@ export const InitialScreenContainer = styled.div`
       border-radius: 14px;
       padding: 1.4rem 1.2rem;
       border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3),
-        0 2px 6px rgba(0, 188, 212, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      box-shadow:
+        0 6px 24px rgba(0, 0, 0, 0.3),
+        0 2px 6px rgba(0, 188, 212, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
       animation: ${fadeInUp} 0.8s ease-out;
       transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       position: relative;
@@ -964,8 +962,10 @@ export const InitialScreenContainer = styled.div`
           rgba(255, 255, 255, 0.15) 0%,
           rgba(255, 255, 255, 0.08) 100%
         );
-        box-shadow: 0 8px 32px rgba(0, 188, 212, 0.2),
-          0 4px 12px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        box-shadow:
+          0 8px 32px rgba(0, 188, 212, 0.2),
+          0 4px 12px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
         border-color: rgba(0, 188, 212, 0.4);
 
         &::before {

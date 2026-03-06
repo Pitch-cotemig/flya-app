@@ -44,7 +44,12 @@ export const pulse = keyframes`
 export const DashboardContainer = styled.div`
   min-height: 100vh;
   padding: 140px 32px 100px;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
     sans-serif;
 `;
 
@@ -52,11 +57,10 @@ export const Header = styled.header`
   max-width: 1400px;
   margin: 0 auto 60px;
   text-align: center;
-  animation: ${fadeInUp} 0.8s ease-out;
 `;
 
 export const Title = styled.h1`
-  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
   font-weight: 700;
   margin-bottom: 16px;
   background: ${colors.gradients.primary};
@@ -64,7 +68,7 @@ export const Title = styled.h1`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.02em;
-  line-height: 1.1;
+  line-height: 1.2;
 `;
 
 export const Subtitle = styled.p`
@@ -86,7 +90,6 @@ export const StatsGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 24px;
   margin-bottom: 60px;
-  animation: ${fadeInUp} 0.8s ease-out 0.2s both;
 
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
@@ -132,9 +135,9 @@ export const StatCard = styled.div`
   }
 
   .icon-wrapper {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
     background: ${colors.gradients.primary};
     display: flex;
     align-items: center;
@@ -144,7 +147,7 @@ export const StatCard = styled.div`
   }
 
   .number {
-    font-size: 2.25rem;
+    font-size: 1.75rem;
     font-weight: 700;
     background: ${colors.gradients.primary};
     -webkit-background-clip: text;
@@ -182,7 +185,6 @@ export const Section = styled.section`
   border-radius: 20px;
   border: 1px solid ${colors.alpha.white01};
   box-shadow: ${colors.shadow.card};
-  animation: ${fadeInUp} 0.8s ease-out 0.4s both;
 
   @media (max-width: 768px) {
     padding: 24px;
@@ -361,7 +363,6 @@ export const QuickActionsGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
   margin-bottom: 40px;
-  animation: ${fadeInUp} 0.8s ease-out 0.6s both;
 `;
 
 export const QuickActionCard = styled.button`
@@ -390,9 +391,9 @@ export const QuickActionCard = styled.button`
   }
 
   .action-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     background: ${colors.gradients.primary};
     display: flex;
     align-items: center;
@@ -416,7 +417,6 @@ export const EmptyState = styled.div`
   border-radius: 20px;
   border: 1px solid ${colors.alpha.white01};
   box-shadow: ${colors.shadow.card};
-  animation: ${subtleFloat} 3s ease-in-out infinite;
 
   h3 {
     font-size: 1.5rem;

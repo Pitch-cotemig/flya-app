@@ -50,14 +50,14 @@ export function Header({ user }: HeaderProps) {
         {/* Login na Direita */}
         <LoginSection>
           {user ? (
-            <Link to="/Perfil">
+            <Link to="/Perfil" style={{ textDecoration: "none" }}>
               <LoginButton>
                 <UserIcon />
                 Perfil
               </LoginButton>
             </Link>
           ) : (
-            <Link to="/auth">
+            <Link to="/auth" style={{ textDecoration: "none" }}>
               <LoginButton>
                 <UserIcon />
                 Login

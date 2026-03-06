@@ -223,7 +223,10 @@ class BagsService {
             clean.length < 30 &&
             !clean.toLowerCase().includes("título") &&
             !clean.toLowerCase().includes("dia") &&
-            !clean.toLowerCase().includes("roteiro")
+            !clean.toLowerCase().includes("roteiro") &&
+            !clean.toLowerCase().includes("resumo") &&
+            !clean.toLowerCase().includes("geral") &&
+            !clean.toLowerCase().includes("viagem")
           ) {
             return clean;
           }
@@ -272,7 +275,7 @@ class BagsService {
           ...dayMatches.map((match) => {
             const num = match.match(/\d+/);
             return num ? parseInt(num[0], 10) : 1;
-          })
+          }),
         );
         if (lastDay > 0 && lastDay <= 30) {
           return lastDay;
@@ -299,7 +302,10 @@ class BagsService {
 
       if (!response.ok) {
         // Se não encontrou (404), retornar que não existe
-        if (response.status === 404 || data.error?.includes("não encontrada")) {
+        if (
+          response.status === 404 ||
+          data?.error?.includes("não encontrada")
+        ) {
           return {
             success: false,
             message: "Mala não encontrada para esta viagem",
@@ -307,6 +313,15 @@ class BagsService {
           };
         }
         return this.handleAuthError(response, data);
+      }
+
+      // Se o backend retornou null (nenhuma mala encontrada)
+      if (!data) {
+        return {
+          success: false,
+          message: "Mala não encontrada para esta viagem",
+          data: null,
+        };
       }
 
       // Mapear resposta do backend para o formato esperado
@@ -317,10 +332,12 @@ class BagsService {
         lastModified: data.updated_at,
         progress: {
           total: (data.items || []).length,
-          checked: (data.items || []).filter((item: BagItem) => item.packed).length,
+          checked: (data.items || []).filter((item: BagItem) => item.packed)
+            .length,
           progress:
             (data.items || []).length > 0
-              ? ((data.items || []).filter((item: BagItem) => item.packed).length /
+              ? ((data.items || []).filter((item: BagItem) => item.packed)
+                  .length /
                   (data.items || []).length) *
                 100
               : 0,
@@ -387,7 +404,7 @@ class BagsService {
   // Adicionar item à mala
   async addItemToBag(
     tripId: string,
-    item: Omit<BagItem, "id">
+    item: Omit<BagItem, "id">,
   ): Promise<ApiResponse<BagItem>> {
     try {
       // Primeiro, buscar a mala atual
@@ -441,7 +458,7 @@ class BagsService {
   async updateBagItem(
     tripId: string,
     itemId: string,
-    updates: Partial<BagItem>
+    updates: Partial<BagItem>,
   ): Promise<ApiResponse<BagItem>> {
     try {
       // Primeiro, buscar a mala atual
@@ -457,7 +474,7 @@ class BagsService {
 
       // Encontrar e atualizar o item
       const updatedItems = bagResponse.data.items.map((item) =>
-        item.id === itemId ? { ...item, ...updates } : item
+        item.id === itemId ? { ...item, ...updates } : item,
       );
 
       const updatedItem = updatedItems.find((item) => item.id === itemId);
@@ -501,7 +518,7 @@ class BagsService {
   // Remover item da mala
   async removeItemFromBag(
     tripId: string,
-    itemId: string
+    itemId: string,
   ): Promise<ApiResponse<null>> {
     try {
       // Primeiro, buscar a mala atual
@@ -517,7 +534,7 @@ class BagsService {
 
       // Filtrar o item removido
       const updatedItems = bagResponse.data.items.filter(
-        (item) => item.id !== itemId
+        (item) => item.id !== itemId,
       );
 
       if (updatedItems.length === bagResponse.data.items.length) {
@@ -559,7 +576,7 @@ class BagsService {
   // Marcar/desmarcar item como checado
   async toggleBagItem(
     tripId: string,
-    itemId: string
+    itemId: string,
   ): Promise<ApiResponse<BagItem>> {
     try {
       // Primeiro, buscar a mala atual
@@ -585,7 +602,7 @@ class BagsService {
 
       // Toggle packed status
       const updatedItems = bagResponse.data.items.map((item) =>
-        item.id === itemId ? { ...item, packed: !item.packed } : item
+        item.id === itemId ? { ...item, packed: !item.packed } : item,
       );
 
       const updatedItem = updatedItems.find((item) => item.id === itemId)!;
@@ -621,7 +638,7 @@ class BagsService {
   // Sincronizar mala completa
   async syncTripBag(
     tripId: string,
-    items: BagItem[]
+    items: BagItem[],
   ): Promise<ApiResponse<TripBag>> {
     try {
       // Primeiro, buscar a mala atual para obter o ID
@@ -658,10 +675,12 @@ class BagsService {
         lastModified: data.updated_at,
         progress: {
           total: (data.items || []).length,
-          checked: (data.items || []).filter((item: BagItem) => item.packed).length,
+          checked: (data.items || []).filter((item: BagItem) => item.packed)
+            .length,
           progress:
             (data.items || []).length > 0
-              ? ((data.items || []).filter((item: BagItem) => item.packed).length /
+              ? ((data.items || []).filter((item: BagItem) => item.packed)
+                  .length /
                   (data.items || []).length) *
                 100
               : 0,

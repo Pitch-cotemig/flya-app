@@ -462,7 +462,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   });
 
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string>(user?.avatar || "");
+  const [avatarPreview, setAvatarPreview] = useState<string>(
+    user?.avatar || "",
+  );
 
   // Security states
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -523,22 +525,25 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
     try {
       // Update profile data (with avatar if present)
-      const response = await profileService.updateProfile(formData, avatarFile || undefined);
+      const response = await profileService.updateProfile(
+        formData,
+        avatarFile || undefined,
+      );
 
       if (response.success) {
         profileState.setSuccess(response.message);
 
         // Update local user data
         if (response.data) {
-          // Update the user object in parent component or context
-          console.log("Profile updated:", response.data);
+          // Update the user object in parent component
+          onUserUpdate(response.data);
 
           // Update avatar preview with the new URL from backend
           if (response.data.avatar) {
             setAvatarPreview(response.data.avatar);
-            setFormData(prev => ({
+            setFormData((prev) => ({
               ...prev,
-              avatar: response.data.avatar || ""
+              avatar: response.data.avatar || "",
             }));
           }
         }
@@ -569,7 +574,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
 
         // Validate file type
         if (!file.type.match(/image\/(jpeg|jpg|png|gif)/)) {
-          profileState.setError("Apenas imagens JPG, PNG ou GIF são permitidas");
+          profileState.setError(
+            "Apenas imagens JPG, PNG ou GIF são permitidas",
+          );
           return;
         }
 
@@ -657,7 +664,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   const handleTerminateSessions = async () => {
     if (
       !window.confirm(
-        "Tem certeza que deseja encerrar todas as outras sessões?"
+        "Tem certeza que deseja encerrar todas as outras sessões?",
       )
     )
       return;
@@ -673,7 +680,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
   const handleDeleteAccount = async () => {
     if (
       !window.confirm(
-        "Tem certeza que deseja excluir sua conta permanentemente?"
+        "Tem certeza que deseja excluir sua conta permanentemente?",
       )
     )
       return;
@@ -762,7 +769,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                   <PhotoSection>
                     <PhotoPreview>
                       {avatarPreview || formData.avatar ? (
-                        <img src={avatarPreview || formData.avatar} alt="Avatar" />
+                        <img
+                          src={avatarPreview || formData.avatar}
+                          alt="Avatar"
+                        />
                       ) : (
                         <User size={60} />
                       )}
@@ -773,9 +783,24 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                         onClick={handlePhotoUpload}
                         disabled={profileState.loading}
                       >
-                        {avatarFile ? "Alterar Foto" : "Carregar Nova Foto"}
+                        {avatarFile ? "Trocar Foto" : "Carregar Nova Foto"}
                       </PhotoButton>
-                      {(avatarPreview || formData.avatar) && (
+                      {avatarFile && (
+                        <PhotoButton
+                          type="button"
+                          onClick={handleSave}
+                          disabled={profileState.loading}
+                          style={{
+                            background: "#16a34a",
+                            borderColor: "#16a34a",
+                          }}
+                        >
+                          {profileState.loading
+                            ? "Salvando..."
+                            : "✓ Confirmar e Salvar Foto"}
+                        </PhotoButton>
+                      )}
+                      {(avatarPreview || formData.avatar) && !avatarFile && (
                         <PhotoButton
                           type="button"
                           variant="outline"
@@ -787,8 +812,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({
                       )}
                     </PhotoActions>
                     {avatarFile && (
-                      <p style={{ color: "#94a3b8", fontSize: "0.875rem", margin: "0.5rem 0 0" }}>
-                        Nova foto selecionada: {avatarFile.name}
+                      <p
+                        style={{
+                          color: "#94a3b8",
+                          fontSize: "0.875rem",
+                          margin: "0.5rem 0 0",
+                        }}
+                      >
+                        Foto selecionada:{" "}
+                        <strong style={{ color: "#e2e8f0" }}>
+                          {avatarFile.name}
+                        </strong>{" "}
+                        — clique em "Confirmar e Salvar Foto" para aplicar.
                       </p>
                     )}
                   </PhotoSection>

@@ -109,24 +109,40 @@ export function useTripBag(): UseTripBagReturn {
 
     try {
       let bagResponse;
+      let isNewBag = false;
 
       if (trip.hasBag) {
-        // Carregar mala existente
+        // Carregar mala existente do cache local
         bagResponse = await bagsService.getTripBag(trip.id);
       } else {
-        // Criar nova mala
+        // Tentar criar nova mala
         bagResponse = await bagsService.createTripBag(trip.id);
 
-        // Atualizar o status da viagem
-        setTrips((prevTrips) =>
-          prevTrips.map((t) => (t.id === trip.id ? { ...t, hasBag: true } : t))
-        );
+        if (bagResponse.success) {
+          isNewBag = true;
+          // Atualizar o status da viagem no estado local
+          setTrips((prevTrips) =>
+            prevTrips.map((t) =>
+              t.id === trip.id ? { ...t, hasBag: true } : t,
+            ),
+          );
+        } else {
+          // Se falhar (ex: mala já existe no BD mas não no localStorage), tentar carregar
+          bagResponse = await bagsService.getTripBag(trip.id);
+          if (bagResponse.success) {
+            setTrips((prevTrips) =>
+              prevTrips.map((t) =>
+                t.id === trip.id ? { ...t, hasBag: true } : t,
+              ),
+            );
+          }
+        }
       }
 
       if (bagResponse.success && bagResponse.data) {
         setBagData(bagResponse.data);
         setBagItems(bagResponse.data.items);
-        setSuccess(trip.hasBag ? "Mala carregada!" : "Nova mala criada!");
+        setSuccess(isNewBag ? "Nova mala criada!" : "Mala carregada!");
       } else {
         setError(bagResponse.message || "Erro ao carregar mala");
       }
@@ -174,14 +190,14 @@ export function useTripBag(): UseTripBagReturn {
       const response = await bagsService.updateBagItem(
         selectedTrip.id,
         itemId,
-        updates
+        updates,
       );
 
       if (response.success && response.data) {
         setBagItems((prevItems) =>
           prevItems.map((item) =>
-            item.id === itemId ? { ...item, ...updates } : item
-          )
+            item.id === itemId ? { ...item, ...updates } : item,
+          ),
         );
         setSuccess("Item atualizado!");
       } else {
@@ -200,12 +216,12 @@ export function useTripBag(): UseTripBagReturn {
     try {
       const response = await bagsService.removeItemFromBag(
         selectedTrip.id,
-        itemId
+        itemId,
       );
 
       if (response.success) {
         setBagItems((prevItems) =>
-          prevItems.filter((item) => item.id !== itemId)
+          prevItems.filter((item) => item.id !== itemId),
         );
         setSuccess("Item removido!");
       } else {
@@ -229,8 +245,8 @@ export function useTripBag(): UseTripBagReturn {
           prevItems.map((item) =>
             item.id === itemId
               ? { ...item, packed: response.data!.packed }
-              : item
-          )
+              : item,
+          ),
         );
       } else {
         setError(response.message || "Erro ao atualizar item");

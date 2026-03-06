@@ -79,7 +79,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
           }, 2000);
         } else {
           setError(
-            response.message || "Erro ao carregar estatísticas do dashboard"
+            response.message || "Erro ao carregar estatísticas do dashboard",
           );
         }
       }
@@ -121,9 +121,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   };
 
   if (isLoading) {
-    return (
-      <FlyaLoading text="Carregando seu dashboard..." size="medium" />
-    );
+    return <FlyaLoading text="Carregando seu dashboard..." size="medium" />;
   }
 
   if (error) {
@@ -164,7 +162,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
     return (
       <DashboardContainer>
         <Header>
-          <Title>Bem-vindo, {user.firstName}!</Title>
+          <Title>Bem-vindo, {user.username}!</Title>
           <Subtitle>Comece sua jornada de viagens hoje</Subtitle>
         </Header>
         <ContentWrapper>
@@ -173,8 +171,8 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
             <h3>Nenhuma viagem planejada ainda</h3>
             <p>
               Você ainda não criou nenhuma viagem. Que tal começar a planejar
-              sua próxima aventura? Nossa IA está pronta para ajudá-lo a criar
-              o roteiro perfeito!
+              sua próxima aventura? Nossa IA está pronta para ajudá-lo a criar o
+              roteiro perfeito!
             </p>
             <ActionButton onClick={() => navigate("/Planejamento")}>
               <PlusCircle size={20} />
@@ -189,13 +187,13 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
   // Calculate max count for chart scaling
   const maxMonthlyTrips = Math.max(
     ...stats.tripsByMonth.map((m) => m.count),
-    1
+    1,
   );
 
   return (
     <DashboardContainer>
       <Header>
-        <Title>Bem-vindo de volta, {user.firstName}!</Title>
+        <Title>Bem-vindo de volta, {user.username}!</Title>
         <Subtitle>
           Aqui está um resumo das suas aventuras e planejamentos
         </Subtitle>
@@ -286,7 +284,9 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
         {/* Main Content Grid */}
         <SectionsGrid>
           {/* Recent Trips & Chart */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "32px" }}
+          >
             {/* Recent Trips */}
             {stats.recentTrips.length > 0 && (
               <Section>
@@ -311,7 +311,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({ user }) => {
                         <div className="trip-dates">
                           {trip.startDate && trip.endDate
                             ? `${formatDate(trip.startDate)} - ${formatDate(
-                                trip.endDate
+                                trip.endDate,
                               )}`
                             : "Datas não especificadas"}
                         </div>

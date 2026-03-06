@@ -1,5 +1,43 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { colors } from "../../design-tokens/colors";
+
+const shimmer = keyframes`
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+`;
+
+export const SkeletonBase = styled.div`
+  background: linear-gradient(
+    90deg,
+    ${colors.background.glass} 25%,
+    ${colors.background.glassStrong} 50%,
+    ${colors.background.glass} 75%
+  );
+  background-size: 800px 100%;
+  animation: ${shimmer} 1.5s infinite linear;
+  border-radius: 8px;
+`;
+
+export const SkeletonCard = styled(SkeletonBase)`
+  height: 90px;
+  border-radius: 16px;
+  margin-bottom: 0;
+`;
+
+export const SkeletonText = styled(SkeletonBase)<{
+  width?: string;
+  height?: string;
+}>`
+  height: ${({ height }) => height || "16px"};
+  width: ${({ width }) => width || "100%"};
+  border-radius: 4px;
+`;
+
+export const SkeletonSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
 
 export const NotificationsContainer = styled.div`
   padding: 2rem;
@@ -53,11 +91,13 @@ export const NotificationIcon = styled.div<{ enabled: boolean }>`
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: ${({ enabled }) => enabled ? colors.gradients.primary : colors.background.glass};
+  background: ${({ enabled }) =>
+    enabled ? colors.gradients.primary : colors.background.glass};
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ enabled }) => enabled ? colors.text.primary : colors.text.primaryAlpha60};
+  color: ${({ enabled }) =>
+    enabled ? colors.text.primary : colors.text.primaryAlpha60};
   transition: all 0.3s ease;
 `;
 
@@ -91,14 +131,16 @@ export const ToggleSwitch = styled.button<{ enabled: boolean }>`
   height: 24px;
   border-radius: 12px;
   border: none;
-  background: ${({ enabled }) => enabled ? colors.primary.cyan : colors.neutral.gray500};
+  background: ${({ enabled }) =>
+    enabled ? colors.primary.cyan : colors.neutral.gray500};
   position: relative;
   cursor: pointer;
   transition: all 0.3s ease;
   padding: 0;
 
   &:hover {
-    background: ${({ enabled }) => enabled ? colors.primary.cyanHover : colors.neutral.gray400};
+    background: ${({ enabled }) =>
+      enabled ? colors.primary.cyanHover : colors.neutral.gray400};
   }
 `;
 
@@ -109,7 +151,7 @@ export const ToggleSlider = styled.div<{ enabled: boolean }>`
   background: white;
   position: absolute;
   top: 2px;
-  left: ${({ enabled }) => enabled ? '26px' : '2px'};
+  left: ${({ enabled }) => (enabled ? "26px" : "2px")};
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;

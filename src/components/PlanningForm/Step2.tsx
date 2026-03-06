@@ -4,6 +4,7 @@ import {
   OptionContainer,
   OptionLabel,
   RadioInput,
+  InputWrapper,
 } from "../../pages/PlanningFormPage/styles";
 import styled from "styled-components";
 import { Heart, Plane, DollarSign, Calendar, AlertCircle } from "lucide-react";
@@ -203,7 +204,7 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
       <QuestionTitle style={{ marginTop: "40px" }}>
         Qual sua faixa de orçamento para esta viagem?{" "}
       </QuestionTitle>
-      <div style={{ marginTop: "20px" }}>
+      <InputWrapper style={{ marginTop: "20px" }}>
         <div style={{ position: "relative" }}>
           <DollarSign
             size={20}
@@ -268,48 +269,52 @@ const Step2: React.FC<Step2Props> = ({ formData, handleChange }) => {
             ⚠️ {budgetError}
           </p>
         )}
-      </div>
+      </InputWrapper>
 
       <QuestionTitle style={{ marginTop: "40px" }}>
         <Calendar size={24} style={{ marginRight: "8px" }} />
         Quando você planeja viajar?
       </QuestionTitle>
-      <DateInputContainer>
-        <DateFieldWrapper>
-          <DateLabel>
-            <Calendar size={16} />
-            Data de Início
-          </DateLabel>
-          <DateInput
-            type="date"
-            name="dataInicio"
-            value={formData.dataInicio}
-            onChange={handleChange}
-            min={new Date().toISOString().split("T")[0]}
-            $hasError={hasDateError}
-          />
-        </DateFieldWrapper>
-        <DateFieldWrapper>
-          <DateLabel>
-            <Calendar size={16} />
-            Data de Fim
-          </DateLabel>
-          <DateInput
-            type="date"
-            name="dataFim"
-            value={formData.dataFim}
-            onChange={handleChange}
-            min={formData.dataInicio || new Date().toISOString().split("T")[0]}
-            $hasError={hasDateError}
-          />
-        </DateFieldWrapper>
-      </DateInputContainer>
-      {hasDateError && (
-        <ErrorMessage>
-          <AlertCircle size={16} />A data de fim não pode ser anterior à data de
-          início da viagem
-        </ErrorMessage>
-      )}
+      <InputWrapper>
+        <DateInputContainer>
+          <DateFieldWrapper>
+            <DateLabel>
+              <Calendar size={16} />
+              Data de Início
+            </DateLabel>
+            <DateInput
+              type="date"
+              name="dataInicio"
+              value={formData.dataInicio}
+              onChange={handleChange}
+              min={new Date().toISOString().split("T")[0]}
+              $hasError={hasDateError}
+            />
+          </DateFieldWrapper>
+          <DateFieldWrapper>
+            <DateLabel>
+              <Calendar size={16} />
+              Data de Fim
+            </DateLabel>
+            <DateInput
+              type="date"
+              name="dataFim"
+              value={formData.dataFim}
+              onChange={handleChange}
+              min={
+                formData.dataInicio || new Date().toISOString().split("T")[0]
+              }
+              $hasError={hasDateError}
+            />
+          </DateFieldWrapper>
+        </DateInputContainer>
+        {hasDateError && (
+          <ErrorMessage>
+            <AlertCircle size={16} />A data de fim não pode ser anterior à data
+            de início da viagem
+          </ErrorMessage>
+        )}
+      </InputWrapper>
     </>
   );
 };

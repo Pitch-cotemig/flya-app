@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import {
   DestinationsSection,
@@ -97,6 +97,7 @@ const DestinationsCarousel: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [itemsPerView, setItemsPerView] = useState(3);
+  const [transitionEnabled, setTransitionEnabled] = useState(true);
 
   useEffect(() => {
     const updateItemsPerView = () => {
@@ -116,27 +117,44 @@ const DestinationsCarousel: React.FC = () => {
 
   const maxIndex = Math.max(0, destinations.length - itemsPerView);
 
+  // Infinite loop: silently jump before painting when out of bounds
+  useLayoutEffect(() => {
+    if (currentIndex > maxIndex) {
+      setTransitionEnabled(false);
+      setCurrentIndex(0);
+    } else if (currentIndex < 0) {
+      setTransitionEnabled(false);
+      setCurrentIndex(maxIndex);
+    }
+  }, [currentIndex, maxIndex]);
+
+  // Re-enable transition on next frame after silent jump
+  useEffect(() => {
+    if (!transitionEnabled) {
+      const raf = requestAnimationFrame(() => setTransitionEnabled(true));
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [transitionEnabled]);
+
   useEffect(() => {
     if (!isAutoPlaying) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) =>
-        prevIndex >= maxIndex ? 0 : prevIndex + 1
-      );
+      setCurrentIndex((prevIndex) => prevIndex + 1);
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [isAutoPlaying, maxIndex]);
+  }, [isAutoPlaying]);
 
   const goToPrevious = () => {
     setIsAutoPlaying(false);
-    setCurrentIndex((prevIndex) => (prevIndex <= 0 ? maxIndex : prevIndex - 1));
+    setCurrentIndex((prevIndex) => prevIndex - 1);
     setTimeout(() => setIsAutoPlaying(true), 5000);
   };
 
   const goToNext = () => {
     setIsAutoPlaying(false);
-    setCurrentIndex((prevIndex) => (prevIndex >= maxIndex ? 0 : prevIndex + 1));
+    setCurrentIndex((prevIndex) => prevIndex + 1);
     setTimeout(() => setIsAutoPlaying(true), 5000);
   };
 
@@ -184,6 +202,7 @@ const DestinationsCarousel: React.FC = () => {
           <CarouselTrack
             style={{
               transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
+              transition: transitionEnabled ? undefined : "none",
             }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}

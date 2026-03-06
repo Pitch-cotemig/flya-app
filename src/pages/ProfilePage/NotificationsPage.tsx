@@ -35,6 +35,9 @@ import {
   FrequencyLabel,
   FrequencySelect,
   SaveButton,
+  SkeletonCard,
+  SkeletonText,
+  SkeletonSection,
 } from "./NotificationsPage.styles";
 
 // Extending the service interface to include React icon
@@ -50,6 +53,8 @@ const NotificationsPage: React.FC = () => {
   const [pushNotifications, setPushNotifications] = useState<
     NotificationSettingWithIcon[]
   >([]);
+
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const {
     loading,
@@ -138,7 +143,7 @@ const NotificationsPage: React.FC = () => {
 
   // Helper function to add icons to notification settings
   const addIconsToNotifications = (
-    notifications: NotificationSetting[]
+    notifications: NotificationSetting[],
   ): NotificationSettingWithIcon[] => {
     const iconMap: Record<string, React.ReactNode> = {
       "trip-updates": <Calendar size={20} />,
@@ -161,16 +166,17 @@ const NotificationsPage: React.FC = () => {
 
     if (response.success && response.data) {
       setEmailNotifications(
-        addIconsToNotifications(response.data.emailNotifications)
+        addIconsToNotifications(response.data.emailNotifications),
       );
       setPushNotifications(
-        addIconsToNotifications(response.data.pushNotifications)
+        addIconsToNotifications(response.data.pushNotifications),
       );
     } else {
       // Use default settings if no settings found or error occurred
       setEmailNotifications(defaultEmailNotifications);
       setPushNotifications(defaultPushNotifications);
     }
+    setIsFirstLoad(false);
   };
 
   const handleEmailToggle = (id: string) => {
@@ -178,8 +184,8 @@ const NotificationsPage: React.FC = () => {
       prev.map((notification) =>
         notification.id === id
           ? { ...notification, enabled: !notification.enabled }
-          : notification
-      )
+          : notification,
+      ),
     );
     clearMessages();
   };
@@ -189,8 +195,8 @@ const NotificationsPage: React.FC = () => {
       prev.map((notification) =>
         notification.id === id
           ? { ...notification, enabled: !notification.enabled }
-          : notification
-      )
+          : notification,
+      ),
     );
     clearMessages();
   };
@@ -198,8 +204,8 @@ const NotificationsPage: React.FC = () => {
   const handleFrequencyChange = (id: string, frequency: string) => {
     setEmailNotifications((prev) =>
       prev.map((notification) =>
-        notification.id === id ? { ...notification, frequency } : notification
-      )
+        notification.id === id ? { ...notification, frequency } : notification,
+      ),
     );
     clearMessages();
   };
@@ -209,10 +215,10 @@ const NotificationsPage: React.FC = () => {
 
     // Remove icons before sending to server
     const emailNotificationsForServer = emailNotifications.map(
-      ({ icon, ...rest }) => rest
+      ({ icon, ...rest }) => rest,
     );
     const pushNotificationsForServer = pushNotifications.map(
-      ({ icon, ...rest }) => rest
+      ({ icon, ...rest }) => rest,
     );
 
     const settings: NotificationSettings = {
@@ -227,10 +233,10 @@ const NotificationsPage: React.FC = () => {
       // Update local state with server response if provided
       if (response.data) {
         setEmailNotifications(
-          addIconsToNotifications(response.data.emailNotifications)
+          addIconsToNotifications(response.data.emailNotifications),
         );
         setPushNotifications(
-          addIconsToNotifications(response.data.pushNotifications)
+          addIconsToNotifications(response.data.pushNotifications),
         );
       }
     } else {
@@ -263,97 +269,126 @@ const NotificationsPage: React.FC = () => {
             onClose={clearMessages}
           />
         )}
+        {/* Skeleton loading on first load */}
+        {isFirstLoad ? (
+          <>
+            <SkeletonSection>
+              <SkeletonText width="200px" height="24px" />
+              <SkeletonText width="320px" height="14px" />
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </SkeletonSection>
+            <SkeletonSection>
+              <SkeletonText width="200px" height="24px" />
+              <SkeletonText width="280px" height="14px" />
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </SkeletonSection>
+          </>
+        ) : (
+          <>
+            <NotificationSection>
+              <SectionTitle>
+                <Mail size={24} style={{ color: colors.primary.cyan }} />
+                Notificações por Email
+              </SectionTitle>
+              <SectionDescription>
+                Configure quando e como você deseja receber emails da Flya
+              </SectionDescription>
 
-        {/* Notificações por Email */}
-        <NotificationSection>
-          <SectionTitle>
-            <Mail size={24} style={{ color: colors.primary.cyan }} />
-            Notificações por Email
-          </SectionTitle>
-          <SectionDescription>
-            Configure quando e como você deseja receber emails da Flya
-          </SectionDescription>
+              {emailNotifications.map((notification) => (
+                <NotificationCard key={notification.id}>
+                  <NotificationHeader>
+                    <NotificationIcon enabled={notification.enabled}>
+                      {notification.icon}
+                    </NotificationIcon>
+                    <NotificationInfo>
+                      <NotificationTitle>
+                        {notification.title}
+                      </NotificationTitle>
+                      <NotificationDescription>
+                        {notification.description}
+                      </NotificationDescription>
+                    </NotificationInfo>
+                    <NotificationToggle>
+                      <ToggleSwitch
+                        enabled={notification.enabled}
+                        onClick={() => handleEmailToggle(notification.id)}
+                      >
+                        <ToggleSlider enabled={notification.enabled} />
+                      </ToggleSwitch>
+                    </NotificationToggle>
+                  </NotificationHeader>
 
-          {emailNotifications.map((notification) => (
-            <NotificationCard key={notification.id}>
-              <NotificationHeader>
-                <NotificationIcon enabled={notification.enabled}>
-                  {notification.icon}
-                </NotificationIcon>
-                <NotificationInfo>
-                  <NotificationTitle>{notification.title}</NotificationTitle>
-                  <NotificationDescription>
-                    {notification.description}
-                  </NotificationDescription>
-                </NotificationInfo>
-                <NotificationToggle>
-                  <ToggleSwitch
-                    enabled={notification.enabled}
-                    onClick={() => handleEmailToggle(notification.id)}
-                  >
-                    <ToggleSlider enabled={notification.enabled} />
-                  </ToggleSwitch>
-                </NotificationToggle>
-              </NotificationHeader>
+                  {notification.hasFrequency && notification.enabled && (
+                    <NotificationFrequency>
+                      <FrequencyLabel>Frequência:</FrequencyLabel>
+                      <FrequencySelect
+                        value={notification.frequency}
+                        onChange={(e) =>
+                          handleFrequencyChange(notification.id, e.target.value)
+                        }
+                      >
+                        <option value="instantaneo">Instantâneo</option>
+                        <option value="diario">Diário</option>
+                        <option value="semanal">Semanal</option>
+                        <option value="mensal">Mensal</option>
+                      </FrequencySelect>
+                    </NotificationFrequency>
+                  )}
+                </NotificationCard>
+              ))}
+            </NotificationSection>
 
-              {notification.hasFrequency && notification.enabled && (
-                <NotificationFrequency>
-                  <FrequencyLabel>Frequência:</FrequencyLabel>
-                  <FrequencySelect
-                    value={notification.frequency}
-                    onChange={(e) =>
-                      handleFrequencyChange(notification.id, e.target.value)
-                    }
-                  >
-                    <option value="instantaneo">Instantâneo</option>
-                    <option value="diario">Diário</option>
-                    <option value="semanal">Semanal</option>
-                    <option value="mensal">Mensal</option>
-                  </FrequencySelect>
-                </NotificationFrequency>
-              )}
-            </NotificationCard>
-          ))}
-        </NotificationSection>
+            {/* Notificações Push */}
+            <NotificationSection>
+              <SectionTitle>
+                <Smartphone
+                  size={24}
+                  style={{ color: colors.primary.purple }}
+                />
+                Notificações Push
+              </SectionTitle>
+              <SectionDescription>
+                Receba notificações instantâneas no seu dispositivo
+              </SectionDescription>
 
-        {/* Notificações Push */}
-        <NotificationSection>
-          <SectionTitle>
-            <Smartphone size={24} style={{ color: colors.primary.purple }} />
-            Notificações Push
-          </SectionTitle>
-          <SectionDescription>
-            Receba notificações instantâneas no seu dispositivo
-          </SectionDescription>
+              {pushNotifications.map((notification) => (
+                <NotificationCard key={notification.id}>
+                  <NotificationHeader>
+                    <NotificationIcon enabled={notification.enabled}>
+                      {notification.icon}
+                    </NotificationIcon>
+                    <NotificationInfo>
+                      <NotificationTitle>
+                        {notification.title}
+                      </NotificationTitle>
+                      <NotificationDescription>
+                        {notification.description}
+                      </NotificationDescription>
+                    </NotificationInfo>
+                    <NotificationToggle>
+                      <ToggleSwitch
+                        enabled={notification.enabled}
+                        onClick={() => handlePushToggle(notification.id)}
+                      >
+                        <ToggleSlider enabled={notification.enabled} />
+                      </ToggleSwitch>
+                    </NotificationToggle>
+                  </NotificationHeader>
+                </NotificationCard>
+              ))}
+            </NotificationSection>
 
-          {pushNotifications.map((notification) => (
-            <NotificationCard key={notification.id}>
-              <NotificationHeader>
-                <NotificationIcon enabled={notification.enabled}>
-                  {notification.icon}
-                </NotificationIcon>
-                <NotificationInfo>
-                  <NotificationTitle>{notification.title}</NotificationTitle>
-                  <NotificationDescription>
-                    {notification.description}
-                  </NotificationDescription>
-                </NotificationInfo>
-                <NotificationToggle>
-                  <ToggleSwitch
-                    enabled={notification.enabled}
-                    onClick={() => handlePushToggle(notification.id)}
-                  >
-                    <ToggleSlider enabled={notification.enabled} />
-                  </ToggleSwitch>
-                </NotificationToggle>
-              </NotificationHeader>
-            </NotificationCard>
-          ))}
-        </NotificationSection>
-
-        <SaveButton onClick={handleSave} disabled={loading}>
-          {loading ? "Salvando..." : "Salvar Configurações"}
-        </SaveButton>
+            <SaveButton onClick={handleSave} disabled={loading}>
+              {loading ? "Salvando..." : "Salvar Configurações"}
+            </SaveButton>
+          </> // end real content
+        )}{" "}
+        {/* end skeleton conditional */}
       </NotificationsContainer>
     </>
   );

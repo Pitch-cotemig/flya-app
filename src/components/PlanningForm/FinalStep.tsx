@@ -566,6 +566,17 @@ interface TripData {
   plan_result: string;
 }
 
+// Remove markdown asterisks and bold/italic markers from text
+const stripMarkdown = (text: string): string => {
+  return text
+    .replace(/\*{2,3}([^*]+)\*{2,3}/g, "$1") // **bold** or ***bold-italic***
+    .replace(/\*([^*]+)\*/g, "$1") // *italic*
+    .replace(/^[\*\-•]\s*/gm, "") // Leading * - •
+    .replace(/\*+/g, "") // Any remaining asterisks
+    .replace(/:{2,}/g, ":") // Double colons
+    .trim();
+};
+
 interface FinalStepProps {
   tripData: TripData | null;
   onClose: () => void;
@@ -594,7 +605,7 @@ const parsePlan = (text: string): ParsedPlan => {
     : "Seu Roteiro de Viagem";
 
   const summaryIndex = lines.findIndex((line) =>
-    line.startsWith("### Resumo Geral da Viagem")
+    line.startsWith("### Resumo Geral da Viagem"),
   );
 
   const roteiroLines =
@@ -640,10 +651,12 @@ const parsePlan = (text: string): ParsedPlan => {
       roteiro[currentDay][currentPeriod] = [];
       console.log(`Found period: "${currentPeriod}" for day: "${currentDay}"`);
     } else if (activityMatch && currentDay && currentPeriod) {
-      const cleanActivity = line
-        .trim()
-        .replace(/^[\*\-•]\s*/, "")
-        .trim();
+      const cleanActivity = stripMarkdown(
+        line
+          .trim()
+          .replace(/^[\*\-•]\s*/, "")
+          .trim(),
+      );
       roteiro[currentDay][currentPeriod].push(cleanActivity);
       console.log(`Added activity: "${cleanActivity}"`);
     } else if (line.trim() && currentDay && !periodMatch && !dayMatch) {
@@ -704,7 +717,7 @@ const FinalStep: React.FC<FinalStepProps> = ({
   // Fechar modais com ESC
   React.useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         if (editModal.isOpen) {
           cancelEdit();
         } else if (deleteModal.isOpen) {
@@ -714,22 +727,22 @@ const FinalStep: React.FC<FinalStepProps> = ({
     };
 
     if (editModal.isOpen || deleteModal.isOpen) {
-      document.addEventListener('keydown', handleEsc);
+      document.addEventListener("keydown", handleEsc);
       // Prevenir scroll da página quando modal estiver aberto
-      document.body.style.overflow = 'hidden';
-      document.body.style.position = 'fixed';
-      document.body.style.width = '100%';
+      document.body.style.overflow = "hidden";
+      document.body.style.position = "fixed";
+      document.body.style.width = "100%";
     } else {
-      document.body.style.overflow = 'unset';
-      document.body.style.position = 'unset';
-      document.body.style.width = 'unset';
+      document.body.style.overflow = "unset";
+      document.body.style.position = "unset";
+      document.body.style.width = "unset";
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEsc);
-      document.body.style.overflow = 'unset';
-      document.body.style.position = 'unset';
-      document.body.style.width = 'unset';
+      document.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "unset";
+      document.body.style.position = "unset";
+      document.body.style.width = "unset";
     };
   }, [editModal.isOpen, deleteModal.isOpen]);
 
@@ -832,13 +845,17 @@ const FinalStep: React.FC<FinalStepProps> = ({
     setIsSaving(false);
     if (response.success) {
       setSaveMessage("Viagem salva com sucesso!");
-      showSuccess("Viagem salva com sucesso! Você pode visualizá-la em 'Minhas Viagens'.");
+      showSuccess(
+        "Viagem salva com sucesso! Você pode visualizá-la em 'Minhas Viagens'.",
+      );
       if (onSaveSuccess) {
         onSaveSuccess();
       }
     } else {
       setSaveMessage(response.message);
-      showError(response.message || "Erro ao salvar a viagem. Tente novamente.");
+      showError(
+        response.message || "Erro ao salvar a viagem. Tente novamente.",
+      );
     }
   };
 
@@ -874,9 +891,7 @@ const FinalStep: React.FC<FinalStepProps> = ({
                   <PeriodTitle>{periodo}</PeriodTitle>
                   {plan.roteiro[dia][periodo].map((item, index) => (
                     <RoteiroItem key={index}>
-                      <ItemContent>
-                        {item.replace(/^(\*|-)\s*/, "").trim()}
-                      </ItemContent>
+                      <ItemContent>{stripMarkdown(item)}</ItemContent>
                       <ItemActions>
                         <ActionButton
                           onClick={() => handleEditItem(dia, periodo, index)}
@@ -907,7 +922,7 @@ const FinalStep: React.FC<FinalStepProps> = ({
             <h2>Resumo Geral da Viagem</h2>
             <ul>
               {plan.summary.map((item, index) => (
-                <li key={index}>{item.replace(/^\*/, "").trim()}</li>
+                <li key={index}>{stripMarkdown(item)}</li>
               ))}
             </ul>
           </SummaryBlock>
@@ -929,71 +944,77 @@ const FinalStep: React.FC<FinalStepProps> = ({
       </FooterActions>
 
       {/* Modal de Edição */}
-      {editModal.isOpen && createPortal(
-        <Modal onClick={cancelEdit}>
-          <ModalContent onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-            <ModalHeader>
-              <ModalTitle>Editar Item do Roteiro</ModalTitle>
-              <CloseButton onClick={cancelEdit}>
-                <X size={20} />
-              </CloseButton>
-            </ModalHeader>
-            <ModalBody>
-              <TextArea
-                value={editText}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                  setEditText(e.target.value)
-                }
-                placeholder="Digite o novo texto para este item..."
-                rows={4}
-                autoFocus
-              />
-            </ModalBody>
-            <ModalActions>
-              <ModalButton variant="cancel" onClick={cancelEdit}>
-                Cancelar
-              </ModalButton>
-              <ModalButton variant="confirm" onClick={confirmEdit}>
-                Salvar Alterações
-              </ModalButton>
-            </ModalActions>
-          </ModalContent>
-        </Modal>,
-        document.body
-      )}
+      {editModal.isOpen &&
+        createPortal(
+          <Modal onClick={cancelEdit}>
+            <ModalContent
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            >
+              <ModalHeader>
+                <ModalTitle>Editar Item do Roteiro</ModalTitle>
+                <CloseButton onClick={cancelEdit}>
+                  <X size={20} />
+                </CloseButton>
+              </ModalHeader>
+              <ModalBody>
+                <TextArea
+                  value={editText}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    setEditText(e.target.value)
+                  }
+                  placeholder="Digite o novo texto para este item..."
+                  rows={4}
+                  autoFocus
+                />
+              </ModalBody>
+              <ModalActions>
+                <ModalButton variant="cancel" onClick={cancelEdit}>
+                  Cancelar
+                </ModalButton>
+                <ModalButton variant="confirm" onClick={confirmEdit}>
+                  Salvar Alterações
+                </ModalButton>
+              </ModalActions>
+            </ModalContent>
+          </Modal>,
+          document.body,
+        )}
 
       {/* Modal de Exclusão */}
-      {deleteModal.isOpen && createPortal(
-        <Modal onClick={cancelDelete}>
-          <ModalContent onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-            <ModalHeader>
-              <ModalTitle>
-                <AlertTriangle size={20} color="#ef4444" />
-                Confirmar Exclusão
-              </ModalTitle>
-              <CloseButton onClick={cancelDelete}>
-                <X size={20} />
-              </CloseButton>
-            </ModalHeader>
-            <ModalBody>
-              <ConfirmMessage>
-                Tem certeza que deseja remover este item do roteiro?
-                <br />
-                <strong>Esta ação não pode ser desfeita.</strong>
-              </ConfirmMessage>
-            </ModalBody>
-            <ModalActions>
-              <ModalButton variant="cancel" onClick={cancelDelete}>
-                Cancelar
-              </ModalButton>
-              <ModalButton variant="danger" onClick={confirmDelete}>
-                Excluir Item
-              </ModalButton>
-            </ModalActions>
-          </ModalContent>
-        </Modal>,
-        document.body
-      )}
+      {deleteModal.isOpen &&
+        createPortal(
+          <Modal onClick={cancelDelete}>
+            <ModalContent
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            >
+              <ModalHeader>
+                <ModalTitle>
+                  <AlertTriangle size={20} color="#ef4444" />
+                  Confirmar Exclusão
+                </ModalTitle>
+                <CloseButton onClick={cancelDelete}>
+                  <X size={20} />
+                </CloseButton>
+              </ModalHeader>
+              <ModalBody>
+                <ConfirmMessage>
+                  Tem certeza que deseja remover este item do roteiro?
+                  <br />
+                  <strong>Esta ação não pode ser desfeita.</strong>
+                </ConfirmMessage>
+              </ModalBody>
+              <ModalActions>
+                <ModalButton variant="cancel" onClick={cancelDelete}>
+                  Cancelar
+                </ModalButton>
+                <ModalButton variant="danger" onClick={confirmDelete}>
+                  Excluir Item
+                </ModalButton>
+              </ModalActions>
+            </ModalContent>
+          </Modal>,
+          document.body,
+        )}
     </FinalScreenContainer>
   );
 };
